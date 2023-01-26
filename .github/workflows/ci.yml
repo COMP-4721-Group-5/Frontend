@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.py'
+      - 'requirements.txt'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.py'
+      - 'requirements.txt'
+
+jobs:
+  unit-test:
+    name: Run unit test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Setup Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.11
+    - name: Install PIP dependencies
+      run: sudo pip install -r requirements.txt
