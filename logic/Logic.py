@@ -17,13 +17,12 @@ class Logic:
     board ={}
     score = 0
 
-    def verify_move(self, board, move):
+    def verify_move(self, move):
         """Verifies the most recent move
 
         Ensures that a given move is legal by game rules.
 
         Args: 
-            board: contains the current game board.
             move: A list of tuples containing a tile and it's given indices 
                 to represent the most recent move. For example:
 
@@ -34,13 +33,12 @@ class Logic:
                 determined to be legal, false if it is not.
         """
 
-    def register_move(self, board, move):
+    def register_move(self, move):
         """Registers a given move.
 
         Updates the board to include the most recent move.
 
         Args: 
-            board: 217x217 list of tiles containing the current game board
             move: A list of tuples containing a tile and it's given indices 
                 to represent the most recent move. For example:
 
