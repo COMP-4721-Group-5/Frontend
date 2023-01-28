@@ -34,7 +34,7 @@ jobs:
       if: ${{ always() }}
       uses: EnricoMi/publish-unit-test-result-action@v2
       with:
-        junit_files: "**/*.xml"
+        junit_files: "*.xml"
 
   style-check:
     name: Run style check
