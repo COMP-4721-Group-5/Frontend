@@ -14,6 +14,13 @@ on:
       - '**/*.py'
       - 'requirements.txt'
 
+permissions:
+  actions: read
+  contents: read
+  issues: read
+  checks: write
+  pull-requests: write
+
 jobs:
   unit-test:
     name: Run unit test
@@ -27,6 +34,13 @@ jobs:
         python-version: 3.11
     - name: Install PIP dependencies
       run: sudo pip install -r requirements.txt
+    - name: Run PyTest
+      run: pytest --junit-xml=pytest.xml $(find . -name '*.py')
+    - name: Publish Test Results
+      if: ${{ always() }}
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      with:
+        junit_files: "**/*.xml"
 
   style-check:
     name: Run style check
@@ -38,7 +52,6 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: 3.11
-        cache: 'pip'
     - name: Install PIP dependencies
       run: sudo pip install -r requirements.txt
     - name: Run style checker
