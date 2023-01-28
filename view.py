@@ -7,7 +7,9 @@ class View:
 
     Responsible for rendering the frontend view. After initialization,
     calls to render_grid(), render_hand(), and render_details() can be
-    performed automatically by calling update_view()
+    performed automatically by calling update_view(). The event loop is
+    for handling basic view-related events, such as closing the window
+    or dragging and dropping a tile onto the grid.
     """
 
     def __init__(self):
