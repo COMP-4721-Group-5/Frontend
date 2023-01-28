@@ -29,12 +29,12 @@ jobs:
     - name: Install PIP dependencies
       run: sudo pip install -r requirements.txt
     - name: Run PyTest
-      run: pytest --junit-xml=pytest.yml $(find . -name '*.py')
+      run: pytest --junit-xml=pytest.xml $(find . -name '*.py')
     - name: Publish Test Results
       if: ${{ always() }}
       uses: EnricoMi/publish-unit-test-result-action@v2
       with:
-        junit_files: "*.xml"
+        junit_files: "**/*.xml"
 
   style-check:
     name: Run style check
