@@ -24,9 +24,17 @@ class View:
         self.init_event_loop()
 
     def update_view(self, screen, window_size):
-        """Updates the entire view."""
+        """Updates the entire view.
+        
+            Args:
+                screen: screen object returned by pygame.display.set_mode()
+                window_size: dimensions of the Qwirkle window
+                
+            Returns:
+                Nothing
+        """
         self.render_grid(screen, window_size)
-        self.render_hand()
+        self.render_hand(screen, window_size)
         self.render_details()
         pygame.display.flip()
 
@@ -55,16 +63,40 @@ class View:
         for i in range(num_rows):
             x_pos = (0.09 * window_size[0]) + 10
             for j in range(num_cols):
-                print("x_pos: "+str(x_pos))
-                print("y_pos: "+str(y_pos))
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
                 x_pos = x_pos + tile_width - 2
             y_pos = y_pos + tile_height - 2
 
-    def render_hand(self):
-        """Renders the tiles currently held by the player."""
-        pass
+    def render_hand(self, screen, window_size):
+        """Renders the tiles currently held by the player.
+        
+            Args:
+                screen: screen object returned by pygame.display.set_mode()
+                window_size: dimensions of the Qwirkle window
 
+            Returns:
+                Nothing
+        """
+        
+        border_color = (0, 0, 0)
+        background_color = (255, 255, 255)
+        num_grid_rows = 8
+        num_grid_cols = 8
+        tile_width = 1 + ((0.8 * window_size[0]) - (5 * 2)) / num_grid_rows
+        tile_height = 1 + ((0.8 * window_size[1]) - (5 * 2)) / num_grid_cols
+        num_tiles = 7
+        gap = 10
+        x_pos = ((0.09 * window_size[0]) + 10)
+        y_pos = ((0.05 * window_size[1]) + 8) + (8 * tile_height) + gap
+        
+        self.draw_hollow_rect(screen, background_color, border_color, x_pos - 10, y_pos - 5, 5 + tile_width * 6, tile_height + 10, 15)
+        for i in range(num_tiles + 1):
+            if i < 6:
+                self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
+            if i == 7:
+                self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 10)
+            x_pos = x_pos + tile_width - 2
+        
     def render_details(self):
         """Renders details such as the server IP and the player's score."""
         pass
