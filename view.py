@@ -31,10 +31,35 @@ class View:
         pygame.display.flip()
 
     def render_grid(self, screen, window_size):
-        """Renders the main grid on which tiles may be placed."""
+        """Renders the main grid on which tiles may be placed.
+
+            Args:
+                screen: screen object returned by pygame.display.set_mode()
+                window_size: dimensions of the Qwirkle window
+
+            Returns:
+                Nothing
+        """
         border_color = (0, 0, 0)
         background_color = (255, 255, 255)
-        self.draw_hollow_rect(screen, background_color, border_color, (0.05 * window_size[0]), (0.05 * window_size[1]), (0.9 * window_size[0]), (0.8 * window_size[1]), 10)
+        self.draw_hollow_rect(screen, background_color, border_color, (0.09 * window_size[0]), (0.05 * window_size[1]), (0.8 * window_size[0]), (0.8 * window_size[1]), 10)
+
+        num_rows = 8
+        num_cols = 8
+        tile_width = 1 +((0.8 * window_size[0]) - (5 * 2)) / num_rows
+        tile_height = 1 + ((0.8 * window_size[1]) - (5 * 2)) / num_cols
+
+        x_pos = (0.09 * window_size[0]) + 10
+        y_pos = (0.05 * window_size[1]) + 10
+
+        for i in range(num_rows):
+            x_pos = (0.09 * window_size[0]) + 10
+            for j in range(num_cols):
+                print("x_pos: "+str(x_pos))
+                print("y_pos: "+str(y_pos))
+                self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
+                x_pos = x_pos + tile_width - 2
+            y_pos = y_pos + tile_height - 2
 
     def render_hand(self):
         """Renders the tiles currently held by the player."""
