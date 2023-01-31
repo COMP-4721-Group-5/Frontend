@@ -3,7 +3,15 @@ class Gamerules:
 
     Responsible for ensuring consistency with game logic and contains methods for altering the board model
     as per legal moves by the game's rules.
+
+    Attributes:
+        board: Stores the current game board
     """
+    board ={}
+
+    
+    def update_board(self, board):
+        self.board = board
 
     def verify_move(self, move):
         """Verifies the most recent move
@@ -11,7 +19,7 @@ class Gamerules:
         Ensures that a given move is legal by game rules.
 
         Args: 
-            move: A list of tuples containing a tile and it's given indices 
+            move: A list of placements containing a tile and it's given indices 
                 to represent the most recent move. For example:
 
                 {(Tile 1, x cord 1, y cord 1), (Tile 2, x cord 2, y cord 2)...}
