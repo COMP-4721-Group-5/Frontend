@@ -8,23 +8,23 @@ class Logic:
     accordingly. 
 
     Attributes:
-        board: a 217x217 list of tiles that contains the state of the
-            game board
-        hand: a list of tiles of length 6 representing the hand of the player
-        score: An integer count of the player's current score
+        board: Contains the board
     """
-    hand = {}
-    board ={}
-    score = 0
+    board = {}
     
-    def update_hand(self, hand):
-        self.hand = hand
+    """Collects playerCount data and sends a message to the socket to start the game
+
+    Args:
+        playerCount: amount of players in the game
+    """
+    def start_game(self, playerCount):
+
     
     def put_temp_move(self, move):
         """Receives a move from the view to be evaluated
 
         Args:
-            move: A list of tuples containing a tile and it's given indices 
+            move: A list of placements containing a tile and it's given indices 
                 to represent the most recent move. For example:
 
                 {(Tile 1, x cord 1, y cord 1), (Tile 2, x cord 2, y cord 2)...}
@@ -33,7 +33,7 @@ class Logic:
             true: if the move is valid.
             false: if the move is invalid.
         """
-
+        pass
 
         
 
