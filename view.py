@@ -12,6 +12,8 @@ class View:
     or dragging and dropping a tile onto the grid.
     """
 
+    BOARD_MIDDLE = 108
+
     def __init__(self):
         """Inits the view."""
         pygame.init()
@@ -20,22 +22,25 @@ class View:
         screen = pygame.display.set_mode(window_size)
         pygame.display.set_caption("Qwirkle")
         screen.fill(background_color)
-        self.update_view(screen, window_size)
+        self.update_view(screen, window_size, BOARD_MIDDLE, BOARD_MIDDLE)
         self.init_event_loop()
 
-    def update_view(self, screen, window_size):
+    def update_view(self, screen, window_size, top_left_x, top_left_y):
         """Updates the entire view.
-        
+
             Args:
                 screen: screen object returned by pygame.display.set_mode()
                 window_size: dimensions of the Qwirkle window
-                
+                top_left_x: x coordinate for top-left tile of frame
+                top_left_y: y coordinate for top-left tile of frame
+
             Returns:
                 Nothing
         """
         self.render_grid(screen, window_size)
         self.render_hand(screen, window_size)
         self.render_details()
+        self.render_tiles(top_left_x, top_right_y)
         pygame.display.flip()
 
     def render_grid(self, screen, window_size):
@@ -69,7 +74,7 @@ class View:
 
     def render_hand(self, screen, window_size):
         """Renders the tiles currently held by the player.
-        
+
             Args:
                 screen: screen object returned by pygame.display.set_mode()
                 window_size: dimensions of the Qwirkle window
@@ -77,7 +82,7 @@ class View:
             Returns:
                 Nothing
         """
-        
+
         border_color = (0, 0, 0)
         background_color = (255, 255, 255)
         num_grid_rows = 8
@@ -88,15 +93,15 @@ class View:
         gap = 10
         x_pos = ((0.09 * window_size[0]) + 10)
         y_pos = ((0.05 * window_size[1]) + 8) + (8 * tile_height) + gap
-        
+
         self.draw_hollow_rect(screen, background_color, border_color, x_pos - 10, y_pos - 5, 5 + tile_width * 6, tile_height + 10, 15)
         for i in range(num_tiles + 1):
             if i < 6:
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
             if i == 7:
-                self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 10)
+                self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
             x_pos = x_pos + tile_width - 2
-        
+
     def render_details(self):
         """Renders details such as the server IP and the player's score."""
         pass
@@ -119,6 +124,21 @@ class View:
         """
         pygame.draw.rect(screen, border_color, pygame.Rect(x, y, width, height))
         pygame.draw.rect(screen, color, pygame.Rect(x+border_width, y+border_width, width - (2 * border_width), height - (2 * border_width)))
+
+    def render_tiles(self, x, y):
+        """Method for renderring the current frame of tiles onto the board
+
+            Args:
+                x: x position of the upper-left tile in the frame containing displayed tiles
+                y: y position of the upper-left tile in the frame containing displayed tiles
+
+            Returns:
+                Nothing
+        """
+        # 1. get dimensions of frame (fixed as 8x8 for now)
+        # 2. Iterate over each tile. For each:
+        #       i) render at respective position
+        pass
 
     def init_event_loop(self):
         """Event loop for handling UI interaction """
