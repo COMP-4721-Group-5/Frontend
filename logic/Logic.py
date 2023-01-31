@@ -1,3 +1,4 @@
+import gamerules
 class Logic:
     """ Controls all game logic.
 
@@ -11,14 +12,15 @@ class Logic:
         board: Contains the board
     """
     board = {}
-    
+    rules = gamerules()
+
     """Collects playerCount data and sends a message to the socket to start the game
 
     Args:
         playerCount: amount of players in the game
     """
     def start_game(self, playerCount):
-
+        pass
     
     def put_temp_move(self, move):
         """Receives a move from the view to be evaluated
@@ -33,7 +35,9 @@ class Logic:
             true: if the move is valid.
             false: if the move is invalid.
         """
+        gamerules.verify_move(move)
+
         pass
 
-        
-
+    def update_board(self, board):
+        self.board = board

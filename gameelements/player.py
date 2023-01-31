@@ -5,7 +5,7 @@ class Player:
 
     Attributes:
         hand: list of tiles representing the player's hand
-        
+
     """
     hand = {}
     score = 0
@@ -20,5 +20,5 @@ class Player:
         false: if not
     """
     def play_tile(index):
-        
+        pass
     
