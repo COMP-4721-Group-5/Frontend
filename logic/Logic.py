@@ -10,16 +10,20 @@ class Logic:
 
     Attributes:
         board: Contains the board
+        tempMove: Contains all temporary placements of current players move
+        player: Contains the local player's data 
     """
     board = {}
-    rules = gamerules()
+    tempMove = {}
+    player = None
 
-    """Collects playerCount data and sends a message to the socket to start the game
 
-    Args:
-        playerCount: amount of players in the game
-    """
     def start_game(self, playerCount):
+        """Collects playerCount data and sends a message to the socket to start the game
+
+        Args:
+            playerCount: amount of players in the game
+        """
         pass
     
     def put_temp_move(self, move):
@@ -36,7 +40,45 @@ class Logic:
             false: if the move is invalid.
         """
         gamerules.verify_move(move)
+        pass
+    
 
+    def place_temp_tile(self, placement):
+        """Places a temporary tile on the board
+
+        Places temporary tile on the board and checks validity of placement
+        to render the action on the view
+
+        Args:
+            placement: Placement object containing the placement data
+        """
+        valid = gamerules.verify_placement(placement)
+        if valid:
+            tempMove.add(placement)
+            return True
+        else:
+            return False
+
+    def remove_tiles(self, indices):
+        """Removes certain tiles from a player's hand at the given indices
+    
+        Args:
+            indices: indices of the tiles that must be removed from player's hand
+        """
+        pass
+
+    def update_hand(self, hand):
+        """Updates the hand when refilled from bag
+        
+        Gets updated hand information from socket and updates the hand accordingly
+        """
+        self.hand = hand
+
+    def update_view(self):
+        """Updates the view
+
+        Will be called after every placement check to update the view with validity information
+        """
         pass
 
     def update_board(self, board):
