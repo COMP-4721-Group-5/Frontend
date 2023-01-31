@@ -34,6 +34,10 @@ class Tile:
     @property
     def shape(self):
         return self.__shape
+    
+    @property
+    def hex_value(self):
+        return self.color.value ^ self.shape.value
 
     def is_temporary(self):
         return self.__temporary
