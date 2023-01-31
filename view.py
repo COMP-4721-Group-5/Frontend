@@ -59,7 +59,7 @@ class View:
 
         num_rows = 8
         num_cols = 8
-        tile_width = 1 +((0.8 * window_size[0]) - (5 * 2)) / num_rows
+        tile_width = 1 + ((0.8 * window_size[0]) - (5 * 2)) / num_rows
         tile_height = 1 + ((0.8 * window_size[1]) - (5 * 2)) / num_cols
 
         x_pos = (0.09 * window_size[0]) + 10
@@ -123,7 +123,7 @@ class View:
                 Nothing
         """
         pygame.draw.rect(screen, border_color, pygame.Rect(x, y, width, height))
-        pygame.draw.rect(screen, color, pygame.Rect(x+border_width, y+border_width, width - (2 * border_width), height - (2 * border_width)))
+        pygame.draw.rect(screen, color, pygame.Rect(x + border_width, y + border_width, width - (2 * border_width), height - (2 * border_width)))
 
     def render_tiles(self, x, y):
         """Method for renderring the current frame of tiles onto the board
