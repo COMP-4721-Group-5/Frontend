@@ -1,6 +1,9 @@
-def test():
-    assert 4 == 4
+import unittest
 
+from lib.shared.internal_structures import *
 
-def test2():
-    assert 4 != 5
+class TileTest(unittest.TestCase):
+
+    def test_tile_hex(self):
+        red_circle = Tile(TileColor.RED, TileShape.CIRCLE)
+        self.assertEqual(red_circle.hex_value, 0x11)
