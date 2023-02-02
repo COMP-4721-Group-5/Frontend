@@ -1,7 +1,9 @@
 from enum import Enum
-from typing import Final
 
 class TileColor(Enum):
+    """
+    Set of constants defining color of a tile
+    """
     RED = 0x01
     ORANGE = 0x02
     YELLOW = 0x03
@@ -10,6 +12,9 @@ class TileColor(Enum):
     VIOLET = 0x06
 
 class TileShape(Enum):
+    """
+    Set of constants defining shape of a tile
+    """
     CIRCLE = 0x10
     CROSS = 0x20
     DIAMOND = 0x30
@@ -17,7 +22,11 @@ class TileShape(Enum):
     STAR = 0x50
     CLUB = 0x60
 
+
 class Tile:
+    """
+    Python representation of a Quirkle tile
+    """
     __color: TileColor
     __shape: TileShape
     __temporary: bool
@@ -29,21 +38,36 @@ class Tile:
 
     @property
     def color(self):
+        """
+        Color of this tile
+        """
         return self.__color
-    
+
     @property
     def shape(self):
+        """
+        Shape of this tile
+        """
         return self.__shape
-    
+
     @property
     def hex_value(self):
+        """
+        Hexadecimal value uniquely representing type of this tyle
+        """
         return self.color.value ^ self.shape.value
 
     def is_temporary(self):
+        """
+        Checks whether this tile is marked as temporary
+        """
         return self.__temporary
-    
+
     def set_permanent(self):
-        self.__isTemporary = False
+        """
+        Marks this tile as permanent
+        """
+        self._temporary = False
 
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, Tile):
