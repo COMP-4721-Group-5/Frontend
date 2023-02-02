@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import IntEnum
 
 
-class TileColor(Enum):
+class TileColor(IntEnum):
     """
     Set of constants defining color of a tile
     """
@@ -13,7 +13,7 @@ class TileColor(Enum):
     VIOLET = 0x06
 
 
-class TileShape(Enum):
+class TileShape(IntEnum):
     """
     Set of constants defining shape of a tile
     """
