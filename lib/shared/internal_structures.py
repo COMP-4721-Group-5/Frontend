@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class TileColor(Enum):
     """
     Set of constants defining color of a tile
@@ -10,6 +11,7 @@ class TileColor(Enum):
     GREEN = 0x04
     BLUE = 0x05
     VIOLET = 0x06
+
 
 class TileShape(Enum):
     """
@@ -31,7 +33,10 @@ class Tile:
     __shape: TileShape
     __temporary: bool
 
-    def __init__(self, color: TileColor, shape: TileShape, temp: bool = True) -> None:
+    def __init__(self,
+                 color: TileColor,
+                 shape: TileShape,
+                 temp: bool = True) -> None:
         self.__color = color
         self.__shape = shape
         self.__temporary = temp
