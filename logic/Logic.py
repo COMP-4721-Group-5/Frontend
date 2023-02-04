@@ -30,6 +30,7 @@ class Logic:
         Joe = Player()
         Joe.update_hand({})
 
+
         pass
     
     def put_temp_move(self, move):
