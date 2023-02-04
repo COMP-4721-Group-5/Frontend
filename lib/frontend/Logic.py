@@ -22,7 +22,7 @@ class Logic:
     bag: List[Tile]
 
     def __init__(self) -> None:
-        self.start_game()
+        self.start_game(1)
 
     def start_game(self, playerCount: int):
         """Collects playerCount data and sends a message to the socket to start the game
