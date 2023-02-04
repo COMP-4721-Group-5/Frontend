@@ -83,6 +83,17 @@ class Logic:
             return False
         """
 
+    def play_tile(self, placement, index):
+        """Plays a tile given an index and desired placement
+
+        Args:
+            placement: desired placement of the tile, contains tile, x_coord and y_coord data
+            index: index of the tile within the players hand
+        """
+        self.board.add_tile(placement)
+        self.player.play_tile(index)
+
+        pass
     def update_board(self, board: Board):
         self.board = board
 
