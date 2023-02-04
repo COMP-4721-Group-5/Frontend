@@ -1,3 +1,7 @@
+from typing import List
+
+from internal_structures import Tile
+
 class Player:
     """Keeps track of all player specific data
 

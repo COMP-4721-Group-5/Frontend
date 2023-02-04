@@ -1,5 +1,7 @@
-from gamerules import Gamerules
-from lib import internal_structures
+from ..shared.internal_structures import Board
+from ..shared.player import Player
+from ..shared import gamerules
+
 class Logic:
     """ Controls all game logic.
 
@@ -64,7 +66,7 @@ class Logic:
         """
         valid = gamerules.verify_placement(placement)
         if valid:
-            tempMove.add(placement)
+            gamerules.tempMove.add(placement)
             return True
         else:
             return False
