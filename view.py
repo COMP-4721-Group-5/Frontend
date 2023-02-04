@@ -1,5 +1,8 @@
-import pygame
 import sys
+
+import pygame
+
+from lib.shared.player import Player
 
 class View:
 
