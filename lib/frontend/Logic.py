@@ -59,9 +59,12 @@ class Logic:
         self.board.add_tile(placement)
         self.player.play_tile(index)
 
-        pass
-
     def update_board(self, board: Board):
+        """Updates the board
+
+        Args:
+            board: new board
+        """
         self.__board = board
 
     @property
