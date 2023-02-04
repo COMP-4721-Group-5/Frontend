@@ -164,7 +164,7 @@ class View:
                     if (100 < x < 685) and (700 < y < 770): # Handles interaction with hand
                         relative_x = x - 100                 
                         for i in range(6):
-                            if relative_x < (tile_width + (gap_width / 2)) * (i + 1):
+                            if relative_x < (585 / 6) * (i + 1):
                                 self.SELECTED_TILE = i
                                 self.update_view()
                                 break
