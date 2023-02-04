@@ -13,17 +13,27 @@ class View:
     """
 
     BOARD_MIDDLE = 108
+    FRAME_SIZE = 8
+    hand = ["EMPTY", pygame.image.load('favicon.png'), "EMPTY", "EMPTY", "EMPTY", "EMPTY"] # temporary for testing
 
     def __init__(self):
-        """Inits the view."""
+        """Inits the view"""
         pygame.init()
+        favicon = pygame.image.load('favicon.png')
+        pygame.display.set_icon(favicon)
         window_size = 1000, 800
         background_color = (255, 255, 255)
         screen = pygame.display.set_mode(window_size)
         pygame.display.set_caption("Qwirkle")
         screen.fill(background_color)
-        self.update_view(screen, window_size, BOARD_MIDDLE, BOARD_MIDDLE)
+        self.update_view(screen, window_size, self.BOARD_MIDDLE, self.BOARD_MIDDLE)
         self.init_event_loop()
+        
+    # NOTE:
+    # Once testing is complete, screen and window_size should be added as args to init funct.
+    # This is required for update_view to be callable outside of __init__
+    # also, hand will be in game logic - should be referenced directly. Frame will
+    # also be read from game logic
 
     def update_view(self, screen, window_size, top_left_x, top_left_y):
         """Updates the entire view.
@@ -37,13 +47,12 @@ class View:
             Returns:
                 Nothing
         """
-        self.render_grid(screen, window_size)
+        self.render_grid(screen, window_size, top_left_x, top_left_y)
         self.render_hand(screen, window_size)
         self.render_details()
-        self.render_tiles(top_left_x, top_right_y)
         pygame.display.flip()
 
-    def render_grid(self, screen, window_size):
+    def render_grid(self, screen, window_size, top_left_x, top_left_y):
         """Renders the main grid on which tiles may be placed.
 
             Args:
@@ -57,8 +66,8 @@ class View:
         background_color = (255, 255, 255)
         self.draw_hollow_rect(screen, background_color, border_color, (0.09 * window_size[0]), (0.05 * window_size[1]), (0.8 * window_size[0]), (0.8 * window_size[1]), 10)
 
-        num_rows = 8
-        num_cols = 8
+        num_rows = self.FRAME_SIZE
+        num_cols = self.FRAME_SIZE
         tile_width = 1 + ((0.8 * window_size[0]) - (5 * 2)) / num_rows
         tile_height = 1 + ((0.8 * window_size[1]) - (5 * 2)) / num_cols
 
@@ -85,10 +94,8 @@ class View:
 
         border_color = (0, 0, 0)
         background_color = (255, 255, 255)
-        num_grid_rows = 8
-        num_grid_cols = 8
-        tile_width = 1 + ((0.8 * window_size[0]) - (5 * 2)) / num_grid_rows
-        tile_height = 1 + ((0.8 * window_size[1]) - (5 * 2)) / num_grid_cols
+        tile_width = 1 + ((0.8 * window_size[0]) - (5 * 2)) / 8
+        tile_height = 1 + ((0.8 * window_size[1]) - (5 * 2)) / 8
         num_tiles = 7
         gap = 10
         x_pos = ((0.09 * window_size[0]) + 10)
@@ -98,6 +105,10 @@ class View:
         for i in range(num_tiles + 1):
             if i < 6:
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
+                if self.hand[i] != "EMPTY":
+                    curr_tile = self.hand[i]
+                    tile_img = pygame.transform.scale(curr_tile, (tile_width - 10, tile_height - 10))
+                    screen.blit(tile_img, (x_pos + 5, y_pos + 5))
             if i == 7:
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
             x_pos = x_pos + tile_width - 2
@@ -124,21 +135,6 @@ class View:
         """
         pygame.draw.rect(screen, border_color, pygame.Rect(x, y, width, height))
         pygame.draw.rect(screen, color, pygame.Rect(x + border_width, y + border_width, width - (2 * border_width), height - (2 * border_width)))
-
-    def render_tiles(self, x, y):
-        """Method for renderring the current frame of tiles onto the board
-
-            Args:
-                x: x position of the upper-left tile in the frame containing displayed tiles
-                y: y position of the upper-left tile in the frame containing displayed tiles
-
-            Returns:
-                Nothing
-        """
-        # 1. get dimensions of frame (fixed as 8x8 for now)
-        # 2. Iterate over each tile. For each:
-        #       i) render at respective position
-        pass
 
     def init_event_loop(self):
         """Event loop for handling UI interaction """
