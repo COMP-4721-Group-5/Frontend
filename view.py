@@ -12,30 +12,27 @@ class View:
     or dragging and dropping a tile onto the grid.
     """
 
-    BOARD_MIDDLE = 108
+    TOP_LEFT_X = 108
+    TOP_LEFT_Y = 108
     FRAME_SIZE = 8
+    SELECTED_TILE = "NONE"
+    WINDOW_SIZE = 0,0
+    SCREEN = "NONE"
     hand = ["EMPTY", pygame.image.load('favicon.png'), "EMPTY", "EMPTY", "EMPTY", "EMPTY"] # temporary for testing
 
-    def __init__(self):
+    def __init__(self, size):
         """Inits the view"""
-        pygame.init()
+        self.WINDOW_SIZE = size
+        self.SCREEN = pygame.display.set_mode(size)
         favicon = pygame.image.load('favicon.png')
         pygame.display.set_icon(favicon)
-        window_size = 1000, 800
         background_color = (255, 255, 255)
-        screen = pygame.display.set_mode(window_size)
         pygame.display.set_caption("Qwirkle")
-        screen.fill(background_color)
-        self.update_view(screen, window_size, self.BOARD_MIDDLE, self.BOARD_MIDDLE)
+        self.SCREEN.fill(background_color)
+        self.update_view()
         self.init_event_loop()
-        
-    # NOTE:
-    # Once testing is complete, screen and window_size should be added as args to init funct.
-    # This is required for update_view to be callable outside of __init__
-    # also, hand will be in game logic - should be referenced directly. Frame will
-    # also be read from game logic
 
-    def update_view(self, screen, window_size, top_left_x, top_left_y):
+    def update_view(self):
         """Updates the entire view.
 
             Args:
@@ -47,8 +44,8 @@ class View:
             Returns:
                 Nothing
         """
-        self.render_grid(screen, window_size, top_left_x, top_left_y)
-        self.render_hand(screen, window_size)
+        self.render_grid(self.SCREEN, self.WINDOW_SIZE, self.TOP_LEFT_X, self.TOP_LEFT_Y)
+        self.render_hand(self.SCREEN, self.WINDOW_SIZE)
         self.render_details()
         pygame.display.flip()
 
@@ -100,9 +97,10 @@ class View:
         gap = 10
         x_pos = ((0.09 * window_size[0]) + 10)
         y_pos = ((0.05 * window_size[1]) + 8) + (8 * tile_height) + gap
-
         self.draw_hollow_rect(screen, background_color, border_color, x_pos - 10, y_pos - 5, 5 + tile_width * 6, tile_height + 10, 15)
         for i in range(num_tiles + 1):
+            if self.SELECTED_TILE == i:
+                border_color = (255, 0, 255)
             if i < 6:
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
                 if self.hand[i] != "EMPTY":
@@ -112,6 +110,7 @@ class View:
             if i == 7:
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
             x_pos = x_pos + tile_width - 2
+            border_color = (0, 0, 0)
 
     def render_details(self):
         """Renders details such as the server IP and the player's score."""
@@ -143,6 +142,22 @@ class View:
             for ev in  pygame.event.get():
                 if ev.type == pygame.QUIT:
                     sys.exit()
+                if ev.type == pygame.MOUSEBUTTONDOWN:
+                    x = pygame.mouse.get_pos()[0]
+                    y = pygame.mouse.get_pos()[1]                  
+                    tile_width = 90
+                    gap_width = 8
+                    total_width = 585
+                    if (100 < x < 685) and (700 < y < 770):
+                        relative_x = x - 100                 
+                        for i in range(6):
+                            if relative_x < (tile_width + (gap_width / 2)) * (i + 1):
+                                self.SELECTED_TILE = i
+                                self.update_view()
+                                break
 
 # Test code
-View()
+pygame.init()
+size = 1000, 800
+screen = pygame.display.set_mode(size)
+View(size)
