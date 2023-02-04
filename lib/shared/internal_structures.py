@@ -137,4 +137,5 @@ class Board:
         Args:
         placement: contains (Tile, x_coord, y_coord)
         """
-        self.board[placement.x_coord][placement.y_coord] = placement.tile
+        if self.__board[placement.x_coord][placement.y_coord] == None:
+            self.__board[placement.x_coord][placement.y_coord] = placement.tile
