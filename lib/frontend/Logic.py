@@ -46,43 +46,6 @@ class Logic:
         
         self.player.update_hand(temp_hand)
 
-    def put_temp_move(self, move):
-        """Receives a move from the view to be evaluated
-
-        Args:
-            move: A list of placements containing a tile and it's given indices 
-                to represent the most recent move. For example:
-
-                {(Tile 1, x cord 1, y cord 1), (Tile 2, x cord 2, y cord 2)...}
-
-        Returns:
-            true: if the move is valid.
-            false: if the move is invalid.
-        """
-        gamerules.verify_move(move)
-        pass
-    
-
-    def place_temp_tile(self, placement: Placement):
-        """Places a temporary tile on the board
-
-        Places temporary tile on the board and checks validity of placement
-        to render the action on the view
-
-        Args:
-            placement: Placement object containing the placement data
-        """
-        self.board.add_tile(placement)
-
-        """
-        valid = gamerules.verify_placement(placement)
-        if valid:
-            gamerules.tempMove.add(placement)
-            return True
-        else:
-            return False
-        """
-
     def play_tile(self, placement, index):
         """Plays a tile given an index and desired placement
 
