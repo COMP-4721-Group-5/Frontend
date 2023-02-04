@@ -10,17 +10,18 @@ class Player:
     hand = {}
     score = 0
 
-    """Removes the designated tile from players hand, used for play and discard actions
-    
-    Args:
-        index: index of the tile to be removed
-
-    Returns:
-        true: if the remove was succesful
-        false: if not
-    """
+   
     def play_tile(index):
-        pass
+         """Removes the designated tile from players hand, used for play and discard actions
+    
+        Args:
+            index: index of the tile to be removed
+
+        Returns:
+            true: if the remove was succesful
+            false: if not
+        """
+         pass
     
     def update_hand(self, hand):
         self.hand = hand
