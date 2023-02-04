@@ -4,6 +4,7 @@ import pygame
 
 from lib.shared.player import Player
 from lib.frontend.Logic import Logic
+from lib.shared.internal_structures import Placement
 from lib.shared.internal_structures import Tile
 
 def tile_img_load(tile: Tile):
@@ -35,7 +36,7 @@ class View:
         self.LOGIC = g_logic
         self.WINDOW_SIZE = size
         self.SCREEN = pygame.display.set_mode(size)
-        self.BOARD = self.LOGIC.board.get_board()
+        self.BOARD = self.LOGIC.board
         favicon = pygame.image.load('favicon.png')
         pygame.display.set_icon(favicon)
         background_color = (255, 255, 255)
@@ -84,7 +85,7 @@ class View:
             x_pos = (0.09 * window_size[0]) + 10
             for j in range(num_cols):
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
-                curr_tile = self.BOARD[self.TOP_LEFT_X + i][self.TOP_LEFT_Y+ j]
+                curr_tile = self.BOARD.get_board()[self.TOP_LEFT_X + i][self.TOP_LEFT_Y+ j]
                 if curr_tile != None:
                     tile_img = pygame.transform.scale(tile_img_load(curr_tile), (tile_width - 10, tile_height - 10))
                     screen.blit(tile_img, (x_pos + 5, y_pos + 5))      
@@ -176,8 +177,9 @@ class View:
                             if relative_x < (777 / self.FRAME_SIZE) * (i + 1):
                                 for j in range(self.FRAME_SIZE):
                                     if relative_y < (615 / self.FRAME_SIZE) * (j + 1):
-                                        self.BOARD[self.TOP_LEFT_X + j][self.TOP_LEFT_Y + i] = self.LOGIC.player.hand[self.SELECTED_TILE]
-                                        print("x: "+str(i)+" y: "+str(j))
+                                        # self.BOARD[self.TOP_LEFT_X + j][self.TOP_LEFT_Y + i] = self.LOGIC.player.hand[self.SELECTED_TILE]
+                                        placement = Placement(self.LOGIC.player.hand[self.SELECTED_TILE], self.TOP_LEFT_X + j, self.TOP_LEFT_Y + i)
+                                        self.BOARD.add_tile(placement)
                                         found = True
                                         self.update_view()
                                         break
