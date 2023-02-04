@@ -1,7 +1,9 @@
+from typing import List
+
 from ..shared.internal_structures import Board, Placement, Tile, TileColor, TileShape
 from ..shared.player import Player
 from ..shared import gamerules
-from typing import List
+
 class Logic:
     """ Controls all game logic.
 
@@ -16,10 +18,10 @@ class Logic:
         tempMove: Contains all temporary placements of current players move
         player: Contains the local player's data 
     """
-    board: Board
-    tempMove: Placement
-    player: Player
-    bag: List[Tile]
+    __board: Board
+    __tempMove: Placement
+    __player: Player
+    __bag: List[Tile]
 
     def __init__(self) -> None:
         self.start_game(1)
@@ -31,20 +33,20 @@ class Logic:
         Args:
             playerCount: amount of players in the game
         """
-        self.board = Board()
-        self.player = Player()
-        self.bag = list()
+        self.__board = Board()
+        self.__player = Player()
+        self.__bag = list()
 
         for color in TileColor:
             for shape in TileShape:
                 tile = Tile(color, shape, True)
-                self.bag.append(tile)
+                self.__bag.append(tile)
 
         temp_hand = []
         for i in range(6):
-            temp_hand.append(self.bag.pop())
+            temp_hand.append(self.__bag.pop())
         
-        self.player.update_hand(temp_hand)
+        self.__player.update_hand(temp_hand)
 
     def play_tile(self, placement, index):
         """Plays a tile given an index and desired placement
@@ -57,7 +59,14 @@ class Logic:
         self.player.play_tile(index)
 
         pass
-    def update_board(self, board: Board):
-        self.board = board
 
-    
+    def update_board(self, board: Board):
+        self.__board = board
+
+    @property
+    def board(self):
+        return self.__board
+
+    @property
+    def player(self):
+        return self.__player

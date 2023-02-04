@@ -4,10 +4,10 @@ import pygame
 
 from lib.shared.player import Player
 from lib.frontend.Logic import Logic
-from lib.shared.internal_structures import Placement
-from lib.shared.internal_structures import Tile
+from lib.shared.internal_structures import Board, Placement, Tile
 
 def tile_img_load(tile: Tile):
+    if tile is None: return None
     fileName = 'assets/tile_img/%s-%s.png' % (tile.color.name.lower(), tile.shape.name.lower())
     return pygame.image.load(fileName)
 
@@ -22,26 +22,26 @@ class View:
     or dragging and dropping a tile onto the grid.
     """
 
-    TOP_LEFT_X = 108
-    TOP_LEFT_Y = 108
-    FRAME_SIZE = 8
-    SELECTED_TILE = "NONE"
-    WINDOW_SIZE = 0,0
-    SCREEN = "NONE"
-    LOGIC = "UNINITIALIZED"
-    BOARD = "UNINITIALIZED"
+    __top_left_x: int = 108
+    __top_left_y: int  = 108
+    __frame_size: int  = 8
+    __selected_tile: Tile = None
+    __window_size = 0,0
+    __screen = None
+    __logic: Logic = None
+    __board: Board = None
 
     def __init__(self, size, g_logic):
         """Inits the view"""
-        self.LOGIC = g_logic
-        self.WINDOW_SIZE = size
-        self.SCREEN = pygame.display.set_mode(size)
-        self.BOARD = self.LOGIC.board
+        self.__logic = g_logic
+        self.__window_size = size
+        self.__screen = pygame.display.set_mode(size)
+        self.__board = self.__logic.board
         favicon = pygame.image.load('favicon.png')
         pygame.display.set_icon(favicon)
         background_color = (255, 255, 255)
         pygame.display.set_caption("Qwirkle")
-        self.SCREEN.fill(background_color)
+        self.__screen.fill(background_color)
         self.update_view()
         self.init_event_loop()
 
@@ -57,8 +57,8 @@ class View:
             Returns:
                 Nothing
         """
-        self.render_grid(self.SCREEN, self.WINDOW_SIZE, self.TOP_LEFT_X, self.TOP_LEFT_Y)
-        self.render_hand(self.SCREEN, self.WINDOW_SIZE)
+        self.render_grid(self.__screen, self.__window_size, self.__top_left_x, self.__top_left_y)
+        self.render_hand(self.__screen, self.__window_size)
         self.render_details()
         pygame.display.flip()
 
@@ -75,8 +75,8 @@ class View:
         border_color = (0, 0, 0)
         background_color = (255, 255, 255)
         self.draw_hollow_rect(screen, background_color, border_color, (0.09 * window_size[0]), (0.05 * window_size[1]), (0.8 * window_size[0]), (0.8 * window_size[1]), 10)
-        num_rows = self.FRAME_SIZE
-        num_cols = self.FRAME_SIZE
+        num_rows = self.__frame_size
+        num_cols = self.__frame_size
         tile_width = 1 + ((0.8 * window_size[0]) - (5 * 2)) / num_rows
         tile_height = 1 + ((0.8 * window_size[1]) - (5 * 2)) / num_cols
         x_pos = (0.09 * window_size[0]) + 10
@@ -85,7 +85,7 @@ class View:
             x_pos = (0.09 * window_size[0]) + 10
             for j in range(num_cols):
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
-                curr_tile = self.BOARD.get_board()[self.TOP_LEFT_X + i][self.TOP_LEFT_Y+ j]
+                curr_tile = self.__board.get_board()[self.__top_left_x + i][self.__top_left_y+ j]
                 if curr_tile != None:
                     tile_img = pygame.transform.scale(tile_img_load(curr_tile), (tile_width - 10, tile_height - 10))
                     screen.blit(tile_img, (x_pos + 5, y_pos + 5))      
@@ -113,12 +113,12 @@ class View:
         y_pos = ((0.05 * window_size[1]) + 8) + (8 * tile_height) + gap
         self.draw_hollow_rect(screen, background_color, border_color, x_pos - 10, y_pos - 5, 5 + tile_width * 6, tile_height + 10, 15)
         for i in range(num_tiles + 1):
-            if self.SELECTED_TILE == i:
+            if self.__selected_tile == i:
                 border_color = (255, 0, 255)
             if i < 6:
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
-                if self.LOGIC.player.hand[i] != "EMPTY":
-                    curr_tile = self.LOGIC.player.hand[i]
+                if self.__logic.player[i] is not None:
+                    curr_tile = self.__logic.player[i]
                     tile_img = pygame.transform.scale(tile_img_load(curr_tile), (tile_width - 10, tile_height - 10))
                     screen.blit(tile_img, (x_pos + 5, y_pos + 5))
             if i == 7:
@@ -166,20 +166,20 @@ class View:
                         relative_x = x - 100                 
                         for i in range(6):
                             if relative_x < (585 / 6) * (i + 1):
-                                self.SELECTED_TILE = i
+                                self.__selected_tile = i
                                 self.update_view()
                                 break
-                    if(100 < x < 877) and (53 < y < 667) and self.SELECTED_TILE != "NONE": # Handles interaction with the grid
+                    if(100 < x < 877) and (53 < y < 667) and self.__selected_tile != None: # Handles interaction with the grid
                         relative_x = x - 100
                         relative_y = y - 53
                         found = False
-                        for i in range(self.FRAME_SIZE):
-                            if relative_x < (777 / self.FRAME_SIZE) * (i + 1):
-                                for j in range(self.FRAME_SIZE):
-                                    if relative_y < (615 / self.FRAME_SIZE) * (j + 1):
-                                        # self.BOARD[self.TOP_LEFT_X + j][self.TOP_LEFT_Y + i] = self.LOGIC.player.hand[self.SELECTED_TILE]
-                                        placement = Placement(self.LOGIC.player.hand[self.SELECTED_TILE], self.TOP_LEFT_X + j, self.TOP_LEFT_Y + i)
-                                        self.BOARD.add_tile(placement)
+                        for i in range(self.__frame_size):
+                            if relative_x < (777 / self.__frame_size) * (i + 1):
+                                for j in range(self.__frame_size):
+                                    if relative_y < (615 / self.__frame_size) * (j + 1):
+                                        # self.__board[self.__top_left_x + j][self.__top_left_y + i] = self.__logic.player[self.__selected_tile]
+                                        placement = Placement(self.__logic.player[self.__selected_tile], self.__top_left_x + j, self.__top_left_y + i)
+                                        self.__board.add_tile(placement)
                                         found = True
                                         self.update_view()
                                         break

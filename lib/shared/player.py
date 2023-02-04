@@ -11,11 +11,11 @@ class Player:
         hand: list of tiles representing the player's hand
 
     """
-    hand: List[Tile]
-    score = 0
+    __hand: List[Tile]
+    __score = 0
     
     def update_hand(self, hand: List[Tile]):
-        self.hand = hand
+        self.__hand = hand
 
 
     def play_tile(self, index: int):
@@ -24,6 +24,13 @@ class Player:
         Args:
             index: index of the tile to be removed
         """
-        played = self.hand[index]
-        self.hand[index] = None
+        played = self.__hand[index]
+        self.__hand[index] = None
         return played
+
+    def __getitem__(self, key: int):
+        return self.__hand[key]
+    
+    def __setitem__(self, key: int, value: Tile):
+        self.__hand[key] = value
+

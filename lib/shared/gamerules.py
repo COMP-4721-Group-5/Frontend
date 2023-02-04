@@ -9,10 +9,10 @@ class Gamerules:
     Attributes:
         board: Stores the current game board
     """
-    board: Board
+    __board: Board
 
     def update_board(self, board: Board):
-        self.board = board
+        self.__board = board
 
     def verify_move(self, move):
         """Verifies the most recent move
