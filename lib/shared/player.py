@@ -38,5 +38,5 @@ class Player:
             index: index of the tile to be removed
         """
         played = self.hand[index]
-        self.hand[index] = "EMPTY"
+        self.hand[index] = None
         return played

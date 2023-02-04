@@ -1,7 +1,7 @@
-from ..shared.internal_structures import Board, Placement
+from ..shared.internal_structures import Board, Placement, Tile
 from ..shared.player import Player
 from ..shared import gamerules
-
+from typing import List
 class Logic:
     """ Controls all game logic.
 
@@ -17,9 +17,9 @@ class Logic:
         player: Contains the local player's data 
     """
     board: Board
-    tempMove = {}
-    player = None
-    bag = {}
+    tempMove: Placement
+    player: Player
+    bag: List[Tile]
 
 
     def start_game(self, playerCount: int):
@@ -31,10 +31,17 @@ class Logic:
         """
         board = Board()
         Joe = Player()
-        Joe.update_hand({})
 
+        for color in Tile.color:
+            for shape in Tile.shape:
+                tile = Tile(color, shape, True)
+                self.bag.append(Tile)
 
-        pass
+        temp_hand = {}
+        for i in range(6):
+            temp_hand.add(self.bag.pop())
+        
+        Joe.update_hand(temp_hand)
     
     start_game(1)
 
@@ -64,12 +71,16 @@ class Logic:
         Args:
             placement: Placement object containing the placement data
         """
+        self.board.add_tile(placement)
+
+        """
         valid = gamerules.verify_placement(placement)
         if valid:
             gamerules.tempMove.add(placement)
             return True
         else:
             return False
+        """
 
     def remove_tiles(self, indices):
         """Removes certain tiles from a player's hand at the given indices
