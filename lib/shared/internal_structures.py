@@ -29,6 +29,11 @@ class TileShape(IntEnum):
 class Tile:
     """
     Python representation of a Quirkle tile
+
+    Args:
+        __color: color of the tile
+        __shape: shape of the tile
+        __temporary: boolean to tell if the tile is temporary
     """
     __color: TileColor
     __shape: TileShape
@@ -120,7 +125,6 @@ class Placement:
 
     @property
     def tile(self):
-        """Tile data"""
         return self.__tile
     
     @property
@@ -142,6 +146,7 @@ class Board:
     COLUMN: Final = 217
 
     def __init__(self):
+        """Inits the board"""
         self.__board = list()
         for i in range(Board.COLUMN):
             self.__board.append([None] * Board.COLUMN)
