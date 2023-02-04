@@ -9,6 +9,7 @@ class Player:
 
     Attributes:
         hand: list of tiles representing the player's hand
+        score: keeps trick of player's score
 
     """
     __hand: List[Tile]

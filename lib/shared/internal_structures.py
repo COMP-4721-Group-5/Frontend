@@ -59,13 +59,19 @@ class Tile:
     @property
     def hex_value(self):
         """
-        Hexadecimal value uniquely representing type of this tyle
+        Hexadecimal value uniquely representing type of this tile
+
+        Returns: 
+            Specific hex value for the tile type
         """
         return self.color.value ^ self.shape.value
 
     def is_temporary(self):
         """
         Checks whether this tile is marked as temporary
+
+        Returns:
+            boolean value of whether or not the tile is temporary
         """
         return self.__temporary
 
@@ -76,6 +82,12 @@ class Tile:
         self._temporary = False
 
     def __eq__(self, __o: object) -> bool:
+        """Checks if two tiles are equal
+
+        Returns:
+            True: if they are
+            False: if not
+        """
         if isinstance(__o, Tile):
             return self.__color == __o.__color and self.__shape == __o.__shape and self.__temporary == __o.__temporary
         else:
