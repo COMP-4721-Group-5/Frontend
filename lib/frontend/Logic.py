@@ -1,7 +1,7 @@
-from ..shared.internal_structures import Board, Placement
+from ..shared.internal_structures import Board, Placement, Tile
 from ..shared.player import Player
 from ..shared import gamerules
-
+from typing import List
 class Logic:
     """ Controls all game logic.
 
@@ -17,9 +17,9 @@ class Logic:
         player: Contains the local player's data 
     """
     board: Board
-    tempMove = {}
+    tempMove: Placement
     player: Player
-    bag = {}
+    bag: List[Tile]
 
     def __init__(self) -> None:
         self.start_game()
@@ -31,9 +31,19 @@ class Logic:
         Args:
             playerCount: amount of players in the game
         """
-        self.board = Board()
-        self.player = Player()
-        self.player.update_hand(list(6))
+        board = Board()
+        player = Player()
+
+        for color in Tile.color:
+            for shape in Tile.shape:
+                tile = Tile(color, shape, True)
+                self.bag.append(Tile)
+
+        temp_hand = {}
+        for i in range(6):
+            temp_hand.add(self.bag.pop())
+        
+        player.update_hand(temp_hand)
 
     def put_temp_move(self, move):
         """Receives a move from the view to be evaluated
@@ -61,34 +71,16 @@ class Logic:
         Args:
             placement: Placement object containing the placement data
         """
+        self.board.add_tile(placement)
+
+        """
         valid = gamerules.verify_placement(placement)
         if valid:
             gamerules.tempMove.add(placement)
             return True
         else:
             return False
-
-    def remove_tiles(self, indices):
-        """Removes certain tiles from a player's hand at the given indices
-    
-        Args:
-            indices: indices of the tiles that must be removed from player's hand
         """
-        pass
-
-    def update_hand(self, hand):
-        """Updates the hand when refilled from bag
-        
-        Gets updated hand information from socket and updates the hand accordingly
-        """
-        self.hand = hand
-
-    def update_view(self):
-        """Updates the view
-
-        Will be called after every placement check to update the view with validity information
-        """
-        pass
 
     def update_board(self, board: Board):
         self.board = board
