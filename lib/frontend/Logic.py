@@ -30,7 +30,7 @@ class Logic:
             playerCount: amount of players in the game
         """
         board = Board()
-        Joe = Player()
+        player = Player()
 
         for color in Tile.color:
             for shape in Tile.shape:
@@ -41,9 +41,7 @@ class Logic:
         for i in range(6):
             temp_hand.add(self.bag.pop())
         
-        Joe.update_hand(temp_hand)
-    
-    start_game(1)
+        player.update_hand(temp_hand)
 
     def put_temp_move(self, move):
         """Receives a move from the view to be evaluated
@@ -81,28 +79,6 @@ class Logic:
         else:
             return False
         """
-
-    def remove_tiles(self, indices):
-        """Removes certain tiles from a player's hand at the given indices
-    
-        Args:
-            indices: indices of the tiles that must be removed from player's hand
-        """
-        pass
-
-    def update_hand(self, hand):
-        """Updates the hand when refilled from bag
-        
-        Gets updated hand information from socket and updates the hand accordingly
-        """
-        self.hand = hand
-
-    def update_view(self):
-        """Updates the view
-
-        Will be called after every placement check to update the view with validity information
-        """
-        pass
 
     def update_board(self, board: Board):
         self.board = board
