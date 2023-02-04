@@ -3,6 +3,7 @@ import sys
 import pygame
 
 from lib.shared.player import Player
+from lib.frontend.Logic import Logic
 from lib.shared.internal_structures import Tile
 
 def tile_img_load(tile: Tile):
@@ -26,7 +27,7 @@ class View:
     SELECTED_TILE = "NONE"
     WINDOW_SIZE = 0,0
     SCREEN = "NONE"
-    hand = ["EMPTY", pygame.image.load('favicon.png'), "EMPTY", "EMPTY", "EMPTY", "EMPTY"] # temporary for testing
+    # hand = ["EMPTY", pygame.image.load('favicon.png'), "EMPTY", "EMPTY", "EMPTY", "EMPTY"] # temporary for testing
 
     def __init__(self, size):
         """Inits the view"""
@@ -111,8 +112,8 @@ class View:
                 border_color = (255, 0, 255)
             if i < 6:
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
-                if self.hand[i] != "EMPTY":
-                    curr_tile = self.hand[i]
+                if Logic.player.hand[i] != "EMPTY":
+                    curr_tile = Logic.player.hand[i]
                     tile_img = pygame.transform.scale(curr_tile, (tile_width - 10, tile_height - 10))
                     screen.blit(tile_img, (x_pos + 5, y_pos + 5))
             if i == 7:
