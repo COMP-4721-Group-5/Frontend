@@ -1,20 +1,26 @@
+from typing import Final, List
+
+from placement import Placement
+from lib.shared.internal_structures import Tile
+
 class Board:
     """Contains the representation of the gameboard
 
     Attributes:
         board: a 217x217 array of Tiles
     """
-    board = {}
-    rows, cols = (217, 217)
+    __board: List[List[Tile]]
+    ROW: Final = 217
+    COLUMN: Final = 217
 
     def __init__(self):
-        board = [[None]*self.cols]*self.rows
+        self.__board = [[None] * Board.COLUMN] * Board.ROW
 
-    def get_board(self):
-        return self.board
+    def get_board(self) -> List[List[Tile]]:
+        return self.__board
     
    
-    def add_tile(self, placement):
+    def add_tile(self, placement: Placement):
         """Adds tile at given coordinates
 
         Args:
