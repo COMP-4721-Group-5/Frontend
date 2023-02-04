@@ -25,3 +25,14 @@ class Player:
     
     def update_hand(self, hand):
         self.hand = hand
+
+
+    def play_tile(self, index):
+        """Removes a given tile from the player's hand
+
+        Args:
+            index: index of the tile to be removed
+        """
+        played = self.hand[index]
+        self.hand[index] = "EMPTY"
+        return played
