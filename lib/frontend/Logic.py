@@ -18,25 +18,22 @@ class Logic:
     """
     board: Board
     tempMove = {}
-    player = None
+    player: Player
     bag = {}
 
+    def __init__(self) -> None:
+        self.start_game()
 
-    def start_game(self, playerCount: int):
+    def start_game(self):
         """Collects playerCount data and sends a message to the socket to start the game
 
         !!!Right now acting as a temporary method for demo purposes
         Args:
             playerCount: amount of players in the game
         """
-        board = Board()
-        Joe = Player()
-        Joe.update_hand({})
-
-
-        pass
-    
-    start_game(1)
+        self.board = Board()
+        self.player = Player()
+        self.player.update_hand(list(6))
 
     def put_temp_move(self, move):
         """Receives a move from the view to be evaluated
