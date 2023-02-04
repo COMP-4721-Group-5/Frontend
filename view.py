@@ -28,12 +28,14 @@ class View:
     WINDOW_SIZE = 0,0
     SCREEN = "NONE"
     LOGIC = "UNINITIALIZED"
+    BOARD = "UNINITIALIZED"
 
     def __init__(self, size, g_logic):
         """Inits the view"""
         self.LOGIC = g_logic
         self.WINDOW_SIZE = size
         self.SCREEN = pygame.display.set_mode(size)
+        self.BOARD = self.LOGIC.board.get_board()
         favicon = pygame.image.load('favicon.png')
         pygame.display.set_icon(favicon)
         background_color = (255, 255, 255)
@@ -85,6 +87,13 @@ class View:
             x_pos = (0.09 * window_size[0]) + 10
             for j in range(num_cols):
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
+                
+                # new code
+                curr_tile = self.BOARD[self.TOP_LEFT_X + i][self.TOP_LEFT_Y+ j]
+                if curr_tile != None:
+                    tile_img = pygame.transform.scale(tile_img_load(curr_tile), (tile_width - 10, tile_height - 10))
+                    screen.blit(tile_img, (x_pos + 5, y_pos + 5))
+                
                 x_pos = x_pos + tile_width - 2
             y_pos = y_pos + tile_height - 2
 
@@ -154,18 +163,34 @@ class View:
                     sys.exit()
                 if ev.type == pygame.MOUSEBUTTONDOWN:
                     x = pygame.mouse.get_pos()[0]
-                    y = pygame.mouse.get_pos()[1]                  
+                    y = pygame.mouse.get_pos()[1]
+                    #print("coords: "+str(x)+" y:"+str(y))
                     tile_width = 90
                     gap_width = 8
                     total_width = 585
-                    if (100 < x < 685) and (700 < y < 770):
+                    if (100 < x < 685) and (700 < y < 770): # Handles interaction with hand
                         relative_x = x - 100                 
                         for i in range(6):
                             if relative_x < (tile_width + (gap_width / 2)) * (i + 1):
                                 self.SELECTED_TILE = i
                                 self.update_view()
                                 break
-
+                    if(100 < x < 877) and (53 < y < 667): # Handles interaction with the grid
+                        #print("here1")
+                        relative_x = x - 100
+                        relative_y = y - 53
+                        found = False
+                        for i in range(self.FRAME_SIZE):
+                            if relative_x < (tile_width + (gap_width / 2)) * (i + 1):
+                                for j in range(self.FRAME_SIZE):
+                                    if relative_y < (tile_width + (gap_width / 2)) * (j + 1):
+                                        self.BOARD[self.TOP_LEFT_X + i][self.TOP_LEFT_Y + j] = self.LOGIC.player.hand[self.SELECTED_TILE]
+                                        print("x: "+str(i)+" y: "+str(j))
+                                        found = True
+                                        self.update_view()
+                                        break
+                                if found:
+                                    break
 # Test code
 pygame.init()
 size = 1000, 800
