@@ -20,6 +20,17 @@ class View:
     performed automatically by calling update_view(). The event loop is
     for handling basic view-related events, such as closing the window
     or dragging and dropping a tile onto the grid.
+
+    Attributes:
+        __top_left_x: The top left x offset of the board on the view compared with the board object itself
+        __top_left_y: The top left y offset of the board on the view compared with the board object itself
+        __frame_size: The size of the board frame displayed on the view
+        __selected_tile: The currently selected tile
+        __window_size: Size of the window, contains x,y
+        __screen: The screen object
+        __logic: Instance of the logic class that will be used to access the logic methods
+        __board: Instance of the board object that will be used to interact with the board
+
     """
 
     __top_left_x: int = 108
