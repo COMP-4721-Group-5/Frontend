@@ -3,6 +3,11 @@ import sys
 import pygame
 
 from lib.shared.player import Player
+from lib.shared.internal_structures import Tile
+
+def tile_img_load(tile: Tile):
+    fileName = 'assets/file_img/%s-%s.png' % (tile.color.name.lower(), tile.shape.name.lower())
+    return pygame.image.load(fileName)
 
 class View:
 
