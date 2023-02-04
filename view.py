@@ -115,7 +115,7 @@ class View:
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
                 if LOGIC.player.hand[i] != "EMPTY":
                     curr_tile = LOGIC.player.hand[i]
-                    tile_img = pygame.transform.scale(curr_tile, (tile_width - 10, tile_height - 10))
+                    tile_img = pygame.transform.scale(tile_img_load(curr_tile), (tile_width - 10, tile_height - 10))
                     screen.blit(tile_img, (x_pos + 5, y_pos + 5))
             if i == 7:
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
