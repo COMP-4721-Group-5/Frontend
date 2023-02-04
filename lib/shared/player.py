@@ -15,6 +15,11 @@ class Player:
     __score = 0
     
     def update_hand(self, hand: List[Tile]):
+        """Updates the hand
+        
+        Args:
+            hand: List of tiles to represent the player's hand
+        """
         self.__hand = hand
 
 
@@ -23,6 +28,9 @@ class Player:
 
         Args:
             index: index of the tile to be removed
+        
+        Returns:
+            The tile that was removed from hand
         """
         played = self.__hand[index]
         self.__hand[index] = None

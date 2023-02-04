@@ -24,6 +24,7 @@ class Logic:
     __bag: List[Tile]
 
     def __init__(self) -> None:
+        """Inits the game with one player"""
         self.start_game(1)
 
     def start_game(self, playerCount: int):
