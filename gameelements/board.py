@@ -13,12 +13,13 @@ class Board:
     def get_board(self):
         return self.board
     
-    """Adds tile at given coordinates
-
-    Args:
-        placement: contains (Tile, x_coord, y_coord)
-    """
+   
     def add_tile(self, placement):
+        """Adds tile at given coordinates
+
+        Args:
+        placement: contains (Tile, x_coord, y_coord)
+        """
         self.board[placement.x_coord][placement.y_coord] = placement.tile
 
     
