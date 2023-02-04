@@ -15,7 +15,7 @@ class Logic:
 
     Attributes:
         board: Contains the board
-        tempMove: Contains all temporary placements of current players move
+        tempMove: List that contains all temporary placements of current players move
         player: Contains the local player's data 
     """
     __board: Board

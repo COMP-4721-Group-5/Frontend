@@ -105,15 +105,22 @@ class Placement:
     __x_coord: int
     __y_coord: int
 
-    """Creates placement
-    """
+    
     def __init__(self, tile: Tile, x_coord: int, y_coord: int):
+        """Creates placement
+
+        Args:
+            tile: Tile of the specific placement
+            x_coord: x coordinate of the placement
+            y_coord: y coordinate of the placement
+        """
         self.__tile = tile
         self.__x_coord = x_coord
         self.__y_coord = y_coord
 
     @property
     def tile(self):
+        """Tile data"""
         return self.__tile
     
     @property
@@ -144,10 +151,10 @@ class Board:
     
    
     def add_tile(self, placement: Placement):
-        """Adds tile at given coordinates
+        """Adds tile at given coordinates if there is no tile already there
 
         Args:
-        placement: contains (Tile, x_coord, y_coord)
+            placement: contains (Tile, x_coord, y_coord)
         """
         if self.__board[placement.x_coord][placement.y_coord] == None:
             self.__board[placement.x_coord][placement.y_coord] = placement.tile
