@@ -70,8 +70,6 @@ jobs:
           fonts-freefont-ttf libc6 libfreetype6 libjpeg8 \
           libpng16-16 libportmidi0 libsdl2-2.0-0 \
           libsdl2-image-2.0-0 libsdl2-mixer-2.0-0 libsdl2-ttf-2.0-0
-    - name: Install PyGame
-      run: sudo pip install pygame
     - name: Install PIP dependencies
       run: pip install -r requirements.txt
     - name: Run style checker
