@@ -1,16 +1,25 @@
-name: ci
+name: CI
 
 on:
   push:
     branches: [ main ]
     paths:
-      - '**.py'
+      - '.github/workflows/*.yml'
+      - '**/*.py'
       - 'requirements.txt'
   pull_request:
     branches: [ main ]
     paths:
-      - '**.py'
+      - '.github/workflows/*.yml'
+      - '**/*.py'
       - 'requirements.txt'
+
+permissions:
+  actions: read
+  contents: read
+  issues: read
+  checks: write
+  pull-requests: write
 
 jobs:
   unit-test:
@@ -22,6 +31,30 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.11
+        python-version: '3.10'
     - name: Install PIP dependencies
       run: sudo pip install -r requirements.txt
+    - name: Run PyTest
+      run: pytest --junit-xml=pytest.xml $(find . -name '*.py')
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+    - name: Publish Test Results
+      if: ${{ always() }}
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      with:
+        junit_files: "**/*.xml"
+
+  style-check:
+    name: Run style check
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install PIP dependencies
+      run: sudo pip install -r requirements.txt
+    - name: Run style checker
+      run: yapf -r --style google -d . 
