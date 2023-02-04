@@ -1,4 +1,4 @@
-from ..shared.internal_structures import Board
+from ..shared.internal_structures import Board, Placement
 from ..shared.player import Player
 from ..shared import gamerules
 
@@ -16,13 +16,13 @@ class Logic:
         tempMove: Contains all temporary placements of current players move
         player: Contains the local player's data 
     """
-    board = {}
+    board: Board
     tempMove = {}
     player = None
     bag = {}
 
 
-    def start_game(self, playerCount):
+    def start_game(self, playerCount: int):
         """Collects playerCount data and sends a message to the socket to start the game
 
         !!!Right now acting as a temporary method for demo purposes
@@ -55,7 +55,7 @@ class Logic:
         pass
     
 
-    def place_temp_tile(self, placement):
+    def place_temp_tile(self, placement: Placement):
         """Places a temporary tile on the board
 
         Places temporary tile on the board and checks validity of placement
@@ -93,7 +93,7 @@ class Logic:
         """
         pass
 
-    def update_board(self, board):
+    def update_board(self, board: Board):
         self.board = board
 
     

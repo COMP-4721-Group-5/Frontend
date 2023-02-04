@@ -1,3 +1,5 @@
+from internal_structures import Board, Placement
+
 class Gamerules:
     """A representation of the game's logic
 
@@ -7,9 +9,9 @@ class Gamerules:
     Attributes:
         board: Stores the current game board
     """
-    board = {}
+    board: Board
 
-    def update_board(self, board):
+    def update_board(self, board: Board):
         self.board = board
 
     def verify_move(self, move):
@@ -30,7 +32,7 @@ class Gamerules:
         validPlacements = {}
         pass
     
-    def get_lines(self, placement):
+    def get_lines(self, placement: Placement):
         """Check which lines a given placement could be a part of
 
         Interated through the board from the placement data to see what valid lines configurations
@@ -47,7 +49,7 @@ class Gamerules:
         
         pass
 
-    def verify_placement(self, placement):
+    def verify_placement(self, placement: Placement) -> bool:
         """Verifies placement of a single tile on the board
 
         Checks to make sure a given placement is a valid move.
@@ -61,7 +63,7 @@ class Gamerules:
         
         pass
 
-    def register_move(self, move):
+    def register_move(self, move) -> bool:
         """Registers a given move.
 
         Updates the board to include the most recent move.
@@ -76,7 +78,7 @@ class Gamerules:
             Boolean corresponding to if the move was succesfully registered.
         """ 
 
-    def score_move(self, move):
+    def score_move(self, move) -> int:
         """Scores a given move.
 
         Args:

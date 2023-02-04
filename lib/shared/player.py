@@ -11,7 +11,7 @@ class Player:
         hand: list of tiles representing the player's hand
 
     """
-    hand = {}
+    hand: List[Tile]
     score = 0
 
    
@@ -27,11 +27,11 @@ class Player:
         """
          pass
     
-    def update_hand(self, hand):
+    def update_hand(self, hand: List[Tile]):
         self.hand = hand
 
 
-    def play_tile(self, index):
+    def play_tile(self, index: int):
         """Removes a given tile from the player's hand
 
         Args:
