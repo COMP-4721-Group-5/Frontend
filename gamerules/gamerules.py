@@ -7,7 +7,7 @@ class Gamerules:
     Attributes:
         board: Stores the current game board
     """
-    board ={}
+    board = {}
 
     def update_board(self, board):
         self.board = board

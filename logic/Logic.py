@@ -1,5 +1,5 @@
-import gamerules
-import gameelements
+from gamerules import Gamerules
+from lib import internal_structures
 class Logic:
     """ Controls all game logic.
 
@@ -27,12 +27,15 @@ class Logic:
         Args:
             playerCount: amount of players in the game
         """
+        board = Board()
         Joe = Player()
         Joe.update_hand({})
 
 
         pass
     
+    start_game(1)
+
     def put_temp_move(self, move):
         """Receives a move from the view to be evaluated
 
