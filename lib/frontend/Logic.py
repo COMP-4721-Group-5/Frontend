@@ -1,4 +1,4 @@
-from ..shared.internal_structures import Board, Placement, Tile
+from ..shared.internal_structures import Board, Placement, Tile, TileColor, TileShape
 from ..shared.player import Player
 from ..shared import gamerules
 from typing import List
@@ -31,19 +31,20 @@ class Logic:
         Args:
             playerCount: amount of players in the game
         """
-        board = Board()
-        player = Player()
+        self.board = Board()
+        self.player = Player()
+        self.bag = list()
 
-        for color in Tile.color:
-            for shape in Tile.shape:
+        for color in TileColor:
+            for shape in TileShape:
                 tile = Tile(color, shape, True)
-                self.bag.append(Tile)
+                self.bag.append(tile)
 
-        temp_hand = {}
+        temp_hand = []
         for i in range(6):
-            temp_hand.add(self.bag.pop())
+            temp_hand.append(self.bag.pop())
         
-        player.update_hand(temp_hand)
+        self.player.update_hand(temp_hand)
 
     def put_temp_move(self, move):
         """Receives a move from the view to be evaluated

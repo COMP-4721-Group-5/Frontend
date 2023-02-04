@@ -31,7 +31,7 @@ class View:
 
     def __init__(self, size, g_logic):
         """Inits the view"""
-        LOGIC = g_logic
+        self.LOGIC = g_logic
         self.WINDOW_SIZE = size
         self.SCREEN = pygame.display.set_mode(size)
         favicon = pygame.image.load('favicon.png')
@@ -113,8 +113,8 @@ class View:
                 border_color = (255, 0, 255)
             if i < 6:
                 self.draw_hollow_rect(screen, background_color, border_color, x_pos, y_pos, tile_width, tile_height, 5)
-                if LOGIC.player.hand[i] != "EMPTY":
-                    curr_tile = LOGIC.player.hand[i]
+                if self.LOGIC.player.hand[i] != "EMPTY":
+                    curr_tile = self.LOGIC.player.hand[i]
                     tile_img = pygame.transform.scale(tile_img_load(curr_tile), (tile_width - 10, tile_height - 10))
                     screen.blit(tile_img, (x_pos + 5, y_pos + 5))
             if i == 7:
