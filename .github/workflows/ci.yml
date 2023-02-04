@@ -36,7 +36,7 @@ jobs:
     - name: Install System Dependencies
       run: |
         sudo apt update
-        sudo apt upgrade -y --no-install-recommends \
+        sudo apt install -y --no-install-recommends \
           fonts-freefont-ttf libc6 libfreetype6 libjpeg8 \
           libpng16-16 libportmidi0 libsdl2-2.0-0 \
           libsdl2-image-2.0-0 libsdl2-mixer-2.0-0 libsdl2-ttf-2.0-0
@@ -66,7 +66,7 @@ jobs:
     - name: Install System Dependencies
       run: |
         sudo apt update
-        sudo apt upgrade -y --no-install-recommends \
+        sudo apt install -y --no-install-recommends \
           fonts-freefont-ttf libc6 libfreetype6 libjpeg8 \
           libpng16-16 libportmidi0 libsdl2-2.0-0 \
           libsdl2-image-2.0-0 libsdl2-mixer-2.0-0 libsdl2-ttf-2.0-0
