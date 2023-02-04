@@ -44,6 +44,7 @@ class Gamerules:
                 {Line:(Tile: red, circle, Tile: red, square, Tile: red, star), Line:(Tile: green, square, Tile: red, square)}
             max line length is 6
         """
+        
         pass
 
     def verify_placement(self, placement):

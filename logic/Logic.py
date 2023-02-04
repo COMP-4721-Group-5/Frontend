@@ -1,4 +1,5 @@
 import gamerules
+import gameelements
 class Logic:
     """ Controls all game logic.
 
@@ -16,14 +17,19 @@ class Logic:
     board = {}
     tempMove = {}
     player = None
+    bag = {}
 
 
     def start_game(self, playerCount):
         """Collects playerCount data and sends a message to the socket to start the game
 
+        !!!Right now acting as a temporary method for demo purposes
         Args:
             playerCount: amount of players in the game
         """
+        Joe = Player()
+        Joe.update_hand({})
+
         pass
     
     def put_temp_move(self, move):
@@ -83,3 +89,5 @@ class Logic:
 
     def update_board(self, board):
         self.board = board
+
+    
