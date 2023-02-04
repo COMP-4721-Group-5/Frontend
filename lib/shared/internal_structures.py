@@ -123,7 +123,9 @@ class Board:
     COLUMN: Final = 217
 
     def __init__(self):
-        self.__board = [[None] * Board.COLUMN] * Board.ROW
+        self.__board = list()
+        for i in range(Board.COLUMN):
+            self.__board.append([None] * Board.COLUMN)
 
     def get_board(self) -> List[List[Tile]]:
         return self.__board
