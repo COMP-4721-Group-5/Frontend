@@ -59,12 +59,6 @@ class View:
     def update_view(self):
         """Updates the entire view.
 
-            Args:
-                screen: screen object returned by pygame.display.set_mode()
-                window_size: dimensions of the Qwirkle window
-                top_left_x: x coordinate for top-left tile of frame
-                top_left_y: y coordinate for top-left tile of frame
-
             Returns:
                 Nothing
         """
@@ -79,6 +73,8 @@ class View:
             Args:
                 screen: screen object returned by pygame.display.set_mode()
                 window_size: dimensions of the Qwirkle window
+                top_left_x: x coordinate for top-left tile of frame
+                top_left_y: y coordinate for top-left tile of frame
 
             Returns:
                 Nothing
@@ -150,8 +146,8 @@ class View:
                 border_color: the color of the border
                 x: x position of the top left corner
                 y: y position of the top left corner
-                width: width of the recelf.
-                height: height of the rect
+                width: width of the rectangle
+                height: height of the rectangle
                 border_width: width of the border
 
             Returns:
