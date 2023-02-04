@@ -1,4 +1,4 @@
-from internal_structures import Board, Placement
+from .internal_structures import Board, Placement
 
 class Gamerules:
     """A representation of the game's logic
