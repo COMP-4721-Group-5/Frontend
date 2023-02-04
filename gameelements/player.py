@@ -22,3 +22,5 @@ class Player:
     def play_tile(index):
         pass
     
+    def update_hand(self, hand):
+        self.hand = hand
