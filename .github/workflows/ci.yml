@@ -43,7 +43,7 @@ jobs:
     - name: Install PIP dependencies
       run: pip install -r requirements.txt
     - name: Run PyTest
-      run: pytest --junit-xml=pytest.xml $(find . -name '*.py')
+      run: pytest --junit-xml=pytest.xml $(find test -name '*.py')
       env:
         PYTHONPATH: ${{ github.workspace }}
     - name: Publish Test Results
