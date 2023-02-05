@@ -7,6 +7,14 @@ from lib.frontend.Logic import Logic
 from lib.shared.internal_structures import Board, Placement, Tile
 
 def tile_img_load(tile: Tile):
+    """Method for getting the images for the tile
+
+    Args:
+        tile: Tile to load to an image
+
+    Returns: 
+        The image of the tile.
+    """
     if tile is None: return None
     fileName = 'assets/tile_img/%s-%s.png' % (tile.color.name.lower(), tile.shape.name.lower())
     return pygame.image.load(fileName)
