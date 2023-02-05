@@ -98,6 +98,7 @@ class Tile:
         else:
             return False
 
+
 class Placement:
     """Contains placement data
 
@@ -110,7 +111,6 @@ class Placement:
     __x_coord: int
     __y_coord: int
 
-    
     def __init__(self, tile: Tile, x_coord: int, y_coord: int):
         """Creates placement
 
@@ -126,7 +126,7 @@ class Placement:
     @property
     def tile(self):
         return self.__tile
-    
+
     @property
     def x_coord(self):
         return self.__x_coord
@@ -134,6 +134,7 @@ class Placement:
     @property
     def y_coord(self):
         return self.__y_coord
+
 
 class Board:
     """Contains the representation of the gameboard
@@ -153,8 +154,7 @@ class Board:
 
     def get_board(self) -> List[List[Tile]]:
         return self.__board
-    
-   
+
     def add_tile(self, placement: Placement):
         """Adds tile at given coordinates if there is no tile already there
 

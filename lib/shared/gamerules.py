@@ -1,5 +1,6 @@
 from .internal_structures import Board, Placement
 
+
 class Gamerules:
     """A representation of the game's logic
 
@@ -31,7 +32,7 @@ class Gamerules:
         """
         validPlacements = {}
         pass
-    
+
     def get_lines(self, placement: Placement):
         """Check which lines a given placement could be a part of
 
@@ -46,7 +47,7 @@ class Gamerules:
                 {Line:(Tile: red, circle, Tile: red, square, Tile: red, star), Line:(Tile: green, square, Tile: red, square)}
             max line length is 6
         """
-        
+
         pass
 
     def verify_placement(self, placement: Placement) -> bool:
@@ -60,7 +61,7 @@ class Gamerules:
             True: if it is a valid placement
             False: if it is not a valid placement
         """
-        
+
         pass
 
     def register_move(self, move) -> bool:
@@ -76,7 +77,7 @@ class Gamerules:
         
         Returns:
             Boolean corresponding to if the move was succesfully registered.
-        """ 
+        """
 
     def score_move(self, move) -> int:
         """Scores a given move.

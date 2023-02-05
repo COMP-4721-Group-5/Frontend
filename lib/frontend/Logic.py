@@ -4,6 +4,7 @@ from ..shared.internal_structures import Board, Placement, Tile, TileColor, Tile
 from ..shared.player import Player
 from ..shared import gamerules
 
+
 class Logic:
     """ Controls all game logic.
 
@@ -46,7 +47,7 @@ class Logic:
         temp_hand = []
         for i in range(6):
             temp_hand.append(self.__bag.pop())
-        
+
         self.__player.update_hand(temp_hand)
 
     def play_tile(self, placement, index):
