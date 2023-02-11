@@ -43,12 +43,73 @@ class Gamerules:
             placement: placement data of the tile
 
         Returns:
-            A list of possible lines in form of a list of tiles for ex:
-                {Line:(Tile: red, circle, Tile: red, square, Tile: red, star), Line:(Tile: green, square, Tile: red, square)}
+            A list of possible lines in form of a list of placements for ex:
+                {Line:((Tile: red, circle, x, y), (Tile: red, square, x, y), (Tile: red, star, x, y)), Line:(Tile: green, square, Tile: red, square)}
             max line length is 6
         """
+        x_line = list()
+        y_line = list()
+        #y_line = self.__board[placement.x_coord][placement.y_coord - 6:placement.y_coord + 6]
+        #x_line = self.__board[placement.x_coord - 6:placement.x_coord + 6][placement.y_coord]
+        y_count = 0
+        x_count = 0
+        for i in range(5): #Checks up to 5 tiles above the horizontal
+            if placement.y_coord + i + 1 > 217:
+                break
+            temp_tile = self.__board[placement.x_coord][placement.y_coord + i + 1]
+            temp_placement = Placement(temp_tile, placement.x_coord, placement.y_coord + i + 1)
+            if temp_tile is None:
+                break
+            else:
+                if temp_tile.shape() == placement.tile.shape() or temp_tile.color() == placement.tile.color():
+                    y_line.append(temp_placement)
+                    y_count += 1
 
-        pass
+        for i in range(5): #Checks up to 5 tiles below the horizontal
+            if placement.y_coord - i - 1 < 0:
+                break
+            temp_tile = self.__board[placement.x_coord][placement.y_coord - i - 1]
+            temp_placement = Placement(temp_tile, placement.x_coord, placement.y_coord - i - 1)
+            if temp_tile is None:
+                break
+            else:
+                if temp_tile.shape() == placement.tile.shape() or temp_tile.color() == placement.tile.color():
+                    y_line.append(temp_placement)
+                    y_count += 1
+            if y_count > 6:
+                y_line = None
+                break
+
+        #Gets the x_line
+        for i in range(5): #Checks up to 5 tiles to the right of the vertical
+            if placement.x_coord - i - 1 < 0:
+                break
+            temp_tile = self.__board[placement.x_coord - i - 1][placement.y_coord]
+            temp_placement = Placement(temp_tile, placement.x_coord, placement.y_coord)
+            if temp_tile is None:
+                break
+            else:
+                if temp_tile.shape() == placement.tile.shape() or temp_tile.color() == placement.tile.color():
+                    x_line.append(temp_placement)
+                    x_count += 1
+
+        for i in range(5): #Checks up to 5 tiles to the left of the vertical
+            if placement.x_coord + i + 1 > 217:
+                break
+            temp_tile = self.__board[placement.x_coord + i + 1][placement.y_coord]
+            temp_placement = Placement(temp_tile, placement.x_coord, placement.y_coord)
+            if temp_tile is None:
+                break
+            else:
+                if temp_tile.shape() == placement.tile.shape() or temp_tile.color() == placement.tile.color():
+                    x_line.append(temp_placement)
+                    x_count += 1
+            if x_count > 6:
+                x_line = None
+                break
+
+            
+        return x_line, y_line
 
     def verify_placement(self, placement: Placement) -> bool:
         """Verifies placement of a single tile on the board
