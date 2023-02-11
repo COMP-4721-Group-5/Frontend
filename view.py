@@ -41,7 +41,6 @@ class View:
         __screen: The screen object
         __logic: Instance of the logic class that will be used to access the logic methods
         __board: Instance of the board object that will be used to interact with the board
-
     """
 
     __top_left_x: int = 108
@@ -108,8 +107,8 @@ class View:
             for j in range(num_cols):
                 self.draw_hollow_rect(screen, background_color, border_color,
                                       x_pos, y_pos, tile_width, tile_height, 5)
-                curr_tile = self.__board.get_board()[self.__top_left_x +
-                                                     i][self.__top_left_y + j]
+                curr_tile = self.__board.get_board()[self.__top_left_y +
+                                                     i][self.__top_left_x + j]
                 if curr_tile != None:
                     tile_img = pygame.transform.scale(
                         tile_img_load(curr_tile),
@@ -193,6 +192,16 @@ class View:
             for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:
                     sys.exit()
+                if ev.type == pygame.KEYDOWN: # Handle navigation
+                    if ev.key == pygame.K_UP:
+                        self.__top_left_y = self.__top_left_y - 1
+                    if ev.key == pygame.K_DOWN:
+                        self.__top_left_y = self.__top_left_y + 1
+                    if ev.key == pygame.K_LEFT:
+                        self.__top_left_x = self.__top_left_x - 1
+                    if ev.key == pygame.K_RIGHT:
+                        self.__top_left_x = self.__top_left_x + 1
+                    self.update_view()
                 if ev.type == pygame.MOUSEBUTTONDOWN:
                     x = pygame.mouse.get_pos()[0]
                     y = pygame.mouse.get_pos()[1]
