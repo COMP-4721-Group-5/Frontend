@@ -1,6 +1,9 @@
 from typing import List, Final
 from enum import IntEnum
 
+import numpy as np
+import numpy.typing as npt
+
 
 class TileColor(IntEnum):
     """
@@ -142,17 +145,14 @@ class Board:
     Attributes:
         board: a 217x217 array of Tiles
     """
-    __board: List[List[Tile]]
     ROW: Final = 217
     COLUMN: Final = 217
 
     def __init__(self):
         """Inits the board"""
-        self.__board = list()
-        for i in range(Board.COLUMN):
-            self.__board.append([None] * Board.COLUMN)
+        self.__board = np.zeros((Board.ROW, Board.COLUMN), np.object_)
 
-    def get_board(self) -> List[List[Tile]]:
+    def get_board(self) -> npt.NDArray[np.object_]:
         return self.__board
 
     def add_tile(self, placement: Placement):
@@ -161,5 +161,5 @@ class Board:
         Args:
             placement: contains (Tile, x_coord, y_coord)
         """
-        if self.__board[placement.x_coord][placement.y_coord] == None:
-            self.__board[placement.x_coord][placement.y_coord] = placement.tile
+        if self.__board[placement.x_coord, placement.y_coord] == 0:
+            self.__board[placement.x_coord, placement.y_coord] = placement.tile
