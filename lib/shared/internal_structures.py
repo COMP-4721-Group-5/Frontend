@@ -150,7 +150,7 @@ class Board:
 
     def __init__(self):
         """Inits the board"""
-        self.__board = np.zeros((Board.ROW,Board.COLUMN),np.object_)
+        self.__board = np.zeros((Board.ROW, Board.COLUMN), np.object_)
 
     def get_board(self) -> npt.NDArray[np.object_]:
         return self.__board
@@ -161,6 +161,5 @@ class Board:
         Args:
             placement: contains (Tile, x_coord, y_coord)
         """
-        if self.__board[placement.x_coord,placement.y_coord] == 0:
-            self.__board[placement.x_coord,placement.y_coord] = placement.tile
-
+        if self.__board[placement.x_coord, placement.y_coord] == 0:
+            self.__board[placement.x_coord, placement.y_coord] = placement.tile

@@ -108,7 +108,8 @@ class View:
             for j in range(num_cols):
                 self.draw_hollow_rect(screen, background_color, border_color,
                                       x_pos, y_pos, tile_width, tile_height, 5)
-                curr_tile = self.__board.get_board()[self.__top_left_y + i, self.__top_left_x + j]
+                curr_tile = self.__board.get_board()[self.__top_left_y + i,
+                                                     self.__top_left_x + j]
                 if curr_tile != 0:
                     tile_img = pygame.transform.scale(
                         tile_img_load(curr_tile),
