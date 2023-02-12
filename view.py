@@ -16,7 +16,7 @@ def tile_img_load(tile: Tile):
     Returns: 
         The image of the tile.
     """
-    if tile is None:
+    if tile == 0:
         return None
     fileName = 'assets/tile_img/%s-%s.png' % (tile.color.name.lower(),
                                               tile.shape.name.lower())
@@ -108,9 +108,8 @@ class View:
             for j in range(num_cols):
                 self.draw_hollow_rect(screen, background_color, border_color,
                                       x_pos, y_pos, tile_width, tile_height, 5)
-                curr_tile = self.__board.get_board()[self.__top_left_x +
-                                                     i][self.__top_left_y + j]
-                if curr_tile != None:
+                curr_tile = self.__board.get_board()[self.__top_left_y + i, self.__top_left_x + j]
+                if curr_tile != 0:
                     tile_img = pygame.transform.scale(
                         tile_img_load(curr_tile),
                         (tile_width - 10, tile_height - 10))
@@ -209,7 +208,7 @@ class View:
                                 break
                     if (100 < x < 877) and (
                             53 < y < 667
-                    ) and self.__selected_tile != None:  # Handles interaction with the grid
+                    ) and self.__selected_tile != 0:  # Handles interaction with the grid
                         relative_x = x - 100
                         relative_y = y - 53
                         found = False
@@ -218,7 +217,7 @@ class View:
                                 for j in range(self.__frame_size):
                                     if relative_y < (
                                             615 / self.__frame_size) * (j + 1):
-                                        # self.__board[self.__top_left_x + j][self.__top_left_y + i] = self.__logic.player[self.__selected_tile]
+                                        # self.__board[self.__top_left_x + j,self.__top_left_y + i] = self.__logic.player[self.__selected_tile]
                                         placement = Placement(
                                             self.__logic.player[
                                                 self.__selected_tile],
