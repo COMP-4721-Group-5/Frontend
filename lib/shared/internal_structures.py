@@ -1,5 +1,6 @@
-from typing import List, Final
+from typing import Dict, List, Final
 from enum import IntEnum
+import json
 
 import numpy as np
 import numpy.typing as npt
@@ -101,6 +102,13 @@ class Tile:
         else:
             return False
 
+    def __json__(self) -> str:
+        dict_form: Dict[str, bool | int] = {
+            'tile_type': self.hex_value,
+            'temporary': self.__temporary
+        }
+        return json.dumps(dict_form)
+
 
 class Placement:
     """Contains placement data
@@ -138,6 +146,13 @@ class Placement:
     def y_coord(self):
         return self.__y_coord
 
+    def __json__(self) -> str:
+        dict_form: Dict[str, str | List[int]] = {
+            'tile': self.__tile.__json__(),
+            'pos': [self.x_coord, self.y_coord]
+        }
+        return json.dumps(dict_form)
+
 
 class Board:
     """Contains the representation of the gameboard
@@ -163,3 +178,13 @@ class Board:
         """
         if self.__board[placement.x_coord, placement.y_coord] == 0:
             self.__board[placement.x_coord, placement.y_coord] = placement.tile
+
+    def __json__(self) -> str:
+        tile_pos = np.where(self.__board != 0)
+        pos_tuples = list(zip(tile_pos[0], tile_pos[1]))
+        dict_form = dict()
+        for pos_tuple in pos_tuples:
+            tile: Tile = self.__board[pos_tuple[0], pos_tuple[1]]
+            dict_form[str(pos_tuple)] = tile.__json__()
+        return json.dumps(dict_form)
+
