@@ -36,7 +36,7 @@ class Logic:
         Args:
             playerCount: amount of players in the game
         """
-        self.__board = Board()      #do we need to assign these?
+        self.__board = Board()      
         self.__player = Player()
         self.__bag = list()
 

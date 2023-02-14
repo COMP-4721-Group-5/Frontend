@@ -38,6 +38,8 @@ class Logic_backend:
         #self.__player = Player() -> may not needed
         self.__bag = list()
         #self.__playerList = list()
+        #self.__gameRules = Gamerules()
+        #self.__playerCount = 0
 
         self.start_game(self.__playerCount)
         
@@ -133,10 +135,11 @@ class Logic_backend:
             
     def check_for_winner(self) -> bool:
         """Call Gamerules to check for winner
-        Meanwhile keep track of every player's score
+        Meanwhile keep track of every player's score 
         
         Returns: True if last player win, False if else
         """
+        #player's instance 'score' and getter/sett funct
         
     def announce_winner():
         """Send message to player that the winner is found, and they lose."""
