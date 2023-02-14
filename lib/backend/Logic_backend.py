@@ -26,12 +26,19 @@ class Logic_backend:
     __gameRules: gamerules
     __board: Board
     __tempMove: Placement
-    __player: Player
+    __player: Player 
     __bag: List[Tile]
     __playerCount: int 
+    #__playerList: List[Player] -> list of players to keep track of score and update move
 
     def __init__(self) -> None:
         """Inits the game with the amount of joining players"""
+
+        self.__board = Board()      
+        #self.__player = Player() -> may not needed
+        self.__bag = list()
+        #self.__playerList = list()
+
         self.start_game(self.__playerCount)
         
     def set_playerCount(self, num: int):
@@ -126,12 +133,18 @@ class Logic_backend:
             
     def check_for_winner(self) -> bool:
         """Call Gamerules to check for winner
+        Meanwhile keep track of every player's score
         
         Returns: True if last player win, False if else
         """
         
     def announce_winner():
         """Send message to player that the winner is found, and they lose."""
+
+
+    def addPlayer(self, player: Player):
+        """Create (add) a list of player from client data received by Socket, to keep track of them"""
+        self.__playerCount = self.__playerCount + 1
     
     @property       #unsure
     def board(self):
