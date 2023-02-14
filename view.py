@@ -1,5 +1,6 @@
 import sys
-
+import tkinter as tk
+import tkinter.simpledialog
 import pygame
 
 from lib.shared.player import Player
@@ -13,7 +14,7 @@ def tile_img_load(tile: Tile):
     Args:
         tile: Tile to load to an image
 
-    Returns: 
+    Returns:
         The image of the tile.
     """
     if tile is None:
@@ -187,6 +188,10 @@ class View:
 
     def init_event_loop(self):
         """Event loop for handling UI interaction """
+
+        server_ip = tk.simpledialog.askstring("Connect","Server IP:")
+        #TODO: Send to socket, verify validity, setup connection
+
         running = True
         while (running):
             for ev in pygame.event.get():
