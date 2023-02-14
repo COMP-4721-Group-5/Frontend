@@ -112,7 +112,7 @@ class Tile:
     @staticmethod
     def load_json(json_form: str):
         dict_form = json.loads(json_form)
-        new_tile = Tile(0,0)
+        new_tile = Tile(0, 0)
         new_tile.__color = TileColor(dict_form['tile_type'] & 0x0f)
         new_tile.__shape = TileShape(dict_form['tile_type'] & 0xf0)
         new_tile.__temporary = dict_form['temporary']
@@ -170,7 +170,7 @@ class Placement:
 
     def load_json(json_form: str):
         dict_form = json.loads(json_form)
-        new_placement = Placement(None,-1,-1)
+        new_placement = Placement(None, -1, -1)
         new_placement.tile = Tile.load_json(dict_form['tile'])
         new_placement.__x_coord = dict_form['pos'][0]
         new_placement.__x_coord = dict_form['pos'][1]
@@ -216,6 +216,5 @@ class Board:
         self.__board.fill(0)
         for pos_tuple in dict_form.keys():
             position = eval(pos_tuple)
-            self.__board[position[0],position[1]] = Tile.load_json(dict_form[pos_tuple])
-
-
+            self.__board[position[0],
+                         position[1]] = Tile.load_json(dict_form[pos_tuple])
