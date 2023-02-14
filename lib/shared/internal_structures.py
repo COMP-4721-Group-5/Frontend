@@ -109,6 +109,15 @@ class Tile:
         }
         return json.dumps(dict_form)
 
+    @staticmethod
+    def load_json(json_form: str):
+        dict_form = json.loads(json_form)
+        new_tile = Tile(0,0)
+        new_tile.__color = dict_form['tile_type'] & 0x0f
+        new_tile.__shape = dict_form['tile_type'] & 0xf0
+        new_tile.__temporary = dict_form['temporary']
+        return new_tile
+
 
 class Placement:
     """Contains placement data
@@ -153,6 +162,14 @@ class Placement:
         }
         return json.dumps(dict_form)
 
+    def load_json(json_form: str):
+        dict_form = json.loads(json_form)
+        new_placement = Placement(None,-1,-1)
+        new_placement.tile = Tile.load_json(dict_form['tile'])
+        new_placement.__x_coord = dict_form['pos'][0]
+        new_placement.__x_coord = dict_form['pos'][1]
+        return new_placement
+
 
 class Board:
     """Contains the representation of the gameboard
@@ -187,4 +204,12 @@ class Board:
             tile: Tile = self.__board[pos_tuple[0], pos_tuple[1]]
             dict_form[str(pos_tuple)] = tile.__json__()
         return json.dumps(dict_form)
+
+    def load_json(self, json_form: str):
+        dict_form: Dict[str, str] = json.loads(json_form)
+        self.__board.fill(0)
+        for pos_tuple in dict_form.keys():
+            position = eval(pos_tuple)
+            self.__board[position[0],position[1]] = Tile.load_json(dict_form[pos_tuple])
+
 
