@@ -113,8 +113,8 @@ class Tile:
     def load_json(json_form: str):
         dict_form = json.loads(json_form)
         new_tile = Tile(0,0)
-        new_tile.__color = dict_form['tile_type'] & 0x0f
-        new_tile.__shape = dict_form['tile_type'] & 0xf0
+        new_tile.__color = TileColor(dict_form['tile_type'] & 0x0f)
+        new_tile.__shape = TileShape(dict_form['tile_type'] & 0xf0)
         new_tile.__temporary = dict_form['temporary']
         return new_tile
 
