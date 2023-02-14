@@ -155,6 +155,12 @@ class Placement:
     def y_coord(self):
         return self.__y_coord
 
+    def __eq__(self, __o: object) -> bool:
+        if isinstance(__o, Placement):
+            return self.__tile == __o.__tile and self.__x_coord == __o.__x_coord and self.__y_coord == __o.__y_coord
+        else:
+            return False
+
     def __json__(self) -> str:
         dict_form: Dict[str, str | List[int]] = {
             'tile': self.__tile.__json__(),
