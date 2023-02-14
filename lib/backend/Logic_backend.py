@@ -95,7 +95,16 @@ class Logic_backend:
             while len(player_hand) < 6:
                 player_hand.append(self.__bag.pop())
         return player_hand
-    
+
+    def send_tiles():
+        """Send (restocked) tile hand to last player"""
+        pass
+        #socket
+
+    def send_init_tiles():
+        """Send init tiles to every player"""
+        pass
+        #socket
     
     def received_move():  
         """Receive move from player, assign to __tempMove.
@@ -103,6 +112,7 @@ class Logic_backend:
         Returns: void
         """
         pass
+        #socket
         
     def verify_move(move) -> bool:
         """Verify whether player's move is valid, call Gamerules to support
@@ -124,6 +134,7 @@ class Logic_backend:
         Returns:  void
         """
         pass
+        #socket
         
     def update_board(self):
         """Update last player's move (if valid) to other players's board view
@@ -132,6 +143,7 @@ class Logic_backend:
         if self.check_for_winner() == True:
             self.announce_winner()
         pass
+        #socket
             
     def check_for_winner(self) -> bool:
         """Call Gamerules to check for winner
@@ -143,12 +155,14 @@ class Logic_backend:
         
     def announce_winner():
         """Send message to player that the winner is found, and they lose."""
+        #need socket
 
 
     def addPlayer(self, player: Player):
         """Create (add) a list of player from client data received by Socket, to keep track of them"""
         self.__playerCount = self.__playerCount + 1
-    
+        #through socket(?)
+
     @property       #unsure
     def board(self):
         return self.__board    
