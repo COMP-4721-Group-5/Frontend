@@ -18,6 +18,7 @@ class Logic:
         board: Contains the board
         tempMove: List that contains all temporary placements of current players move
         player: Contains the local player's data 
+        bag: list of all tiles in game
     """
     __board: Board
     __tempMove: Placement
@@ -35,7 +36,7 @@ class Logic:
         Args:
             playerCount: amount of players in the game
         """
-        self.__board = Board()
+        self.__board = Board()      #do we need to assign these?
         self.__player = Player()
         self.__bag = list()
 
