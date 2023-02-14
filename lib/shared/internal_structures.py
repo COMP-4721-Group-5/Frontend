@@ -171,7 +171,7 @@ class Placement:
     def load_json(json_form: str):
         dict_form = json.loads(json_form)
         new_placement = Placement(None, -1, -1)
-        new_placement.tile = Tile.load_json(dict_form['tile'])
+        new_placement.__tile = Tile.load_json(dict_form['tile'])
         new_placement.__x_coord = dict_form['pos'][0]
         new_placement.__x_coord = dict_form['pos'][1]
         return new_placement
