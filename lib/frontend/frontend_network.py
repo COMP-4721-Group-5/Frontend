@@ -1,4 +1,4 @@
-import json, socket
+import socket
 
 class ClientSocket:
 
@@ -10,12 +10,11 @@ class ClientSocket:
         self.__host = host
         self.__port = port
         self.__sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__sock.connect((self.__host, self.__port))
 
-    def send_data(self, data):
-        return self.__sock.sendto(data, (self.__host, self.__port))
+    def send_data(self, data: str):
+        self.__sock.send(data.encode())
+        return self.__sock.recv(4096).decode()
 
-    def receive_data(self):
-        pass
-
-    def parse_data(data: str):
-        pass
+    def close(self) -> None:
+        self.__sock.close()
