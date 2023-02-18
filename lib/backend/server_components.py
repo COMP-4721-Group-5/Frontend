@@ -25,6 +25,7 @@ class ClientConnection:
         self.__addr = addr
         self.__listener = ClientConnection._ClientMsgListener(self, msg_queue)
         self.__stop_listen = Event()
+        self.__listener.start()
     
     def stop_listening(self) -> None:
         self.__stop_listen.set()
