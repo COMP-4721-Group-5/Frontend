@@ -17,20 +17,20 @@ class Request:
 class ClientConnection:
     __csock: socket.socket
     __addr: Address
-    __listener: 'ClientMsgListener'
+    __listener: '_ClientMsgListener'
     __stop_listen: Event
 
     def __init__(self, csock: socket.socket, addr: Address, msg_queue: Queue[Request]) -> None:
         self.__csock = csock
         self.__addr = addr
-        self.__listener = ClientConnection.ClientMsgListener(self, msg_queue)
+        self.__listener = ClientConnection._ClientMsgListener(self, msg_queue)
         self.__stop_listen = Event()
     
     def stop_listening(self) -> None:
         self.__stop_listen.set()
     
 
-    class ClientMsgListener(Thread):
+    class _ClientMsgListener(Thread):
         __connection: 'ClientConnection'
         __msg_queue: Queue[Request]
 
