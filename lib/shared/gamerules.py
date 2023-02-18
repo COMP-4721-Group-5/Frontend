@@ -47,10 +47,10 @@ class Gamerules:
             A list of possible lines in form of a list of placements for ex:
                 {Line:((Tile: red, circle, x, y), (Tile: red, square, x, y), (Tile: red, star, x, y)), Line:(Tile: green, square, Tile: red, square)}
             max line length is 5, does not include current placement
-            returns None in both lists if there are no valid lines
+            returns None in a list that contains an invalid line
         """
-        x_line: list() = None
-        y_line: list() = None
+        x_line: list() = []
+        y_line: list() = []
         y_count = 0
         x_count = 0
         skip = False
@@ -62,10 +62,14 @@ class Gamerules:
             if temp_tile is None:
                 break
             else:
-                if temp_tile.shape() == placement.tile.shape() or temp_tile.color() == placement.tile.color():
+                print(temp_tile.shape, " ", temp_tile.color, " at ", temp_placement.x_coord, ",", temp_placement.y_coord) #DEBUG
+                if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
                     y_line.append(temp_placement)
                     y_count += 1
-            if temp_tile.eq(placement.tile):
+                else: #If the line contains an invalid match
+                    y_line = None
+                    break
+            if temp_tile.__eq__(placement.tile):
                 y_line = None
                 skip = True
 
@@ -78,9 +82,13 @@ class Gamerules:
                 if temp_tile is None:
                     break
                 else:
+                    print(temp_tile.shape, " ", temp_tile.color, " at ", temp_placement.x_coord, ",", temp_placement.y_coord) #DEBUG
                     if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
                         y_line.append(temp_placement)
                         y_count += 1
+                    else: #If the line contains an invalid match
+                        y_line = None
+                        break
                 #Checks if line is too long or contains duplicate tiles
                 if y_count > 5 or temp_tile.__eq__(placement.tile):
                     y_line = None
@@ -91,27 +99,35 @@ class Gamerules:
             if placement.x_coord - i - 1 < 0:
                 break
             temp_tile = self.__board[placement.x_coord - i - 1][placement.y_coord]
-            temp_placement = Placement(temp_tile, placement.x_coord, placement.y_coord)
+            temp_placement = Placement(temp_tile, placement.x_coord - i - 1, placement.y_coord)
             if temp_tile is None:
                 break
             else:
+                print(temp_tile.shape, " ", temp_tile.color, " at ", temp_placement.x_coord, ",", temp_placement.y_coord) #DEBUG
                 if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
                     x_line.append(temp_placement)
                     x_count += 1
-                if temp_tile.__eq__(placement.tile): #if line already contains this tile, it is invalid
-                    return None, y_line
+                else: #if there is an invalid match in the line 
+                    x_line = None
+                    break
+            if temp_tile.__eq__(placement.tile): #if line already contains this tile, it is invalid
+                return None, y_line
 
         for i in range(5): #Checks up to 5 tiles to the left of the vertical
             if placement.x_coord + i + 1 > 217:
                 break
             temp_tile = self.__board[placement.x_coord + i + 1][placement.y_coord]
-            temp_placement = Placement(temp_tile, placement.x_coord, placement.y_coord)
+            temp_placement = Placement(temp_tile, placement.x_coord - i -1, placement.y_coord)
             if temp_tile is None:
                 break
             else:
+                print(temp_tile.shape, " ", temp_tile.color, " at ", temp_placement.x_coord, ",", temp_placement.y_coord) #DEBUG
                 if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
                     x_line.append(temp_placement)
                     x_count += 1
+                else:
+                    x_line = None
+                    break
             #Checks if line is too large or if it already contains a given tile
             if x_count > 5 or temp_tile.__eq__(placement.tile):
                 x_line = None
@@ -131,7 +147,7 @@ class Gamerules:
             False: if it is not a valid placement
         """
         x_line, y_line = self.get_lines(placement)
-        if x_line is None and y_line is None:
+        if x_line == [] and y_line == [] or x_line is None or y_line is None:
             return False
         else:
 
@@ -188,7 +204,7 @@ class Gamerules:
             for placement in x_line:
                 if placement.tile.is_temporary:
                     already_scored = True
-            if already_scored:
+            if already_scored == True:
                 score += 1
             else:
                 score += len(x_line) + 1
@@ -199,26 +215,38 @@ class Gamerules:
             for placement in y_line:
                 if placement.tile.is_temporary:
                     already_scored = True
-            if already_scored:
+            if already_scored == True:
                 score += 1
             else:
                 score += len(y_line)
             if len(y_line) == 5: #Checks for Quirkle
                 score += 6
-""" Testing
+        return score
+#Testing
 board = Board()
 
 orange_square = Tile(TileColor.ORANGE, TileShape.SQUARE, False)
+orange_circle = Tile(TileColor.ORANGE, TileShape.CIRCLE, False)
+orange_star = Tile(TileColor.ORANGE, TileShape.STAR, False)
+orange_club = Tile(TileColor.ORANGE, TileShape.CLUB, False)
+orange_cross = Tile(TileColor.ORANGE, TileShape.CROSS, False)
+orange_diamond = Tile(TileColor.ORANGE, TileShape.DIAMOND, False)
+
+green_circle = Tile(TileColor.GREEN, TileShape.CIRCLE, False)
 placement = Placement(orange_square, 0, 0)
-
 board.add_tile(placement)
-
+board.add_tile(Placement(orange_circle, 0, 1))
+board.add_tile(Placement(orange_club, 0, 2))
+board.add_tile(Placement(orange_cross, 0, 3))
+board.add_tile(Placement(green_circle, 2, 1))
 red_circle = Tile(TileColor.RED, TileShape.CIRCLE, True)
-placement = Placement(red_circle, 0, 1)
-
+#placement = Placement(red_circle, 0, 1)
 rules = Gamerules()
 b = board.get_board()
 rules.update_board(b)
-print(rules.verify_placement(placement))
-print(rules.get_lines(placement))
-"""
+print("Is an orange square placed at 0,3 valid?", rules.verify_placement(Placement(orange_square, 0, 3)))
+print("What be the score of such a move, arrgh?", rules.score_placement(Placement(orange_square, 0, 3)))
+print("Is a red circle valid placed at 1,1?", rules.verify_placement(Placement(red_circle, 1, 1)))
+print(rules.get_lines(Placement(red_circle, 1, 1)))
+print("What be the score of such a move, aargh?", rules.score_placement(Placement(red_circle, 1, 1)))
+
