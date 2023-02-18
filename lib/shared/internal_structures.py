@@ -1,5 +1,6 @@
-from typing import List, Final
+from typing import Dict, List, Final
 from enum import IntEnum
+import json
 
 import numpy as np
 import numpy.typing as npt
@@ -101,6 +102,22 @@ class Tile:
         else:
             return False
 
+    def __json__(self) -> str:
+        dict_form: Dict[str, bool | int] = {
+            'tile_type': self.hex_value,
+            'temporary': self.__temporary
+        }
+        return json.dumps(dict_form)
+
+    @staticmethod
+    def load_json(json_form: str):
+        dict_form = json.loads(json_form)
+        new_tile = Tile(0, 0)
+        new_tile.__color = TileColor(dict_form['tile_type'] & 0x0f)
+        new_tile.__shape = TileShape(dict_form['tile_type'] & 0xf0)
+        new_tile.__temporary = dict_form['temporary']
+        return new_tile
+
 
 class Placement:
     """Contains placement data
@@ -138,6 +155,27 @@ class Placement:
     def y_coord(self):
         return self.__y_coord
 
+    def __eq__(self, __o: object) -> bool:
+        if isinstance(__o, Placement):
+            return self.__tile == __o.__tile and self.__x_coord == __o.__x_coord and self.__y_coord == __o.__y_coord
+        else:
+            return False
+
+    def __json__(self) -> str:
+        dict_form: Dict[str, str | List[int]] = {
+            'tile': self.__tile.__json__(),
+            'pos': [self.x_coord, self.y_coord]
+        }
+        return json.dumps(dict_form)
+
+    def load_json(json_form: str):
+        dict_form = json.loads(json_form)
+        new_placement = Placement(None, -1, -1)
+        new_placement.tile = Tile.load_json(dict_form['tile'])
+        new_placement.__x_coord = dict_form['pos'][0]
+        new_placement.__y_coord = dict_form['pos'][1]
+        return new_placement
+
 
 class Board:
     """Contains the representation of the gameboard
@@ -163,3 +201,20 @@ class Board:
         """
         if self.__board[placement.x_coord, placement.y_coord] == 0:
             self.__board[placement.x_coord, placement.y_coord] = placement.tile
+
+    def __json__(self) -> str:
+        tile_pos = np.where(self.__board != 0)
+        pos_tuples = list(zip(tile_pos[0], tile_pos[1]))
+        dict_form = dict()
+        for pos_tuple in pos_tuples:
+            tile: Tile = self.__board[pos_tuple[0], pos_tuple[1]]
+            dict_form[str(pos_tuple)] = tile.__json__()
+        return json.dumps(dict_form)
+
+    def load_json(self, json_form: str):
+        dict_form: Dict[str, str] = json.loads(json_form)
+        self.__board.fill(0)
+        for pos_tuple in dict_form.keys():
+            position = eval(pos_tuple)
+            self.__board[position[0],
+                         position[1]] = Tile.load_json(dict_form[pos_tuple])
