@@ -30,6 +30,9 @@ class ClientConnection:
     def stop_listening(self) -> None:
         self.__stop_listen.set()
     
+    @property
+    def address(self) -> Address:
+        return self.__addr
 
     class _ClientMsgListener(Thread):
         __connection: 'ClientConnection'
