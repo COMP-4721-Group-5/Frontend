@@ -26,10 +26,10 @@ class ClientConnection:
         self.__listener = ClientConnection._ClientMsgListener(self, msg_queue)
         self.__stop_listen = Event()
         self.__listener.start()
-    
+
     def stop_listening(self) -> None:
         self.__stop_listen.set()
-    
+
     @property
     def address(self) -> Address:
         return self.__addr
@@ -41,17 +41,17 @@ class ClientConnection:
         def __init__(self, connection: 'ClientConnection', msg_queue: Queue[Request]):
             self.__connection = connection
             self.__msg_queue = msg_queue
-        
+
         def run(self):
             while not self.__connection.__stop_listen.is_set():
                 recv_data = self.__connection.__csock.recv(4096).decode()
                 self.__msg_queue.put(Request(self.__connection, time.time(), recv_data))
-            
+
             self.__connection.__csock.shutdown(socket.SHUT_WR)
 
             while len(recv_data) != 0:
                 recv_data = self.__connection.__csock.recv(1024)
-            
+
             self.__connection.__csock.close()
 
 
