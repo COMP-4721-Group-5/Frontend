@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import json
 from queue import Queue
 import random as rand
 import socket
@@ -11,6 +12,7 @@ from ..shared.internal_structures import Board
 from ..shared.internal_structures import Tile
 from ..shared.internal_structures import TileColor
 from ..shared.internal_structures import TileShape
+from ..shared.network_exchange_format import JsonableDecoder
 from ..shared.player import Player
 
 Address: TypeAlias = Tuple[str, int]
@@ -96,18 +98,48 @@ class QwirkeleController:
         self.__start_next_turn()
 
     def process_request(self):
-        pass
+        curr_request = self.__requests.get()
+        parsed_request = json.loads(curr_request.data, cls = JsonableDecoder)
+        if curr_request.connection != self.__get_curr_turn_client():
+            # request made from client not in turn
+            # yell at the client
+            pass
+        # if request is discarding hand: handle here
+            # Check if discarding is valid
+            # if valid:
+                # remove tiles from hand and put back in bag
+                # then call self.__start_next_turn()
+            # else: yell at client
+        # if request is placing tiles:
+            # Check if placements are valid
+            # if placements are valid:
+                # mark placed tiles as permanent using Tile.set_permanent()
+                # update score of current player
+                # then call self.__start_next_turn()
+        # else:
+            # this means that request is invalid, so yell at client
 
     def sync_all_players(self):
         for client in self.__clients:
+            # send current board state to client
+            # send current player state to client
             pass
 
     def __get_curr_turn_client(self):
         return self.__clients[self.__curr_player]
 
     def __start_next_turn(self):
+        for i in range(6):
+            if self.__get_curr_turn_client()[i] is None:
+                self.__get_curr_turn_client()[i] = self.__tile_bag.pop(rand.randrange(len(self.__tile_bag)))
+        self.sync_all_players()
         self.__curr_player = (self.__curr_player + 1) % len(self.__clients)
-        # TODO: Message next client to start turn
+        # check if game is over (i.e., no more tiles can be placed)
+        # if game over:
+            # set self.__active to false
+            # announce game over
+        # else:
+            # Message next client to start turn
 
     def has_request(self):
         return not self.__requests.empty()
