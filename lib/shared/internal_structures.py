@@ -135,6 +135,7 @@ class Tile(JsonableObject):
 
     def json_serialize(self) -> Dict[str, bool | int]:
         dict_form: Dict[str, bool | int] = {
+            'type': 'tile',
             'tile_type': self.hex_value,
             'temporary': self.__temporary
         }
@@ -193,6 +194,7 @@ class Placement(JsonableObject):
 
     def json_serialize(self) -> Dict[str, Dict[str, bool | int] | List[int]]:
         dict_form: Dict[str, Dict[str, bool | int] | List[int]] = {
+            'type': 'placement',
             'tile': self.__tile.json_serialize(),
             'pos': [self.x_coord, self.y_coord]
         }
@@ -236,6 +238,7 @@ class Board(JsonableObject):
         tile_pos = np.where(self.__board != 0)
         pos_tuples = list(zip(tile_pos[0], tile_pos[1]))
         dict_form = dict()
+        dict_form['type'] = 'board'
         for pos_tuple in pos_tuples:
             tile: Tile = self.__board[pos_tuple[0], pos_tuple[1]]
             dict_form[str(pos_tuple)] = tile.json_serialize()
@@ -244,7 +247,8 @@ class Board(JsonableObject):
     def json_deserialize(serialized_form: Dict[str, Dict[str, bool | int]]):
         new_board = Board()
         for pos_tuple in serialized_form.keys():
-            position = eval(pos_tuple)
-            new_board.__board[position[0],
-                         position[1]] = Tile.json_deserialize(serialized_form[pos_tuple])
+            if pos_tuple != 'type':
+                position = eval(pos_tuple)
+                new_board.__board[position[0],
+                            position[1]] = Tile.json_deserialize(serialized_form[pos_tuple])
         return new_board
