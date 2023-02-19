@@ -1,11 +1,16 @@
 from dataclasses import dataclass
 from queue import Queue
+import random as rand
 import socket
 import time
 from threading import Event
 from threading import Thread
-from typing import Tuple, TypeAlias
+from typing import List, Tuple, TypeAlias
 
+from ..shared.internal_structures import Board
+from ..shared.internal_structures import Tile
+from ..shared.internal_structures import TileColor
+from ..shared.internal_structures import TileShape
 from ..shared.player import Player
 
 Address: TypeAlias = Tuple[str, int]
@@ -63,7 +68,49 @@ class ClientConnection:
 
             self.__connection.__csock.close()
 
+class QwirkeleController:
+    __clients: List[ClientConnection]
+    __requests: Queue[Request]
+    __board: Board
+    __tile_bag: List[Tile]
+    __active: bool
+    __curr_player: int
 
+    def __init__(self, client_list: List[ClientConnection], request_queue: Queue[Request]) -> None:
+        self.__clients = client_list
+        self.__requests = request_queue
+        self.__curr_player = 0
+        self.__active = True
+        self.__board = Board()
+        self.__tile_bag = list()
+        for i in range(3):
+            for color in TileColor:
+                for shape in TileShape:
+                    self.__tile_bag.append(Tile(color, shape))
+        for client in self.__clients:
+            for i in range(6):
+                # Add tiles to player
+                # TODO: Initialize underlying hand list inside Player
+                client.get_player()[i] = self.__tile_bag.pop(rand.randrange(len(self.__tile_bag)))
+        self.sync_all_players()
+        self.__start_next_turn()
 
+    def process_request(self):
+        pass
 
+    def sync_all_players(self):
+        for client in self.__clients:
+            pass
 
+    def __get_curr_turn_client(self):
+        return self.__clients[self.__curr_player]
+
+    def __start_next_turn(self):
+        self.__curr_player = (self.__curr_player + 1) % len(self.__clients)
+        # TODO: Message next client to start turn
+
+    def has_request(self):
+        return not self.__requests.empty()
+
+    def in_game(self):
+        return self.__active
