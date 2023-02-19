@@ -6,6 +6,8 @@ from threading import Event
 from threading import Thread
 from typing import Tuple, TypeAlias
 
+from ..shared.player import Player
+
 Address: TypeAlias = Tuple[str, int]
 
 @dataclass
@@ -19,6 +21,7 @@ class ClientConnection:
     __addr: Address
     __listener: '_ClientMsgListener'
     __stop_listen: Event
+    __player: Player
 
     def __init__(self, csock: socket.socket, addr: Address, msg_queue: Queue[Request]) -> None:
         self.__csock = csock
@@ -32,6 +35,9 @@ class ClientConnection:
 
     def stop_listening(self) -> None:
         self.__stop_listen.set()
+
+    def get_player(self):
+        return self.__player
 
     @property
     def address(self) -> Address:
