@@ -1,9 +1,40 @@
+from abc import ABC, abstractmethod
 from typing import Dict, List, Final
 from enum import IntEnum
 import json
 
 import numpy as np
 import numpy.typing as npt
+
+
+class JsonableObject(ABC):
+    """Base class of objects that can be represented as JSON.
+    
+    Subclasses of this object support conversion to / from
+    its JSON form.
+    """
+
+    @abstractmethod
+    def __json__(self) -> str:
+        """Returns JSON representation of this object.
+
+        Returns:
+            JSON representation of this object
+        """
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def load_json(json_form: str):
+        """Constructs object of this type from JSON representation
+        
+        Args:
+            json_form: JSON representation of an object of this type
+        
+        Returns:
+            Object of this type that the argument represents
+        """
+        pass
 
 
 class TileColor(IntEnum):
@@ -30,7 +61,7 @@ class TileShape(IntEnum):
     CLUB = 0x60
 
 
-class Tile:
+class Tile(JsonableObject):
     """
     Python representation of a Quirkle tile
 
@@ -119,7 +150,7 @@ class Tile:
         return new_tile
 
 
-class Placement:
+class Placement(JsonableObject):
     """Contains placement data
 
     Attributes:
@@ -168,6 +199,7 @@ class Placement:
         }
         return json.dumps(dict_form)
 
+    @staticmethod
     def load_json(json_form: str):
         dict_form = json.loads(json_form)
         new_placement = Placement(None, -1, -1)
@@ -177,7 +209,7 @@ class Placement:
         return new_placement
 
 
-class Board:
+class Board(JsonableObject):
     """Contains the representation of the gameboard
 
     Attributes:
@@ -211,10 +243,11 @@ class Board:
             dict_form[str(pos_tuple)] = tile.__json__()
         return json.dumps(dict_form)
 
-    def load_json(self, json_form: str):
+    def load_json(json_form: str):
         dict_form: Dict[str, str] = json.loads(json_form)
-        self.__board.fill(0)
+        new_board = Board()
         for pos_tuple in dict_form.keys():
             position = eval(pos_tuple)
-            self.__board[position[0],
+            new_board.__board[position[0],
                          position[1]] = Tile.load_json(dict_form[pos_tuple])
+        return new_board
