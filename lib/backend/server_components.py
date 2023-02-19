@@ -27,6 +27,9 @@ class ClientConnection:
         self.__stop_listen = Event()
         self.__listener.start()
 
+    def send_data(self, data: str):
+        self.__csock.send(data.encode())
+
     def stop_listening(self) -> None:
         self.__stop_listen.set()
 
