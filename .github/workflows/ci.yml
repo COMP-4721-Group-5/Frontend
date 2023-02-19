@@ -41,7 +41,7 @@ jobs:
           libpng16-16 libportmidi0 libsdl2-2.0-0 \
           libsdl2-image-2.0-0 libsdl2-mixer-2.0-0 libsdl2-ttf-2.0-0
     - name: Install PIP dependencies
-      run: pip install -r requirements.txt
+      run: python3 -m pip install -r requirements.txt
     - name: Run PyTest
       run: pytest --junit-xml=pytest.xml $(find test -name '*.py')
       env:
@@ -71,6 +71,6 @@ jobs:
           libpng16-16 libportmidi0 libsdl2-2.0-0 \
           libsdl2-image-2.0-0 libsdl2-mixer-2.0-0 libsdl2-ttf-2.0-0
     - name: Install PIP dependencies
-      run: pip install -r requirements.txt
+      run: python3 -m pip install -r requirements.txt
     - name: Run style checker
       run: yapf -r --style google -d . 
