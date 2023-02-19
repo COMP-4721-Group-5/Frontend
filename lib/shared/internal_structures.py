@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, List, Final
+from typing import Any, Dict, List, Final
 from enum import IntEnum
 import json
 
@@ -15,21 +15,21 @@ class JsonableObject(ABC):
     """
 
     @abstractmethod
-    def __json__(self) -> str:
+    def json_serialize(self) -> Dict[str, Any]:
         """Returns JSON representation of this object.
 
         Returns:
-            JSON representation of this object
+            JSON-serializable form of this object
         """
         pass
 
     @staticmethod
     @abstractmethod
-    def load_json(json_form: str):
-        """Constructs object of this type from JSON representation
+    def json_deserialize(serialized_form: Dict[str, Any]):
+        """Constructs object of this type from JSON serialized form
         
         Args:
-            json_form: JSON representation of an object of this type
+            json_form: JSON serialized form of an object of this type
         
         Returns:
             Object of this type that the argument represents
@@ -133,20 +133,19 @@ class Tile(JsonableObject):
         else:
             return False
 
-    def __json__(self) -> str:
+    def json_serialize(self) -> Dict[str, bool | int]:
         dict_form: Dict[str, bool | int] = {
             'tile_type': self.hex_value,
             'temporary': self.__temporary
         }
-        return json.dumps(dict_form)
+        return dict_form
 
     @staticmethod
-    def load_json(json_form: str):
-        dict_form = json.loads(json_form)
+    def json_deserialize(serialized_form: Dict[str, bool | int]):
         new_tile = Tile(0, 0)
-        new_tile.__color = TileColor(dict_form['tile_type'] & 0x0f)
-        new_tile.__shape = TileShape(dict_form['tile_type'] & 0xf0)
-        new_tile.__temporary = dict_form['temporary']
+        new_tile.__color = TileColor(serialized_form['tile_type'] & 0x0f)
+        new_tile.__shape = TileShape(serialized_form['tile_type'] & 0xf0)
+        new_tile.__temporary = serialized_form['temporary']
         return new_tile
 
 
@@ -192,20 +191,19 @@ class Placement(JsonableObject):
         else:
             return False
 
-    def __json__(self) -> str:
-        dict_form: Dict[str, str | List[int]] = {
-            'tile': self.__tile.__json__(),
+    def json_serialize(self) -> Dict[str, Dict[str, bool | int] | List[int]]:
+        dict_form: Dict[str, Dict[str, bool | int] | List[int]] = {
+            'tile': self.__tile.json_serialize(),
             'pos': [self.x_coord, self.y_coord]
         }
-        return json.dumps(dict_form)
+        return dict_form
 
     @staticmethod
-    def load_json(json_form: str):
-        dict_form = json.loads(json_form)
+    def json_deserialize(serialized_form: Dict[str, Dict[str, bool | int] | List[int]]):
         new_placement = Placement(None, -1, -1)
-        new_placement.__tile = Tile.load_json(dict_form['tile'])
-        new_placement.__x_coord = dict_form['pos'][0]
-        new_placement.__y_coord = dict_form['pos'][1]
+        new_placement.__tile = Tile.json_deserialize(serialized_form['tile'])
+        new_placement.__x_coord = serialized_form['pos'][0]
+        new_placement.__y_coord = serialized_form['pos'][1]
         return new_placement
 
 
@@ -234,20 +232,19 @@ class Board(JsonableObject):
         if self.__board[placement.x_coord, placement.y_coord] == 0:
             self.__board[placement.x_coord, placement.y_coord] = placement.tile
 
-    def __json__(self) -> str:
+    def json_serialize(self) -> Dict[str, Dict[str, bool | int]]:
         tile_pos = np.where(self.__board != 0)
         pos_tuples = list(zip(tile_pos[0], tile_pos[1]))
         dict_form = dict()
         for pos_tuple in pos_tuples:
             tile: Tile = self.__board[pos_tuple[0], pos_tuple[1]]
-            dict_form[str(pos_tuple)] = tile.__json__()
-        return json.dumps(dict_form)
+            dict_form[str(pos_tuple)] = tile.json_serialize()
+        return dict_form
 
-    def load_json(json_form: str):
-        dict_form: Dict[str, str] = json.loads(json_form)
+    def json_deserialize(serialized_form: Dict[str, Dict[str, bool | int]]):
         new_board = Board()
-        for pos_tuple in dict_form.keys():
+        for pos_tuple in serialized_form.keys():
             position = eval(pos_tuple)
             new_board.__board[position[0],
-                         position[1]] = Tile.load_json(dict_form[pos_tuple])
+                         position[1]] = Tile.json_deserialize(serialized_form[pos_tuple])
         return new_board

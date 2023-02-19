@@ -13,8 +13,8 @@ from lib.shared.internal_structures import *
 ])
 def test_tile_json(color: TileColor, shape: TileShape):
     test_tile = Tile(color, shape)
-    json_form = test_tile.__json__()
-    assert test_tile == Tile.load_json(json_form)
+    json_form = test_tile.json_serialize()
+    assert test_tile == Tile.json_deserialize(json_form)
 
 
 @pytest.mark.parametrize("color",
@@ -24,13 +24,12 @@ def test_tile_json(color: TileColor, shape: TileShape):
 @pytest.mark.parametrize("y", [146, 12, 32])
 def test_placement_json(color: TileColor, shape: TileShape, x: int, y: int):
     test_placement = Placement(Tile(color, shape), x, y)
-    json_form = test_placement.__json__()
-    assert test_placement == Placement.load_json(json_form)
+    json_form = test_placement.json_serialize()
+    assert test_placement == Placement.json_deserialize(json_form)
 
 
 def test_board_json():
     base_board = Board()
     base_board.get_board()[63, 64] = Tile(TileColor.RED, TileShape.DIAMOND)
-    copy_board = Board()
-    copy_board.load_json(base_board.__json__())
+    copy_board = Board.json_deserialize(base_board.json_serialize())
     assert base_board.get_board()[63, 64] == copy_board.get_board()[63, 64]
