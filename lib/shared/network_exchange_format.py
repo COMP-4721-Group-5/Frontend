@@ -55,11 +55,13 @@ class ClientRequest(JsonableObject):
         return new_request
 
 class ServerResponse(JsonableObject):
+    __valid: bool
     __curr_hand: List[Tile]
     __curr_board: Board
     __curr_score: int
 
-    def __init__(self, hand: List[Tile], board: Board, score: int) -> None:
+    def __init__(self, valid: bool, hand: List[Tile], board: Board, score: int) -> None:
+        self.__valid = valid
         self.__curr_hand = hand
         self.__curr_board = board
         self.__curr_score = score
@@ -67,6 +69,7 @@ class ServerResponse(JsonableObject):
     def json_serialize(self) -> Dict[str, List[Tile] | Board | int]:
         dict_form = {
             'type': 'response',
+            'valid': self.__valid,
             'curr_hand': self.__curr_hand,
             'curr_board': self.__curr_board,
             'curr_score': self.__curr_score
@@ -74,5 +77,5 @@ class ServerResponse(JsonableObject):
         return dict_form
     
     def json_deserialize(serialized_form: Dict[str, List[Tile] | Board | int]):
-        return ServerResponse(serialized_form['curr_hand'], serialized_form['curr_board'], serialized_form['curr_score'])
+        return ServerResponse(serialized_form['valid'], serialized_form['curr_hand'], serialized_form['curr_board'], serialized_form['curr_score'])
 
