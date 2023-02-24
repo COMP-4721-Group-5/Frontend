@@ -279,5 +279,5 @@ class Board(JsonableObject):
             if pos_tuple != 'type':
                 position = eval(pos_tuple)
                 new_board.__board[position[0],
-                            position[1]] = Tile.json_deserialize(serialized_form[pos_tuple])
+                            position[1]] = serialized_form[pos_tuple]
         return new_board
