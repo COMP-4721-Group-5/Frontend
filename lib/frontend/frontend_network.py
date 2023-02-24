@@ -13,7 +13,7 @@ from ..shared.network_exchange_format import ClientRequest
 from ..shared.network_exchange_format import ServerResponse
 
 class DataReceivedEvent(pygame.event.Event):
-    TYPE: Final[int] = USEREVENT + 1
+    EVENTTYPE: Final[int] = USEREVENT + 1
 
     def __init__(self, data: ServerResponse):
         super().__init__(DataReceivedEvent.TYPE, data.json_serialize())
