@@ -1,8 +1,12 @@
+import json
 from typing import Final
 import socket
 
 from pygame import USEREVENT
 import pygame.event
+
+from ..shared.network_exchange_format import JsonableEncoder
+from ..shared.network_exchange_format import ClientRequest
 
 class DataReceivedEvent(pygame.event.Event):
     TYPE: Final[int] = USEREVENT + 1
@@ -42,20 +46,13 @@ class ClientSocket:
         self.__sock.connect((self.__host, self.__port))
         self.__closed = False
 
-    def send_data(self, data: str):
+    def send_data(self, data: ClientRequest) -> None:
         """Sends given data to the connected host.
 
         Args:
             data: data to send to the host
-        
-        Returns:
-            Response returned by the host.
         """
-        self.__sock.send(data.encode())
-        recv_msg = self.__sock.recv(4096)
-        if len(recv_msg) == 0:
-            self.close()
-        return recv_msg.decode()
+        self.__sock.send(json.dumps(data, cls = JsonableEncoder).encode())
 
     def close(self) -> None:
         """Closes connection with the server.
