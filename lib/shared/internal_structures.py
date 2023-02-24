@@ -236,6 +236,23 @@ class Board(JsonableObject):
         if self.__board[placement.x_coord, placement.y_coord] == 0:
             self.__board[placement.x_coord, placement.y_coord] = placement.tile
 
+    def __eq__(self, __o: object) -> bool:
+        if isinstance(__o, Board):
+            self_tile_pos = np.where(self.__board != 0)
+            self_pos_tuples = list(zip(self_tile_pos[0], self_tile_pos[1]))
+            other_tile_pos = np.where(__o.__board != 0)
+            other_pos_tuples = list(zip(other_tile_pos[0], other_tile_pos[1]))
+            if len(self_pos_tuples) != len(other_pos_tuples):
+                return False
+            for self_pos_tuple in self_pos_tuples:
+                if self_pos_tuple not in other_pos_tuples:
+                    return False
+                elif self.__board[self_pos_tuple[0], self_pos_tuple[1]] != __o.__board[self_pos_tuple[0], self_pos_tuple[1]]:
+                    return False
+            return True
+        else:
+            return False
+
     def json_serialize(self) -> Dict[str, Dict[str, bool | int]]:
         tile_pos = np.where(self.__board != 0)
         pos_tuples = list(zip(tile_pos[0], tile_pos[1]))
