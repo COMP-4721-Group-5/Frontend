@@ -176,8 +176,8 @@ class QwirkeleController:
         """Starts next turn
         """
         for i in range(6):
-            if self.__get_curr_turn_client()[i] is None:
-                self.__get_curr_turn_client()[i] = self.__tile_bag.pop(rand.randrange(len(self.__tile_bag)))
+            if self.__get_curr_turn_client().get_player()[i] is None:
+                self.__get_curr_turn_client().get_player()[i] = self.__tile_bag.pop(rand.randrange(len(self.__tile_bag)))
         self.sync_all_players()
         self.__curr_player = (self.__curr_player + 1) % len(self.__clients)
         # check if game is over (i.e., no more tiles can be placed)
