@@ -22,11 +22,20 @@ Address: TypeAlias = Tuple[str, int]
 
 @dataclass
 class Request:
+    """Python Representation of Received Request
+
+    Attributes:
+        connection: Connection to a client
+        time: Time of request
+        data: Content of request
+    """
     connection: 'ClientConnection'
     time: float
     data: ClientRequest
 
 class ClientConnection:
+    """Python Representation of Connection to a Client
+    """
     __csock: socket.socket
     __addr: Address
     __listener: '_ClientMsgListener'
@@ -41,19 +50,35 @@ class ClientConnection:
         self.__listener.start()
 
     def send_data(self, data: ServerResponse):
+        """Sends data to client.
+
+        Args:
+            data: Data to send to client
+        """
         self.__csock.send(json.dumps(data, cls = JsonableEncoder).encode())
 
     def stop_listening(self) -> None:
+        """Stops listening from client.
+        """
         self.__stop_listen.set()
 
     def get_player(self):
+        """Gets underlying player data for this client.
+
+        Returns:
+            Underlying player data for this client.
+        """
         return self.__player
 
     @property
     def address(self) -> Address:
+        """Gets address of the client.
+        """
         return self.__addr
 
     class _ClientMsgListener(Thread):
+        """Multithreaded socket listener implementation for server
+        """
         __connection: 'ClientConnection'
         __msg_queue: Queue[Request]
 
@@ -74,6 +99,16 @@ class ClientConnection:
             self.__connection.__csock.close()
 
 class QwirkeleController:
+    """Root controller for Qwirkle Server
+
+    Attributes:
+        clients: Clients connected to this server
+        requests: Queue of requests from clients
+        board: Internal board instance
+        tile_bag: Bag of tiles
+        active: Indicates current state of server
+        curr_player: Current player in turn
+    """
     __clients: List[ClientConnection]
     __requests: Queue[Request]
     __board: Board
@@ -101,6 +136,8 @@ class QwirkeleController:
         self.__start_next_turn()
 
     def process_request(self):
+        """Processes a request from client
+        """
         curr_request = self.__requests.get()
         # use curr_request.data to access the content of request directly
         if curr_request.connection != self.__get_curr_turn_client():
@@ -123,15 +160,21 @@ class QwirkeleController:
             # this means that request is invalid, so yell at client
 
     def sync_all_players(self):
+        """Synchronizes all player states
+        """
         for client in self.__clients:
             # send current board state to client
             # send current player state to client
             pass
 
     def __get_curr_turn_client(self):
+        """Gets client playing the turn.
+        """
         return self.__clients[self.__curr_player]
 
     def __start_next_turn(self):
+        """Starts next turn
+        """
         for i in range(6):
             if self.__get_curr_turn_client()[i] is None:
                 self.__get_curr_turn_client()[i] = self.__tile_bag.pop(rand.randrange(len(self.__tile_bag)))
@@ -145,7 +188,17 @@ class QwirkeleController:
             # Message next client to start turn
 
     def has_request(self):
+        """Checks whether there is request to process
+
+        Returns:
+            True if there is >=1 request to process
+        """
         return not self.__requests.empty()
 
     def in_game(self):
+        """Checks current state of game
+
+        Returns:
+            True if game is running.
+        """
         return self.__active
