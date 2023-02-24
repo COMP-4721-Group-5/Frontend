@@ -13,6 +13,9 @@ from ..shared.internal_structures import Tile
 from ..shared.internal_structures import TileColor
 from ..shared.internal_structures import TileShape
 from ..shared.network_exchange_format import JsonableDecoder
+from ..shared.network_exchange_format import JsonableEncoder
+from ..shared.network_exchange_format import ClientRequest
+from ..shared.network_exchange_format import ServerResponse
 from ..shared.player import Player
 
 Address: TypeAlias = Tuple[str, int]
@@ -21,7 +24,7 @@ Address: TypeAlias = Tuple[str, int]
 class Request:
     connection: 'ClientConnection'
     time: float
-    data: str
+    data: ClientRequest
 
 class ClientConnection:
     __csock: socket.socket
@@ -37,8 +40,8 @@ class ClientConnection:
         self.__stop_listen = Event()
         self.__listener.start()
 
-    def send_data(self, data: str):
-        self.__csock.send(data.encode())
+    def send_data(self, data: ServerResponse):
+        self.__csock.send(json.dumps(data, cls = JsonableEncoder).encode())
 
     def stop_listening(self) -> None:
         self.__stop_listen.set()
@@ -60,7 +63,7 @@ class ClientConnection:
 
         def run(self):
             while not self.__connection.__stop_listen.is_set():
-                recv_data = self.__connection.__csock.recv(4096).decode()
+                recv_data = json.loads(self.__connection.__csock.recv(4096).decode(), cls=JsonableDecoder)
                 self.__msg_queue.put(Request(self.__connection, time.time(), recv_data))
 
             self.__connection.__csock.shutdown(socket.SHUT_WR)
@@ -99,7 +102,7 @@ class QwirkeleController:
 
     def process_request(self):
         curr_request = self.__requests.get()
-        parsed_request = json.loads(curr_request.data, cls = JsonableDecoder)
+        # use curr_request.data to access the content of request directly
         if curr_request.connection != self.__get_curr_turn_client():
             # request made from client not in turn
             # yell at the client
