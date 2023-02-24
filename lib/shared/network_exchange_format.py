@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, List
+from typing import Any, Dict, Final, List
 
 from .internal_structures import JsonableObject
 from .internal_structures import Tile
@@ -22,15 +22,15 @@ class JsonableDecoder(json.JSONDecoder):
 
     def object_hook(self, dct: Dict[str, Any]):
         if 'type' in dct.keys():
-            if dct['type'] == 'tile':
+            if dct['type'] == Tile.JSONABLE_TYPE:
                 return Tile.json_deserialize(dct)
-            elif dct['type'] == 'placement':
+            elif dct['type'] == Placement.JSONABLE_TYPE:
                 return Placement.json_deserialize(dct)
-            elif dct['type'] == 'board':
+            elif dct['type'] == Board.JSONABLE_TYPE:
                 return Board.json_deserialize(dct)
-            elif dct['type'] == 'request':
+            elif dct['type'] == ClientRequest.JSONABLE_TYPE:
                 return ClientRequest.json_deserialize(dct)
-            elif dct['type'] == 'response':
+            elif dct['type'] == ServerResponse.JSONABLE_TYPE:
                 return ServerResponse.json_deserialize(dct)
         else:
             return dct
@@ -38,6 +38,7 @@ class JsonableDecoder(json.JSONDecoder):
 class ClientRequest(JsonableObject):
     """Python Representation of Request from Client
     """
+    JSONABLE_TYPE: Final[str] = 'request'
     __request_type: str
     __data: List[Tile] | List[Placement]
 
@@ -60,7 +61,7 @@ class ClientRequest(JsonableObject):
 
     def json_serialize(self) -> Dict[str, str | List[Placement] | List[Tile]]:
         dict_form = {
-            'type': 'request',
+            'type': ClientRequest.JSONABLE_TYPE,
             'request_type': self.__request_type,
             'data': self.__data
         }
@@ -73,6 +74,7 @@ class ClientRequest(JsonableObject):
 class ServerResponse(JsonableObject):
     """Python Representation of Response from Server
     """
+    JSONABLE_TYPE: Final[str] = 'response'
     __valid: bool
     __curr_hand: List[Tile]
     __curr_board: Board
@@ -108,7 +110,7 @@ class ServerResponse(JsonableObject):
 
     def json_serialize(self) -> Dict[str, List[Tile] | Board | int]:
         dict_form = {
-            'type': 'response',
+            'type': ServerResponse.JSONABLE_TYPE,
             'valid': self.__valid,
             'curr_hand': self.__curr_hand,
             'curr_board': self.__curr_board,

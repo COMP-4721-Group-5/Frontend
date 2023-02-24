@@ -70,6 +70,7 @@ class Tile(JsonableObject):
         __shape: shape of the tile
         __temporary: boolean to tell if the tile is temporary
     """
+    JSONABLE_TYPE: Final[str] = 'tile'
     __color: TileColor
     __shape: TileShape
     __temporary: bool
@@ -141,7 +142,7 @@ class Tile(JsonableObject):
 
     def json_serialize(self) -> Dict[str, bool | int]:
         dict_form: Dict[str, bool | int] = {
-            'type': 'tile',
+            'type': Tile.JSONABLE_TYPE,
             'tile_type': self.hex_value,
             'temporary': self.__temporary
         }
@@ -165,6 +166,7 @@ class Placement(JsonableObject):
         x_coord: x coordinate of the tile to be placed within the game board
         y_coord: y coordinate of the tile to be placed within the game board
     """
+    JSONABLE_TYPE: Final[str] = 'placement'
     __tile: Tile
     __x_coord: int
     __y_coord: int
@@ -204,7 +206,7 @@ class Placement(JsonableObject):
 
     def json_serialize(self) -> Dict[str, str | Tile | List[int]]:
         dict_form: Dict[str, str | Tile | List[int]] = {
-            'type': 'placement',
+            'type': Placement.JSONABLE_TYPE,
             'tile': self.__tile.json_serialize(),
             'pos': [self.x_coord, self.y_coord]
         }
@@ -226,6 +228,7 @@ class Board(JsonableObject):
     Attributes:
         board: a 217x217 array of Tiles
     """
+    JSONABLE_TYPE: Final[str] = 'board'
     ROW: Final = 217
     COLUMN: Final = 217
 
@@ -266,7 +269,7 @@ class Board(JsonableObject):
         tile_pos = np.where(self.__board != 0)
         pos_tuples = list(zip(tile_pos[0], tile_pos[1]))
         dict_form = dict()
-        dict_form['type'] = 'board'
+        dict_form['type'] = Board.JSONABLE_TYPE
         for pos_tuple in pos_tuples:
             tile: Tile = self.__board[pos_tuple[0], pos_tuple[1]]
             dict_form[str(pos_tuple)] = tile.json_serialize()
