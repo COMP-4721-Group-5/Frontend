@@ -42,6 +42,16 @@ class ClientRequest(JsonableObject):
         else:
             raise ValueError
 
+    @property
+    def request_type(self):
+        return self.__request_type
+    
+    def __getitem__(self, key: int):
+        return self.__hand[key]
+
+    def __iter__(self):
+        return iter(self.__data)
+
     def json_serialize(self) -> Dict[str, str | List[Placement] | List[Tile]]:
         dict_form = {
             'type': 'request',
@@ -65,6 +75,22 @@ class ServerResponse(JsonableObject):
         self.__curr_hand = hand
         self.__curr_board = board
         self.__curr_score = score
+
+    @property
+    def valid(self):
+        return self.__valid
+
+    @property
+    def curr_hand(self):
+        return self.__curr_hand
+
+    @property
+    def curr_board(self):
+        return self.__curr_board
+
+    @property
+    def curr_score(self):
+        return self.__curr_score
 
     def json_serialize(self) -> Dict[str, List[Tile] | Board | int]:
         dict_form = {
