@@ -20,6 +20,7 @@ from ..shared.player import Player
 
 Address: TypeAlias = Tuple[str, int]
 
+
 @dataclass
 class Request:
     """Python Representation of Received Request
@@ -33,6 +34,7 @@ class Request:
     time: float
     data: ClientRequest
 
+
 class ClientConnection:
     """Python Representation of Connection to a Client
     """
@@ -42,7 +44,8 @@ class ClientConnection:
     __stop_listen: Event
     __player: Player
 
-    def __init__(self, csock: socket.socket, addr: Address, msg_queue: Queue[Request]) -> None:
+    def __init__(self, csock: socket.socket, addr: Address,
+                 msg_queue: Queue[Request]) -> None:
         self.__csock = csock
         self.__addr = addr
         self.__listener = ClientConnection._ClientMsgListener(self, msg_queue)
@@ -55,7 +58,7 @@ class ClientConnection:
         Args:
             data: Data to send to client
         """
-        self.__csock.send(json.dumps(data, cls = JsonableEncoder).encode())
+        self.__csock.send(json.dumps(data, cls=JsonableEncoder).encode())
 
     def stop_listening(self) -> None:
         """Stops listening from client.
@@ -82,14 +85,18 @@ class ClientConnection:
         __connection: 'ClientConnection'
         __msg_queue: Queue[Request]
 
-        def __init__(self, connection: 'ClientConnection', msg_queue: Queue[Request]):
+        def __init__(self, connection: 'ClientConnection',
+                     msg_queue: Queue[Request]):
             self.__connection = connection
             self.__msg_queue = msg_queue
 
         def run(self):
             while not self.__connection.__stop_listen.is_set():
-                recv_data = json.loads(self.__connection.__csock.recv(4096).decode(), cls=JsonableDecoder)
-                self.__msg_queue.put(Request(self.__connection, time.time(), recv_data))
+                recv_data = json.loads(
+                    self.__connection.__csock.recv(4096).decode(),
+                    cls=JsonableDecoder)
+                self.__msg_queue.put(
+                    Request(self.__connection, time.time(), recv_data))
 
             self.__connection.__csock.shutdown(socket.SHUT_WR)
 
@@ -97,6 +104,7 @@ class ClientConnection:
                 recv_data = self.__connection.__csock.recv(1024)
 
             self.__connection.__csock.close()
+
 
 class QwirkeleController:
     """Root controller for Qwirkle Server
@@ -116,7 +124,8 @@ class QwirkeleController:
     __active: bool
     __curr_player: int
 
-    def __init__(self, client_list: List[ClientConnection], request_queue: Queue[Request]) -> None:
+    def __init__(self, client_list: List[ClientConnection],
+                 request_queue: Queue[Request]) -> None:
         self.__clients = client_list
         self.__requests = request_queue
         self.__curr_player = 0
@@ -131,7 +140,8 @@ class QwirkeleController:
             for i in range(6):
                 # Add tiles to player
                 # TODO: Initialize underlying hand list inside Player
-                client.get_player()[i] = self.__tile_bag.pop(rand.randrange(len(self.__tile_bag)))
+                client.get_player()[i] = self.__tile_bag.pop(
+                    rand.randrange(len(self.__tile_bag)))
         self.sync_all_players()
         self.__start_next_turn()
 
@@ -177,15 +187,16 @@ class QwirkeleController:
         """
         for i in range(6):
             if self.__get_curr_turn_client().get_player()[i] is None:
-                self.__get_curr_turn_client().get_player()[i] = self.__tile_bag.pop(rand.randrange(len(self.__tile_bag)))
+                self.__get_curr_turn_client().get_player(
+                )[i] = self.__tile_bag.pop(rand.randrange(len(self.__tile_bag)))
         self.sync_all_players()
         self.__curr_player = (self.__curr_player + 1) % len(self.__clients)
         # check if game is over (i.e., no more tiles can be placed)
         # if game over:
-            # set self.__active to false
-            # announce game over
+        # set self.__active to false
+        # announce game over
         # else:
-            # Message next client to start turn
+        # Message next client to start turn
 
     def has_request(self):
         """Checks whether there is request to process

@@ -7,15 +7,14 @@ from typing import List
 
 from lib.backend.server_components import *
 
-
-sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock_server.bind(("", 1234))
 sock_server.listen()
 
 connections: List[ClientConnection] = list()
 request_queue: Queue[Request] = Queue()
 
-for i in range(2): # Arbitrary limitation of 2 players for POC
+for i in range(2):  # Arbitrary limitation of 2 players for POC
     csock, addr = sock_server.accept()
     connections.append(ClientConnection(csock, addr, request_queue))
 

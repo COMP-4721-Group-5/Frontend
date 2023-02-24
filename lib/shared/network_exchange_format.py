@@ -7,19 +7,26 @@ from .internal_structures import Tile
 from .internal_structures import Placement
 from .internal_structures import Board
 
+
 class JsonableEncoder(json.JSONEncoder):
     """Custom JSON Encoder for Jsonable Objects
     """
+
     def default(self, o: Any) -> Any:
         if isinstance(o, JsonableObject):
             return o.json_serialize()
         return super().default(o)
 
+
 class JsonableDecoder(json.JSONDecoder):
     """Custom JSON Decoder for Jsonable Objects
     """
+
     def __init__(self, *args, **kwargs):
-        json.JSONDecoder.__init__(self, *args, object_hook=self.object_hook, **kwargs)
+        json.JSONDecoder.__init__(self,
+                                  *args,
+                                  object_hook=self.object_hook,
+                                  **kwargs)
 
     def object_hook(self, dct: Dict[str, Any]):
         if 'type' in dct.keys():
@@ -35,6 +42,7 @@ class JsonableDecoder(json.JSONDecoder):
                 return ServerResponse.json_deserialize(dct)
         else:
             return dct
+
 
 class ClientRequest(JsonableObject):
     """Python Representation of Request from Client
@@ -53,7 +61,7 @@ class ClientRequest(JsonableObject):
     @property
     def request_type(self):
         return self.__request_type
-    
+
     def __getitem__(self, key: int):
         return self.__hand[key]
 
@@ -67,10 +75,13 @@ class ClientRequest(JsonableObject):
             'data': self.__data
         }
         return dict_form
-    
-    def json_deserialize(serialized_form: Dict[str, str | List[Placement] | List[Tile]]):
-        new_request = ClientRequest(serialized_form['request_type'], serialized_form['data'])
+
+    def json_deserialize(serialized_form: Dict[str, str | List[Placement] |
+                                               List[Tile]]):
+        new_request = ClientRequest(serialized_form['request_type'],
+                                    serialized_form['data'])
         return new_request
+
 
 class ServerResponse(JsonableObject):
     """Python Representation of Response from Server
@@ -81,8 +92,24 @@ class ServerResponse(JsonableObject):
     __curr_board: Board
     __curr_score: int
 
-    def __init__(self, hand: List[Tile], board: Board, score: int, valid: bool = False, first: bool = False, start_turn: bool = False, game_over: bool = False, flag: int = -1) -> None:
-        self.__flag = (ServerResponse.ResponseFlag.VALID if valid else ~ServerResponse.ResponseFlag.VALID | ServerResponse.ResponseFlag.FIRST if first else ~ServerResponse.ResponseFlag.FIRST | ServerResponse.ResponseFlag.START_TURN if start_turn else ~ServerResponse.ResponseFlag.START_TURN | ServerResponse.ResponseFlag.GAME_OVER if game_over else ~ServerResponse.ResponseFlag.GAME_OVER) if flag < 0 else ServerResponse.ResponseFlag(flag)
+    def __init__(self,
+                 hand: List[Tile],
+                 board: Board,
+                 score: int,
+                 valid: bool = False,
+                 first: bool = False,
+                 start_turn: bool = False,
+                 game_over: bool = False,
+                 flag: int = -1) -> None:
+        self.__flag = (ServerResponse.ResponseFlag.VALID
+                       if valid else ~ServerResponse.ResponseFlag.VALID |
+                       ServerResponse.ResponseFlag.FIRST
+                       if first else ~ServerResponse.ResponseFlag.FIRST |
+                       ServerResponse.ResponseFlag.START_TURN if start_turn else
+                       ~ServerResponse.ResponseFlag.START_TURN |
+                       ServerResponse.ResponseFlag.GAME_OVER
+                       if game_over else ~ServerResponse.ResponseFlag.GAME_OVER
+                      ) if flag < 0 else ServerResponse.ResponseFlag(flag)
         self.__curr_hand = hand
         self.__curr_board = board
         self.__curr_score = score
@@ -118,12 +145,15 @@ class ServerResponse(JsonableObject):
             'curr_score': self.__curr_score
         }
         return dict_form
-    
+
     def json_deserialize(serialized_form: Dict[str, List[Tile] | Board | int]):
-        return ServerResponse(serialized_form['curr_hand'], serialized_form['curr_board'], serialized_form['curr_score'], flag = serialized_form['flag'])
+        return ServerResponse(serialized_form['curr_hand'],
+                              serialized_form['curr_board'],
+                              serialized_form['curr_score'],
+                              flag=serialized_form['flag'])
 
     class ResponseFlag(IntFlag):
-        VALID      = 0b0001
-        FIRST      = 0b0010
+        VALID = 0b0001
+        FIRST = 0b0010
         START_TURN = 0b0100
-        GAME_OVER  = 0b1000
+        GAME_OVER = 0b1000
