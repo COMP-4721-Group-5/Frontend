@@ -143,6 +143,7 @@ class Tile(JsonableObject):
 
     @staticmethod
     def json_deserialize(serialized_form: Dict[str, bool | int]):
+        if type(serialized_form) is not Dict: raise TypeError
         new_tile = Tile(0, 0)
         new_tile.__color = TileColor(serialized_form['tile_type'] & 0x0f)
         new_tile.__shape = TileShape(serialized_form['tile_type'] & 0xf0)
@@ -202,6 +203,7 @@ class Placement(JsonableObject):
 
     @staticmethod
     def json_deserialize(serialized_form: Dict[str, str | Tile | List[int]]):
+        if type(serialized_form) is not Dict: raise TypeError
         new_placement = Placement(None, -1, -1)
         new_placement.__tile = serialized_form['tile']
         new_placement.__x_coord = serialized_form['pos'][0]
@@ -245,6 +247,7 @@ class Board(JsonableObject):
         return dict_form
 
     def json_deserialize(serialized_form: Dict[str, Dict[str, bool | int]]):
+        if type(serialized_form) is not Dict: raise TypeError
         new_board = Board()
         for pos_tuple in serialized_form.keys():
             if pos_tuple != 'type':
