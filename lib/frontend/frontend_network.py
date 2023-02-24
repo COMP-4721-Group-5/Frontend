@@ -12,6 +12,7 @@ from ..shared.network_exchange_format import JsonableDecoder
 from ..shared.network_exchange_format import ClientRequest
 from ..shared.network_exchange_format import ServerResponse
 
+
 class DataReceivedEvent(pygame.event.Event):
     """Custom Pygame Event for Data Received
     
@@ -29,6 +30,7 @@ class DataReceivedEvent(pygame.event.Event):
 
     def __init__(self, data: ServerResponse):
         super().__init__(DataReceivedEvent.TYPE, data.json_serialize())
+
 
 class ClientSocket:
     """Python Implementation of Client socket.
@@ -70,14 +72,15 @@ class ClientSocket:
         Args:
             data: data to send to the host
         """
-        self.__sock.send(json.dumps(data, cls = JsonableEncoder).encode())
+        self.__sock.send(json.dumps(data, cls=JsonableEncoder).encode())
 
     def close(self) -> None:
         """Closes connection with the server.
         """
-        if self.__closed.is_set(): return
+        if self.__closed.is_set():
+            return
         self.__closed.set()
-    
+
     @property
     def closed(self) -> bool:
         """Flag indicating status of socket"""
@@ -96,7 +99,7 @@ class ClientSocket:
                 recv_data = self.__connection.__sock.recv(4096)
                 if len(recv_data) == 0:
                     self.__connection.close()
-                response = json.loads(recv_data.decode(), cls = JsonableDecoder)
+                response = json.loads(recv_data.decode(), cls=JsonableDecoder)
                 pygame.event.post(DataReceivedEvent(response))
 
             self.__connection.__sock.shutdown(socket.SHUT_WR)
