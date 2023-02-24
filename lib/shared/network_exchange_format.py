@@ -1,3 +1,4 @@
+from enum import IntFlag
 import json
 from typing import Any, Dict, Final, List
 
@@ -75,13 +76,13 @@ class ServerResponse(JsonableObject):
     """Python Representation of Response from Server
     """
     JSONABLE_TYPE: Final[str] = 'response'
-    __valid: bool
+    __flag: 'ServerResponse.ResponseFlag'
     __curr_hand: List[Tile]
     __curr_board: Board
     __curr_score: int
 
-    def __init__(self, valid: bool, hand: List[Tile], board: Board, score: int) -> None:
-        self.__valid = valid
+    def __init__(self, hand: List[Tile], board: Board, score: int, valid: bool = False, first: bool = False, start_turn: bool = False, game_over: bool = False, flag: int = -1) -> None:
+        self.__flag = (ServerResponse.ResponseFlag.VALID if valid else ~ServerResponse.ResponseFlag.VALID | ServerResponse.ResponseFlag.FIRST if first else ~ServerResponse.ResponseFlag.FIRST | ServerResponse.ResponseFlag.START_TURN if start_turn else ~ServerResponse.ResponseFlag.START_TURN | ServerResponse.ResponseFlag.GAME_OVER if game_over else ~ServerResponse.ResponseFlag.GAME_OVER) if flag < 0 else ServerResponse.ResponseFlag(flag)
         self.__curr_hand = hand
         self.__curr_board = board
         self.__curr_score = score
@@ -111,7 +112,7 @@ class ServerResponse(JsonableObject):
     def json_serialize(self) -> Dict[str, List[Tile] | Board | int]:
         dict_form = {
             'type': ServerResponse.JSONABLE_TYPE,
-            'valid': self.__valid,
+            'flag': int(self.__flag),
             'curr_hand': self.__curr_hand,
             'curr_board': self.__curr_board,
             'curr_score': self.__curr_score
@@ -119,5 +120,10 @@ class ServerResponse(JsonableObject):
         return dict_form
     
     def json_deserialize(serialized_form: Dict[str, List[Tile] | Board | int]):
-        return ServerResponse(serialized_form['valid'], serialized_form['curr_hand'], serialized_form['curr_board'], serialized_form['curr_score'])
+        return ServerResponse(serialized_form['curr_hand'], serialized_form['curr_board'], serialized_form['curr_score'], flag = serialized_form['flag'])
 
+    class ResponseFlag(IntFlag):
+        VALID      = 0b0001
+        FIRST      = 0b0010
+        START_TURN = 0b0100
+        GAME_OVER  = 0b1000
