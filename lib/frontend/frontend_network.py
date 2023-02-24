@@ -13,6 +13,18 @@ from ..shared.network_exchange_format import ClientRequest
 from ..shared.network_exchange_format import ServerResponse
 
 class DataReceivedEvent(pygame.event.Event):
+    """Custom Pygame Event for Data Received
+    
+    Provides customized Pygame event that gets
+    added to the event queue when some data is
+    received from the server over the network.
+
+    Attributes:
+        valid: Flag for validity of latest request
+        curr_hand: Current state of the hand of the player
+        curr_board: Current state of the board
+        curr_score: Current score of the player
+    """
     EVENTTYPE: Final[int] = USEREVENT + 1
 
     def __init__(self, data: ServerResponse):
@@ -72,6 +84,8 @@ class ClientSocket:
         return self.__closed.is_set()
 
     class _ServerMsgListener(Thread):
+        """Multithreaded socket listener implementation for client
+        """
         __connection: 'ClientSocket'
 
         def __init__(self, connection: 'ClientSocket'):
