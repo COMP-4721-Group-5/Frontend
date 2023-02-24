@@ -192,8 +192,8 @@ class Placement(JsonableObject):
         else:
             return False
 
-    def json_serialize(self) -> Dict[str, Dict[str, bool | int] | List[int]]:
-        dict_form: Dict[str, Dict[str, bool | int] | List[int]] = {
+    def json_serialize(self) -> Dict[str, str | Tile | List[int]]:
+        dict_form: Dict[str, str | Tile | List[int]] = {
             'type': 'placement',
             'tile': self.__tile.json_serialize(),
             'pos': [self.x_coord, self.y_coord]
@@ -201,9 +201,9 @@ class Placement(JsonableObject):
         return dict_form
 
     @staticmethod
-    def json_deserialize(serialized_form: Dict[str, Dict[str, bool | int] | List[int]]):
+    def json_deserialize(serialized_form: Dict[str, str | Tile | List[int]]):
         new_placement = Placement(None, -1, -1)
-        new_placement.__tile = Tile.json_deserialize(serialized_form['tile'])
+        new_placement.__tile = serialized_form['tile']
         new_placement.__x_coord = serialized_form['pos'][0]
         new_placement.__y_coord = serialized_form['pos'][1]
         return new_placement
