@@ -1,4 +1,15 @@
+from typing import Final
 import socket
+
+from pygame import USEREVENT
+import pygame.event
+
+class DataReceivedEvent(pygame.event.Event):
+    TYPE: Final[int] = USEREVENT + 1
+
+    def __init__(self):
+        super().__init__(DataReceivedEvent.TYPE, None)
+        # TODO: Replace None arg with data objects
 
 class ClientSocket:
     """Python Implementation of Client socket.
