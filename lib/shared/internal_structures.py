@@ -133,6 +133,12 @@ class Tile(JsonableObject):
         else:
             return False
 
+    def __repr__(self) -> str:
+        if self.__temporary:
+            return 'Temporary %s %s tile' % (self.__color.name, self.__shape.name)
+        else:
+            return '%s %s tile' % (self.__color.name, self.__shape.name)
+
     def json_serialize(self) -> Dict[str, bool | int]:
         dict_form: Dict[str, bool | int] = {
             'type': 'tile',
@@ -143,6 +149,7 @@ class Tile(JsonableObject):
 
     @staticmethod
     def json_deserialize(serialized_form: Dict[str, bool | int]):
+        if type(serialized_form) is not dict: raise TypeError
         new_tile = Tile(0, 0)
         new_tile.__color = TileColor(serialized_form['tile_type'] & 0x0f)
         new_tile.__shape = TileShape(serialized_form['tile_type'] & 0xf0)
@@ -192,8 +199,11 @@ class Placement(JsonableObject):
         else:
             return False
 
-    def json_serialize(self) -> Dict[str, Dict[str, bool | int] | List[int]]:
-        dict_form: Dict[str, Dict[str, bool | int] | List[int]] = {
+    def __repr__(self) -> str:
+        return '%s at (%d, %d)' %(self.__tile.__repr__(), self.x_coord, self.y_coord)
+
+    def json_serialize(self) -> Dict[str, str | Tile | List[int]]:
+        dict_form: Dict[str, str | Tile | List[int]] = {
             'type': 'placement',
             'tile': self.__tile.json_serialize(),
             'pos': [self.x_coord, self.y_coord]
@@ -201,9 +211,10 @@ class Placement(JsonableObject):
         return dict_form
 
     @staticmethod
-    def json_deserialize(serialized_form: Dict[str, Dict[str, bool | int] | List[int]]):
+    def json_deserialize(serialized_form: Dict[str, str | Tile | List[int]]):
+        if type(serialized_form) is not dict: raise TypeError
         new_placement = Placement(None, -1, -1)
-        new_placement.__tile = Tile.json_deserialize(serialized_form['tile'])
+        new_placement.__tile = serialized_form['tile']
         new_placement.__x_coord = serialized_form['pos'][0]
         new_placement.__y_coord = serialized_form['pos'][1]
         return new_placement
@@ -234,6 +245,23 @@ class Board(JsonableObject):
         if self.__board[placement.x_coord, placement.y_coord] == 0:
             self.__board[placement.x_coord, placement.y_coord] = placement.tile
 
+    def __eq__(self, __o: object) -> bool:
+        if isinstance(__o, Board):
+            self_tile_pos = np.where(self.__board != 0)
+            self_pos_tuples = list(zip(self_tile_pos[0], self_tile_pos[1]))
+            other_tile_pos = np.where(__o.__board != 0)
+            other_pos_tuples = list(zip(other_tile_pos[0], other_tile_pos[1]))
+            if len(self_pos_tuples) != len(other_pos_tuples):
+                return False
+            for self_pos_tuple in self_pos_tuples:
+                if self_pos_tuple not in other_pos_tuples:
+                    return False
+                elif self.__board[self_pos_tuple[0], self_pos_tuple[1]] != __o.__board[self_pos_tuple[0], self_pos_tuple[1]]:
+                    return False
+            return True
+        else:
+            return False
+
     def json_serialize(self) -> Dict[str, Dict[str, bool | int]]:
         tile_pos = np.where(self.__board != 0)
         pos_tuples = list(zip(tile_pos[0], tile_pos[1]))
@@ -245,10 +273,11 @@ class Board(JsonableObject):
         return dict_form
 
     def json_deserialize(serialized_form: Dict[str, Dict[str, bool | int]]):
+        if type(serialized_form) is not dict: raise TypeError
         new_board = Board()
         for pos_tuple in serialized_form.keys():
             if pos_tuple != 'type':
                 position = eval(pos_tuple)
                 new_board.__board[position[0],
-                            position[1]] = Tile.json_deserialize(serialized_form[pos_tuple])
+                            position[1]] = serialized_form[pos_tuple]
         return new_board
