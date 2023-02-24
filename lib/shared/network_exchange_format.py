@@ -28,6 +28,8 @@ class JsonableDecoder(json.JSONDecoder):
                 return Board.json_deserialize(dct)
             elif dct['type'] == 'request':
                 return ClientRequest.json_deserialize(dct)
+            elif dct['type'] == 'response':
+                return ServerResponse.json_deserialize(dct)
         else:
             return dct
 
@@ -53,4 +55,26 @@ class ClientRequest(JsonableObject):
     def json_deserialize(serialized_form: Dict[str, str | List[Placement] | List[Tile]]):
         new_request = ClientRequest(serialized_form['request_type'], serialized_form['data'])
         return new_request
+
+class ServerResponse(JsonableObject):
+    __curr_hand: List[Tile]
+    __curr_board: Board
+    __curr_score: int
+
+    def __init__(self, hand: List[Tile], board: Board, score: int) -> None:
+        self.__curr_hand = hand
+        self.__curr_board = board
+        self.__curr_score = score
+
+    def json_serialize(self) -> Dict[str, List[Tile] | Board | int]:
+        dict_form = {
+            'type': 'response',
+            'curr_hand': self.__curr_hand,
+            'curr_board': self.__curr_board,
+            'curr_score': self.__curr_score
+        }
+        return dict_form
+    
+    def json_deserialize(serialized_form: Dict[str, List[Tile] | Board | int]):
+        return ServerResponse(serialized_form['curr_hand'], serialized_form['curr_board'], serialized_form['curr_score'])
 
