@@ -133,6 +133,12 @@ class Tile(JsonableObject):
         else:
             return False
 
+    def __repr__(self) -> str:
+        if self.__temporary:
+            return 'Temporary %s %s tile' % (self.__color.name, self.__shape.name)
+        else:
+            return '%s %s tile' % (self.__color.name, self.__shape.name)
+
     def json_serialize(self) -> Dict[str, bool | int]:
         dict_form: Dict[str, bool | int] = {
             'type': 'tile',
@@ -192,6 +198,9 @@ class Placement(JsonableObject):
             return self.__tile == __o.__tile and self.__x_coord == __o.__x_coord and self.__y_coord == __o.__y_coord
         else:
             return False
+
+    def __repr__(self) -> str:
+        return '%s at (%d, %d)' %(self.__tile.__repr__(), self.x_coord, self.y_coord)
 
     def json_serialize(self) -> Dict[str, str | Tile | List[int]]:
         dict_form: Dict[str, str | Tile | List[int]] = {
