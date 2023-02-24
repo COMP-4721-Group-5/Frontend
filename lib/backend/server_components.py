@@ -153,21 +153,54 @@ class QwirkeleController:
         if curr_request.connection != self.__get_curr_turn_client():
             # request made from client not in turn
             # yell at the client
-            pass
+            curr_request.connection.send_data(
+                ServerResponse(curr_request.connection.get_player().get_hand(),
+                               self.__board,
+                               curr_request.connection.get_player().__score,
+                               flag=0b0000))
         # if request is discarding hand: handle here
+        if curr_request.data.request_type == 'discard':
             # Check if discarding is valid
+            valid_discard = True
             # if valid:
+            if valid_discard:
+                pass
                 # remove tiles from hand and put back in bag
                 # then call self.__start_next_turn()
             # else: yell at client
+            else:
+                curr_request.connection.send_data(
+                    ServerResponse(
+                        curr_request.connection.get_player().get_hand(),
+                        self.__board,
+                        curr_request.connection.get_player().__score,
+                        flag=0b0000))
         # if request is placing tiles:
+        elif curr_request.data.request_type == 'placement':
             # Check if placements are valid
+            valid_placement = True
             # if placements are valid:
+            if valid_placement:
+                pass
                 # mark placed tiles as permanent using Tile.set_permanent()
                 # update score of current player
                 # then call self.__start_next_turn()
+            else:
+                # yell at client
+                curr_request.connection.send_data(
+                    ServerResponse(
+                        curr_request.connection.get_player().get_hand(),
+                        self.__board,
+                        curr_request.connection.get_player().__score,
+                        flag=0b0000))
         # else:
+        else:
             # this means that request is invalid, so yell at client
+            curr_request.connection.send_data(
+                ServerResponse(curr_request.connection.get_player().get_hand(),
+                               self.__board,
+                               curr_request.connection.get_player().__score,
+                               flag=0b0000))
 
     def sync_all_players(self):
         """Synchronizes all player states
