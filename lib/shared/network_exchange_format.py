@@ -7,12 +7,16 @@ from .internal_structures import Placement
 from .internal_structures import Board
 
 class JsonableEncoder(json.JSONEncoder):
+    """Custom JSON Encoder for Jsonable Objects
+    """
     def default(self, o: Any) -> Any:
         if isinstance(o, JsonableObject):
             return o.json_serialize()
         return super().default(o)
 
 class JsonableDecoder(json.JSONDecoder):
+    """Custom JSON Decoder for Jsonable Objects
+    """
     def __init__(self, *args, **kwargs):
         json.JSONDecoder.__init__(self, *args, object_hook=self.object_hook, **kwargs)
 
@@ -32,6 +36,8 @@ class JsonableDecoder(json.JSONDecoder):
             return dct
 
 class ClientRequest(JsonableObject):
+    """Python Representation of Request from Client
+    """
     __request_type: str
     __data: List[Tile] | List[Placement]
 
@@ -65,6 +71,8 @@ class ClientRequest(JsonableObject):
         return new_request
 
 class ServerResponse(JsonableObject):
+    """Python Representation of Response from Server
+    """
     __valid: bool
     __curr_hand: List[Tile]
     __curr_board: Board
@@ -78,6 +86,8 @@ class ServerResponse(JsonableObject):
 
     @property
     def valid(self):
+        """Indicates whether the latest request was valid.
+        """
         return self.__valid
 
     @property
@@ -86,10 +96,14 @@ class ServerResponse(JsonableObject):
 
     @property
     def curr_board(self):
+        """Gets current state of board
+        """
         return self.__curr_board
 
     @property
     def curr_score(self):
+        """Gets current score.
+        """
         return self.__curr_score
 
     def json_serialize(self) -> Dict[str, List[Tile] | Board | int]:
