@@ -44,8 +44,8 @@ class ClientSocket:
 
     __host: str
     __port: int
-    __sock: socket.socket
-    __closed: Event
+    _sock: socket.socket
+    _closed: Event
     __listener: '_ServerMsgListener'
 
     def __init__(self, host: str, port: int) -> None:
@@ -57,10 +57,10 @@ class ClientSocket:
         """
         self.__host = host
         self.__port = port
-        self.__sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.__sock.connect((self.__host, self.__port))
+        self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._sock.connect((self.__host, self.__port))
         self.__listener = ClientSocket._ServerMsgListener(self)
-        self.__closed = Event()
+        self._closed = Event()
         self.__listener.start()
 
     def send_data(self, data: ClientRequest) -> None:
@@ -69,19 +69,19 @@ class ClientSocket:
         Args:
             data: data to send to the host
         """
-        self.__sock.send(json.dumps(data, cls=JsonableEncoder).encode())
+        self._sock.send(json.dumps(data, cls=JsonableEncoder).encode())
 
     def close(self) -> None:
         """Closes connection with the server.
         """
-        if self.__closed.is_set():
+        if self._closed.is_set():
             return
-        self.__closed.set()
+        self._closed.set()
 
     @property
     def closed(self) -> bool:
         """Flag indicating status of socket"""
-        return self.__closed.is_set()
+        return self._closed.is_set()
 
     class _ServerMsgListener(Thread):
         """Multithreaded socket listener implementation for client
@@ -93,16 +93,16 @@ class ClientSocket:
             self.__connection = connection
 
         def run(self):
-            while not self.__connection.__closed.is_set():
-                recv_data = self.__connection.__sock.recv(4096)
+            while not self.__connection._closed.is_set():
+                recv_data = self.__connection._sock.recv(4096)
                 if len(recv_data) == 0:
                     self.__connection.close()
                 response = json.loads(recv_data.decode(), cls=JsonableDecoder)
                 pygame.event.post(DataReceivedEvent.create_event(response))
 
-            self.__connection.__sock.shutdown(socket.SHUT_WR)
+            self.__connection._sock.shutdown(socket.SHUT_WR)
 
-            while len(self.__connection.__sock.recv(1024)) != 0:
-                self.__connection.__sock.send(b'')
+            while len(self.__connection._sock.recv(1024)) != 0:
+                self.__connection._sock.send(b'')
 
-            self.__connection.__sock.close()
+            self.__connection._sock.close()
