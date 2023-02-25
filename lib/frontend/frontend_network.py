@@ -89,6 +89,7 @@ class ClientSocket:
         __connection: 'ClientSocket'
 
         def __init__(self, connection: 'ClientSocket'):
+            Thread.__init__(self)
             self.__connection = connection
 
         def run(self):
