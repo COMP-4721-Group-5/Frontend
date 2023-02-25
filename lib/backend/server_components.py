@@ -38,18 +38,18 @@ class Request:
 class ClientConnection:
     """Python Representation of Connection to a Client
     """
-    __csock: socket.socket
+    _csock: socket.socket
     __addr: Address
     __listener: '_ClientMsgListener'
-    __stop_listen: Event
+    _stop_listen: Event
     __player: Player
 
     def __init__(self, csock: socket.socket, addr: Address,
                  msg_queue: Queue[Request]) -> None:
-        self.__csock = csock
+        self._csock = csock
         self.__addr = addr
         self.__listener = ClientConnection._ClientMsgListener(self, msg_queue)
-        self.__stop_listen = Event()
+        self._stop_listen = Event()
         self.__listener.start()
 
     def send_data(self, data: ServerResponse):
@@ -58,12 +58,12 @@ class ClientConnection:
         Args:
             data: Data to send to client
         """
-        self.__csock.send(json.dumps(data, cls=JsonableEncoder).encode())
+        self._csock.send(json.dumps(data, cls=JsonableEncoder).encode())
 
     def stop_listening(self) -> None:
         """Stops listening from client.
         """
-        self.__stop_listen.set()
+        self._stop_listen.set()
 
     def get_player(self):
         """Gets underlying player data for this client.
@@ -92,19 +92,19 @@ class ClientConnection:
             self.__msg_queue = msg_queue
 
         def run(self):
-            while not self.__connection.__stop_listen.is_set():
+            while not self.__connection._stop_listen.is_set():
                 recv_data = json.loads(
-                    self.__connection.__csock.recv(4096).decode(),
+                    self.__connection._csock.recv(4096).decode(),
                     cls=JsonableDecoder)
                 self.__msg_queue.put(
                     Request(self.__connection, time.time(), recv_data))
 
-            self.__connection.__csock.shutdown(socket.SHUT_WR)
+            self.__connection._csock.shutdown(socket.SHUT_WR)
 
             while len(recv_data) != 0:
-                recv_data = self.__connection.__csock.recv(1024)
+                recv_data = self.__connection._csock.recv(1024)
 
-            self.__connection.__csock.close()
+            self.__connection._csock.close()
 
 
 class QwirkeleController:
