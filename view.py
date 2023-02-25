@@ -189,7 +189,7 @@ class View:
     def init_event_loop(self):
         """Event loop for handling UI interaction """
 
-        server_ip = tk.simpledialog.askstring("Connect","Server IP:")
+        server_ip = tk.simpledialog.askstring("Connect", "Server IP:")
         #TODO: Send to socket, verify validity, setup connection
 
         running = True
@@ -197,7 +197,7 @@ class View:
             for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:
                     sys.exit()
-                if ev.type == pygame.KEYDOWN: # Handle navigation
+                if ev.type == pygame.KEYDOWN:  # Handle navigation
                     if ev.key == pygame.K_UP:
                         self.__top_left_y = self.__top_left_y - 1
                     if ev.key == pygame.K_DOWN:
@@ -232,13 +232,14 @@ class View:
                                 for j in range(self.__frame_size):
                                     if relative_y < (
                                             615 / self.__frame_size) * (j + 1):
-                                        placement = Placement( # Creates and registers placement
+                                        placement = Placement(  # Creates and registers placement
                                             self.__logic.player[
                                                 self.__selected_tile],
                                             self.__top_left_x + j,
                                             self.__top_left_y + i)
                                         self.__board.add_tile(placement)
-                                        self.__logic.player[self.__selected_tile] = None
+                                        self.__logic.player[
+                                            self.__selected_tile] = None
                                         self.__selected_tile = None
                                         self.update_view()
                                         found = True
