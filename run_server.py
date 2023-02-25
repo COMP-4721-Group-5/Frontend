@@ -26,6 +26,8 @@ while game_controller.in_game():
     try:
         game_controller.process_request()
     except KeyboardInterrupt:
+        for connection in connections:
+            connection.stop_listening()
         break
 
 # TODO: Cleanup / Close
