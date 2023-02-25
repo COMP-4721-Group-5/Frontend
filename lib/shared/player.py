@@ -14,7 +14,11 @@ class Player:
 
     """
     __hand: List[Tile]
-    __score = 0
+    __score: int
+
+    def __init__(self) -> None:
+        self.__hand = [None] * 6
+        self.__score = 0
 
     def update_hand(self, hand: List[Tile]):
         """Updates the hand
@@ -42,3 +46,16 @@ class Player:
 
     def __setitem__(self, key: int, value: Tile):
         self.__hand[key] = value
+
+    @property
+    def score(self):
+        return self.__score
+    
+    @score.setter
+    def score(self, new_score: int):
+        if isinstance(new_score, int):
+            if new_score < 0:
+                raise ValueError('Invalid score: %d (negative)' %(new_score))
+            self.__score = new_score
+        else:
+            raise TypeError('Invalid type')
