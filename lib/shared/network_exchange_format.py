@@ -102,17 +102,13 @@ class ServerResponse(JsonableObject):
                  game_over: bool = False,
                  winner: bool = False,
                  flag: int = -1) -> None:
-        self.__flag = (ServerResponse.ResponseFlag.VALID
-                       if valid else ~ServerResponse.ResponseFlag.VALID |
-                       ServerResponse.ResponseFlag.FIRST
-                       if first else ~ServerResponse.ResponseFlag.FIRST |
-                       ServerResponse.ResponseFlag.START_TURN if start_turn else
-                       ~ServerResponse.ResponseFlag.START_TURN |
-                       ServerResponse.ResponseFlag.GAME_OVER if game_over else
-                       ~ServerResponse.ResponseFlag.GAME_OVER |
-                       ServerResponse.ResponseFlag.
-                       WINNER if winner else ~ServerResponse.ResponseFlag.WINNER
-                      ) if flag < 0 else ServerResponse.ResponseFlag(flag)
+        self.__flag = (
+            ServerResponse.ResponseFlag.VALID if valid else 0 |
+            ServerResponse.ResponseFlag.FIRST if first else 0 |
+            ServerResponse.ResponseFlag.START_TURN if start_turn else 0 |
+            ServerResponse.ResponseFlag.GAME_OVER if game_over else 0 |
+            ServerResponse.ResponseFlag.WINNER if winner else 0
+        ) if flag < 0 else ServerResponse.ResponseFlag(flag)
         self.__curr_hand = hand
         self.__curr_board = board
         self.__curr_score = score
