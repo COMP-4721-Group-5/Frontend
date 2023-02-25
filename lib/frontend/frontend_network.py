@@ -26,7 +26,10 @@ class DataReceivedEvent:
 
     @staticmethod
     def create_event(data: ServerResponse):
-        return pygame.event.Event(DataReceivedEvent.TYPE, data.json_serialize())
+        amended_data = data.json_serialize()
+        amended_data.pop('type')
+        amended_data['flag'] = ServerResponse.ResponseFlag(amended_data['flag'])
+        return pygame.event.Event(DataReceivedEvent.EVENTTYPE, amended_data)
 
 
 class ClientSocket:
@@ -97,8 +100,9 @@ class ClientSocket:
                 recv_data = self.__connection._sock.recv(4096)
                 if len(recv_data) == 0:
                     self.__connection.close()
-                response = json.loads(recv_data.decode(), cls=JsonableDecoder)
-                pygame.event.post(DataReceivedEvent.create_event(response))
+                else:
+                    response = json.loads(recv_data.decode(), cls=JsonableDecoder)
+                    pygame.event.post(DataReceivedEvent.create_event(response))
 
             self.__connection._sock.shutdown(socket.SHUT_WR)
 
