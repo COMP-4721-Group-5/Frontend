@@ -51,6 +51,7 @@ class ClientConnection:
         self.__listener = ClientConnection._ClientMsgListener(self, msg_queue)
         self._stop_listen = Event()
         self.__listener.start()
+        self.__player = Player()
 
     def send_data(self, data: ServerResponse):
         """Sends data to client.
