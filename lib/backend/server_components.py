@@ -145,7 +145,6 @@ class QwirkeleController:
                 client.get_player()[i] = self.__tile_bag.pop(
                     rand.randrange(len(self.__tile_bag)))
         self.sync_all_players()
-        self.__start_next_turn()
 
     def process_request(self):
         """Processes a request from client
@@ -207,10 +206,31 @@ class QwirkeleController:
     def sync_all_players(self):
         """Synchronizes all player states
         """
+        for i in range(len(self.__clients)):
+            self.__clients[i].send_data(
+                ServerResponse(
+                    self.__clients[i].get_player().get_hand(),
+                    self.__board,
+                    self.__clients[i].get_player().score,
+                    valid = True,
+                    start_turn = (i == self.__curr_player),
+                    game_over = (not self.__active),
+                    winner = (i == self.__winner()),
+                    first = self.__is_first_turn()
+                )
+            )
+
+    def __winner(self) -> int:
+        if not self.__active:
+            # TODO: Check this
+            NotImplemented
+        return -1
+
+    def __is_first_turn(self):
         for client in self.__clients:
-            # send current board state to client
-            # send current player state to client
-            pass
+            if client.get_player().score != 0:
+                return False
+        return True
 
     def __get_curr_turn_client(self):
         """Gets client playing the turn.
@@ -224,14 +244,11 @@ class QwirkeleController:
             if self.__get_curr_turn_client().get_player()[i] is None:
                 self.__get_curr_turn_client().get_player(
                 )[i] = self.__tile_bag.pop(rand.randrange(len(self.__tile_bag)))
-        self.sync_all_players()
-        self.__curr_player = (self.__curr_player + 1) % len(self.__clients)
         # check if game is over (i.e., no more tiles can be placed)
         # if game over:
         # set self.__active to false
-        # announce game over
-        # else:
-        # Message next client to start turn
+        self.__curr_player = (self.__curr_player + 1) % len(self.__clients)
+        self.sync_all_players()
 
     def has_request(self):
         """Checks whether there is request to process
