@@ -1,5 +1,5 @@
 import json
-from typing import Final
+from typing import Final, final, NoReturn
 import socket
 from threading import Event
 from threading import Thread
@@ -13,23 +13,20 @@ from ..shared.network_exchange_format import ClientRequest
 from ..shared.network_exchange_format import ServerResponse
 
 
-class DataReceivedEvent(pygame.event.Event):
-    """Custom Pygame Event for Data Received
-    
-    Provides customized Pygame event that gets
-    added to the event queue when some data is
-    received from the server over the network.
+@final
+class DataReceivedEvent:
+    """Utility class for creating custom Pygame events when data is received.
 
-    Attributes:
-        valid: Flag for validity of latest request
-        curr_hand: Current state of the hand of the player
-        curr_board: Current state of the board
-        curr_score: Current score of the player
+    Do not instantiate object of this type.
     """
     EVENTTYPE: Final[int] = USEREVENT + 1
 
-    def __init__(self, data: ServerResponse):
-        super().__init__(DataReceivedEvent.TYPE, data.json_serialize())
+    def __init__(self) -> NoReturn:
+        raise NotImplementedError
+
+    @staticmethod
+    def create_event(data: ServerResponse):
+        return pygame.event.Event(DataReceivedEvent.TYPE, data.json_serialize())
 
 
 class ClientSocket:
@@ -100,7 +97,7 @@ class ClientSocket:
                 if len(recv_data) == 0:
                     self.__connection.close()
                 response = json.loads(recv_data.decode(), cls=JsonableDecoder)
-                pygame.event.post(DataReceivedEvent(response))
+                pygame.event.post(DataReceivedEvent.create_event(response))
 
             self.__connection.__sock.shutdown(socket.SHUT_WR)
 
