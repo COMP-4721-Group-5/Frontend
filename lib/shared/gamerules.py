@@ -238,7 +238,7 @@ class Gamerules:
             board: contains the current game board
 
         Returns:
-            The amount of points need to be deducted from the player's score. Returns -1 for invalid and unsuccessful removal
+            An integer representing the amount of points need to be deducted from the player's score. Returns -1 for invalid and unsuccessful removal
         """
         if(placement.tile().is_temporary()):
             return -1
