@@ -15,24 +15,22 @@ class Gamerules:
 
         Ensures that a given move is legal by game rules.
 
-        Args: 
-            move: A list of placements containing a tile and it's given indices 
+        Args:
+            move: A list of placements containing a tile and it's given indices
                 to represent the most recent move. For example:
 
                 {(Tile 1, x cord 1, y cord 1), (Tile 2, x cord 2, y cord 2)...}
             board: contains the game board
-        
-        Returns: 
+
+        Returns:
             A boolean list corresponding to the validity of the move, true if the move is
                 determined to be legal, false if it is not.
         """
         for placement in move:
             if self.verify_placement(placement, board) is False:
                 return False
-            
-        return True
 
-        
+        return True
 
     def get_lines(self, placement: Placement, board: Board):
         """Check which lines a given placement could be a part of
@@ -55,37 +53,40 @@ class Gamerules:
         y_count = 0
         x_count = 0
         skip = False
-        for i in range(5): #Checks up to 5 tiles above the horizontal
+        for i in range(5):  #Checks up to 5 tiles above the horizontal
             if placement.y_coord + i + 1 > 217:
                 break
             temp_tile = self.board[placement.x_coord][placement.y_coord + i + 1]
-            temp_placement = Placement(temp_tile, placement.x_coord, placement.y_coord + i + 1)
+            temp_placement = Placement(temp_tile, placement.x_coord,
+                                       placement.y_coord + i + 1)
             if temp_tile is None:
                 break
             else:
                 if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
                     y_line.append(temp_placement)
                     y_count += 1
-                else: #If the line contains an invalid match
+                else:  #If the line contains an invalid match
                     y_line = None
                     break
             if temp_tile.__eq__(placement.tile):
                 y_line = None
                 skip = True
 
-        if not skip: #If the y_line has a duplicate skip checking below as it is invalid placement
-            for i in range(5): #Checks up to 5 tiles below the horizontal
+        if not skip:  #If the y_line has a duplicate skip checking below as it is invalid placement
+            for i in range(5):  #Checks up to 5 tiles below the horizontal
                 if placement.y_coord - i - 1 < 0:
                     break
-                temp_tile = self.board[placement.x_coord][placement.y_coord - i - 1]
-                temp_placement = Placement(temp_tile, placement.x_coord, placement.y_coord - i - 1)
+                temp_tile = self.board[placement.x_coord][placement.y_coord -
+                                                          i - 1]
+                temp_placement = Placement(temp_tile, placement.x_coord,
+                                           placement.y_coord - i - 1)
                 if temp_tile is None:
                     break
                 else:
                     if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
                         y_line.append(temp_placement)
                         y_count += 1
-                    else: #If the line contains an invalid match
+                    else:  #If the line contains an invalid match
                         y_line = None
                         break
                 #Checks if line is too long or contains duplicate tiles
@@ -94,28 +95,32 @@ class Gamerules:
                     break
 
         #Gets the x_line
-        for i in range(5): #Checks up to 5 tiles to the right of the vertical
+        for i in range(5):  #Checks up to 5 tiles to the right of the vertical
             if placement.x_coord - i - 1 < 0:
                 break
             temp_tile = self.board[placement.x_coord - i - 1][placement.y_coord]
-            temp_placement = Placement(temp_tile, placement.x_coord - i - 1, placement.y_coord)
+            temp_placement = Placement(temp_tile, placement.x_coord - i - 1,
+                                       placement.y_coord)
             if temp_tile is None:
                 break
             else:
                 if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
                     x_line.append(temp_placement)
                     x_count += 1
-                else: #if there is an invalid match in the line 
+                else:  #if there is an invalid match in the line
                     x_line = None
                     break
-            if temp_tile.__eq__(placement.tile): #if line already contains this tile, it is invalid
+            if temp_tile.__eq__(
+                    placement.tile
+            ):  #if line already contains this tile, it is invalid
                 return None, y_line
 
-        for i in range(5): #Checks up to 5 tiles to the left of the vertical
+        for i in range(5):  #Checks up to 5 tiles to the left of the vertical
             if placement.x_coord + i + 1 > 217:
                 break
             temp_tile = self.board[placement.x_coord + i + 1][placement.y_coord]
-            temp_placement = Placement(temp_tile, placement.x_coord - i -1, placement.y_coord)
+            temp_placement = Placement(temp_tile, placement.x_coord - i - 1,
+                                       placement.y_coord)
             if temp_tile is None:
                 break
             else:
@@ -129,7 +134,7 @@ class Gamerules:
             if x_count > 5 or temp_tile.__eq__(placement.tile):
                 x_line = None
                 break
-  
+
         return x_line, y_line
 
     def verify_placement(self, placement: Placement, board: Board) -> bool:
@@ -156,13 +161,13 @@ class Gamerules:
 
         Updates the board to include the most recent move.
 
-        Args: 
-            move: A list of tuples containing a tile and it's given indices 
+        Args:
+            move: A list of tuples containing a tile and it's given indices
                 to represent the most recent move. For example:
 
                 {(Tile 1, x cord 1, y cord 1), (Tile 2, x cord 2, y cord 2)...}
             board: contains the game board as a 2d array
-        
+
         Returns:
             Boolean corresponding to if the move was succesfully registered.
         """
@@ -174,13 +179,13 @@ class Gamerules:
         registered
 
         Args:
-            move: A list of placements containing a tile and it's given indices 
+            move: A list of placements containing a tile and it's given indices
                 to represent the most recent move. For example:
 
                 {(Tile 1, x cord 1, y cord 1), (Tile 2, x cord 2, y cord 2)...}
             board: contains the game board
 
-        Returns: 
+        Returns:
             Integer represent of the score of the move.
         """
         score = 0
@@ -192,7 +197,7 @@ class Gamerules:
     def score_placement(self, placement: Placement, board: Board) -> int:
         """Scores a given placement
 
-        Args: 
+        Args:
             placement: contains the placement data in the form of (Tile, x_coord, y_coord)
             board: contains the game board
 
@@ -201,7 +206,7 @@ class Gamerules:
         """
         score = 0
         x_line, y_line = self.get_lines(placement, board)
-        already_scored = False #Keeps track of whether the line(s) of placement have already been scored on this turn
+        already_scored = False  #Keeps track of whether the line(s) of placement have already been scored on this turn
         if x_line is not None:
             for placement in x_line:
                 if placement.tile.is_temporary():
@@ -210,7 +215,7 @@ class Gamerules:
                 score += 1
             else:
                 score += len(x_line) + 1
-            if len(x_line) == 5: #Checks for Quirkle
+            if len(x_line) == 5:  #Checks for Quirkle
                 score += 6
         already_scored = False
         if y_line is not None:
@@ -221,7 +226,6 @@ class Gamerules:
                 score += 1
             else:
                 score += len(y_line)
-            if len(y_line) == 5: #Checks for Quirkle
+            if len(y_line) == 5:  #Checks for Quirkle
                 score += 6
         return score
-
