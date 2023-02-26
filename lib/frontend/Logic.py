@@ -31,6 +31,8 @@ class Logic:
 
     def __init__(self) -> None:
         """Inits the game with one player"""
+        self.is_curr_turn = False
+        self.is_first_turn = False
         self.start_game(1)
 
     def start_game(self, playerCount: int):
