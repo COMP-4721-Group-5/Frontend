@@ -110,3 +110,15 @@ class ClientSocket:
                 self.__connection._sock.send(b'')
 
             self.__connection._sock.close()
+
+    @property
+    def address(self):
+        """Address of the host server
+        """
+        return self.__host
+
+    @property
+    def port(self):
+        """Port being used on host server
+        """
+        return self.__port
