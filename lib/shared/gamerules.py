@@ -6,16 +6,9 @@ class Gamerules:
 
     Responsible for ensuring consistency with game logic and contains methods for altering the board model
     as per legal moves by the game's rules.
-
-    Attributes:
-        board: Stores the current game board
     """
-    __board: Board
 
-    def update_board(self, board: Board):
-        self.__board = board
-
-    def verify_move(self, move):
+    def verify_move(self, move, board):
         """Verifies the most recent move
 
         Ensures that a given move is legal by game rules.
@@ -25,20 +18,21 @@ class Gamerules:
                 to represent the most recent move. For example:
 
                 {(Tile 1, x cord 1, y cord 1), (Tile 2, x cord 2, y cord 2)...}
+            board: contains the game board
         
         Returns: 
             A boolean list corresponding to the validity of the move, true if the move is
                 determined to be legal, false if it is not.
         """
         for placement in move:
-            if self.verify_placement(placement) is False:
+            if self.verify_placement(placement, board) is False:
                 return False
             
         return True
 
         
 
-    def get_lines(self, placement: Placement):
+    def get_lines(self, placement: Placement, board):
         """Check which lines a given placement could be a part of
 
         Interated through the board from the placement data to see what valid lines configurations
@@ -46,6 +40,7 @@ class Gamerules:
 
         Args:
             placement: placement data of the tile
+            board: 2d array containing all placement data
 
         Returns:
             A list of possible lines in form of a list of placements for ex:
@@ -61,7 +56,7 @@ class Gamerules:
         for i in range(5): #Checks up to 5 tiles above the horizontal
             if placement.y_coord + i + 1 > 217:
                 break
-            temp_tile = self.__board[placement.x_coord][placement.y_coord + i + 1]
+            temp_tile = self.board[placement.x_coord][placement.y_coord + i + 1]
             temp_placement = Placement(temp_tile, placement.x_coord, placement.y_coord + i + 1)
             if temp_tile is None:
                 break
@@ -80,7 +75,7 @@ class Gamerules:
             for i in range(5): #Checks up to 5 tiles below the horizontal
                 if placement.y_coord - i - 1 < 0:
                     break
-                temp_tile = self.__board[placement.x_coord][placement.y_coord - i - 1]
+                temp_tile = self.board[placement.x_coord][placement.y_coord - i - 1]
                 temp_placement = Placement(temp_tile, placement.x_coord, placement.y_coord - i - 1)
                 if temp_tile is None:
                     break
@@ -100,7 +95,7 @@ class Gamerules:
         for i in range(5): #Checks up to 5 tiles to the right of the vertical
             if placement.x_coord - i - 1 < 0:
                 break
-            temp_tile = self.__board[placement.x_coord - i - 1][placement.y_coord]
+            temp_tile = self.board[placement.x_coord - i - 1][placement.y_coord]
             temp_placement = Placement(temp_tile, placement.x_coord - i - 1, placement.y_coord)
             if temp_tile is None:
                 break
@@ -117,7 +112,7 @@ class Gamerules:
         for i in range(5): #Checks up to 5 tiles to the left of the vertical
             if placement.x_coord + i + 1 > 217:
                 break
-            temp_tile = self.__board[placement.x_coord + i + 1][placement.y_coord]
+            temp_tile = self.board[placement.x_coord + i + 1][placement.y_coord]
             temp_placement = Placement(temp_tile, placement.x_coord - i -1, placement.y_coord)
             if temp_tile is None:
                 break
@@ -135,13 +130,14 @@ class Gamerules:
   
         return x_line, y_line
 
-    def verify_placement(self, placement: Placement) -> bool:
+    def verify_placement(self, placement: Placement, board) -> bool:
         """Verifies placement of a single tile on the board
 
         Checks to make sure a given placement is a valid move.
 
         Args:
             placement: placement to verify
+            board: board containing all current placements
         Return:
             True: if it is a valid placement
             False: if it is not a valid placement
@@ -153,7 +149,7 @@ class Gamerules:
 
             return True
 
-    def register_move(self, move) -> bool:
+    def register_move(self, move, board) -> bool:
         """Registers a given move.
 
         Updates the board to include the most recent move.
@@ -163,12 +159,13 @@ class Gamerules:
                 to represent the most recent move. For example:
 
                 {(Tile 1, x cord 1, y cord 1), (Tile 2, x cord 2, y cord 2)...}
+            board: contains the game board as a 2d array
         
         Returns:
             Boolean corresponding to if the move was succesfully registered.
         """
 
-    def score_move(self, move) -> int:
+    def score_move(self, move, board) -> int:
         """Scores a given move.
 
         Currently score relies on temporary tile information so scoring must happen before a move is fully
@@ -178,27 +175,29 @@ class Gamerules:
                 to represent the most recent move. For example:
 
                 {(Tile 1, x cord 1, y cord 1), (Tile 2, x cord 2, y cord 2)...}
+            board: contains the game board
 
         Returns: 
             Integer represent of the score of the move.
         """
         score = 0
         for placement in move:
-            score += self.score_placement(placement)
+            score += self.score_placement(placement, board)
 
         return score
 
-    def score_placement(self, placement) -> int:
+    def score_placement(self, placement, board) -> int:
         """Scores a given placement
 
         Args: 
             placement: contains the placement data in the form of (Tile, x_coord, y_coord)
+            board: contains the game board
 
         Returns:
             Integer representation of the score of the move.
         """
         score = 0
-        x_line, y_line = self.get_lines(placement)
+        x_line, y_line = self.get_lines(placement, board)
         already_scored = False #Keeps track of whether the line(s) of placement have already been scored on this turn
         if x_line is not None:
             for placement in x_line:
