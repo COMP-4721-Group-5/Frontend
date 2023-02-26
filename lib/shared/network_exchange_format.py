@@ -152,6 +152,20 @@ class ServerResponse(JsonableObject):
                               flag=serialized_form['flag'])
 
     class ResponseFlag(IntFlag):
+        """Flags being used for Server Response
+        
+        VALID:  Indicates whether this response is valid.
+                This flag should not be set when responding
+                to an invalid request.
+        FIRST:  Indicates whether the first tile has been placed
+                on the board.
+        START_TURN: Indicates whether the receiving client should
+                    start its turn.
+        GAME_OVER:  Indicates whether the game is over.
+        WINNER: Indicates whether the receiving client is the winner
+                of the game.
+                This flag should NOT be set if GAME_OVER is not set.
+        """
         VALID = 0b00001
         FIRST = 0b00010
         START_TURN = 0b00100
