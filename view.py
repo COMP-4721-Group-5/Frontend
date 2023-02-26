@@ -47,7 +47,7 @@ class View:
     __top_left_x: int = 108
     __top_left_y: int = 108
     __frame_size: int = 8
-    __selected_tile: int = None
+    __selected_tile: int = -1
     __window_size = 0, 0
     __screen = None
     __logic: Logic = None
@@ -240,7 +240,7 @@ class View:
                                         self.__board.add_tile(placement)
                                         self.__logic.player[
                                             self.__selected_tile] = None
-                                        self.__selected_tile = None
+                                        self.__selected_tile = -1
                                         self.update_view()
                                         found = True
                                         self.update_view()
