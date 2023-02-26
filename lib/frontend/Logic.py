@@ -60,18 +60,27 @@ class Logic:
         self.board.add_tile(placement)
         self.player.play_tile(index)
 
-    def update_board(self, board: Board):
+    @property
+    def board(self):
+        return self.__board
+
+    @board.setter
+    def board(self, board: Board):
         """Updates the board
 
         Args:
             board: new board
         """
+        if not isinstance(board, Board):
+            raise TypeError
         self.__board = board
-
-    @property
-    def board(self):
-        return self.__board
 
     @property
     def player(self):
         return self.__player
+
+    @player.setter
+    def player(self, new_player: Player):
+        if not isinstance(new_player, Player):
+            raise TypeError
+        self.__player = new_player

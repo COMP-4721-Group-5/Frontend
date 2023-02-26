@@ -5,6 +5,8 @@ import pygame
 
 from lib.shared.player import Player
 from lib.frontend.Logic import Logic
+from lib.frontend.frontend_network import ClientSocket
+from lib.frontend.frontend_network import DataReceivedEvent
 from lib.shared.internal_structures import Board, Placement, Tile
 
 
@@ -52,11 +54,13 @@ class View:
     __screen = None
     __logic: Logic = None
     __board: Board = None
+    __socket: ClientSocket
 
     def __init__(self, size, g_logic):
         """Inits the view"""
         self.__logic = g_logic
         self.__window_size = size
+        self.__socket = View.connect_server()
         self.__screen = pygame.display.set_mode(size)
         self.__board = self.__logic.board
         favicon = pygame.image.load('favicon.png')
@@ -186,17 +190,32 @@ class View:
                         width - (2 * border_width),
                         height - (2 * border_width)))
 
+    def connect_server():
+        """Prompts user for server address and port.
+        """
+        server_ip = tkinter.simpledialog.askstring("Connect", "Server IP:")
+        server_port = tkinter.simpledialog.askinteger("Connect",
+                                                      "Server Port:",
+                                                      minvalue=1)
+
+        return ClientSocket(server_ip, server_port)
+
     def init_event_loop(self):
         """Event loop for handling UI interaction """
-
-        server_ip = tk.simpledialog.askstring("Connect", "Server IP:")
-        #TODO: Send to socket, verify validity, setup connection
 
         running = True
         while (running):
             for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:
+                    self.__socket.close()
                     sys.exit()
+                if ev.type == DataReceivedEvent.EVENTTYPE:
+                    # TODO: Use data from event to update internal data
+                    print(ev.dict)
+                    self.__board = ev.dict['curr_board']
+                    for i in range(len(ev.dict['curr_hand'])):
+                        self.__logic.player[i] = ev.dict['curr_hand'][i]
+                    self.update_view()
                 if ev.type == pygame.KEYDOWN:  # Handle navigation
                     if ev.key == pygame.K_UP:
                         self.__top_left_y = self.__top_left_y - 1
