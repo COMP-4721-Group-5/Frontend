@@ -1,4 +1,4 @@
-from internal_structures import *
+from internal_structures import Placement, Board, Tile
 
 
 class Gamerules:
@@ -170,6 +170,7 @@ class Gamerules:
 
         Currently score relies on temporary tile information so scoring must happen before a move is fully
         registered
+
         Args:
             move: A list of placements containing a tile and it's given indices 
                 to represent the most recent move. For example:
