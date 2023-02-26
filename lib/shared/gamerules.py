@@ -30,7 +30,11 @@ class Gamerules:
             A boolean list corresponding to the validity of the move, true if the move is
                 determined to be legal, false if it is not.
         """
-        pass
+        for placement in move:
+            if self.verify_placement(placement) is False:
+                return False
+            
+        return True
 
         
 
@@ -62,7 +66,7 @@ class Gamerules:
             if temp_tile is None:
                 break
             else:
-                print(temp_tile.shape, " ", temp_tile.color, " at ", temp_placement.x_coord, ",", temp_placement.y_coord) #DEBUG
+                #print(temp_tile.shape, " ", temp_tile.color, " at ", temp_placement.x_coord, ",", temp_placement.y_coord) #DEBUG
                 if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
                     y_line.append(temp_placement)
                     y_count += 1
@@ -82,7 +86,7 @@ class Gamerules:
                 if temp_tile is None:
                     break
                 else:
-                    print(temp_tile.shape, " ", temp_tile.color, " at ", temp_placement.x_coord, ",", temp_placement.y_coord) #DEBUG
+                    #print(temp_tile.shape, " ", temp_tile.color, " at ", temp_placement.x_coord, ",", temp_placement.y_coord) #DEBUG
                     if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
                         y_line.append(temp_placement)
                         y_count += 1
@@ -103,7 +107,7 @@ class Gamerules:
             if temp_tile is None:
                 break
             else:
-                print(temp_tile.shape, " ", temp_tile.color, " at ", temp_placement.x_coord, ",", temp_placement.y_coord) #DEBUG
+                #print(temp_tile.shape, " ", temp_tile.color, " at ", temp_placement.x_coord, ",", temp_placement.y_coord) #DEBUG
                 if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
                     x_line.append(temp_placement)
                     x_count += 1
@@ -121,7 +125,7 @@ class Gamerules:
             if temp_tile is None:
                 break
             else:
-                print(temp_tile.shape, " ", temp_tile.color, " at ", temp_placement.x_coord, ",", temp_placement.y_coord) #DEBUG
+                #print(temp_tile.shape, " ", temp_tile.color, " at ", temp_placement.x_coord, ",", temp_placement.y_coord) #DEBUG
                 if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
                     x_line.append(temp_placement)
                     x_count += 1
@@ -202,7 +206,9 @@ class Gamerules:
         already_scored = False #Keeps track of whether the line(s) of placement have already been scored on this turn
         if x_line is not None:
             for placement in x_line:
-                if placement.tile.is_temporary:
+                #print(placement.tile.color, placement.tile.shape, placement.x_coord, placement.y_coord)
+                if placement.tile.is_temporary():
+                    #print("RAN INTO A TEMP_TILE: ")
                     already_scored = True
             if already_scored == True:
                 score += 1
@@ -213,8 +219,9 @@ class Gamerules:
         already_scored = False
         if y_line is not None:
             for placement in y_line:
-                if placement.tile.is_temporary:
+                if placement.tile.is_temporary():
                     already_scored = True
+                    #print("RAN INTO A TEMP_TILE: ")
             if already_scored == True:
                 score += 1
             else:
@@ -227,26 +234,32 @@ board = Board()
 
 orange_square = Tile(TileColor.ORANGE, TileShape.SQUARE, False)
 orange_circle = Tile(TileColor.ORANGE, TileShape.CIRCLE, False)
+orange_circle.set_permanent()
 orange_star = Tile(TileColor.ORANGE, TileShape.STAR, False)
 orange_club = Tile(TileColor.ORANGE, TileShape.CLUB, False)
 orange_cross = Tile(TileColor.ORANGE, TileShape.CROSS, False)
 orange_diamond = Tile(TileColor.ORANGE, TileShape.DIAMOND, False)
 
 green_circle = Tile(TileColor.GREEN, TileShape.CIRCLE, False)
+
+
+green_circle.set_permanent()
 placement = Placement(orange_square, 0, 0)
 board.add_tile(placement)
 board.add_tile(Placement(orange_circle, 0, 1))
 board.add_tile(Placement(orange_club, 0, 2))
 board.add_tile(Placement(orange_cross, 0, 3))
 board.add_tile(Placement(green_circle, 2, 1))
+
 red_circle = Tile(TileColor.RED, TileShape.CIRCLE, True)
 #placement = Placement(red_circle, 0, 1)
 rules = Gamerules()
 b = board.get_board()
 rules.update_board(b)
+print(orange_circle.is_temporary())
 print("Is an orange square placed at 0,3 valid?", rules.verify_placement(Placement(orange_square, 0, 3)))
-print("What be the score of such a move, arrgh?", rules.score_placement(Placement(orange_square, 0, 3)))
+print("What be the score of such a move, arr?", rules.score_placement(Placement(orange_square, 0, 3)))
 print("Is a red circle valid placed at 1,1?", rules.verify_placement(Placement(red_circle, 1, 1)))
 print(rules.get_lines(Placement(red_circle, 1, 1)))
-print("What be the score of such a move, aargh?", rules.score_placement(Placement(red_circle, 1, 1)))
+print("What be the score of such a move, aar?", rules.score_placement(Placement(red_circle, 1, 1)))
 
