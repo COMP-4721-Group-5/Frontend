@@ -53,12 +53,12 @@ class Player:
     @property
     def score(self):
         return self.__score
-    
+
     @score.setter
     def score(self, new_score: int):
         if isinstance(new_score, int):
             if new_score < 0:
-                raise ValueError('Invalid score: %d (negative)' %(new_score))
+                raise ValueError('Invalid score: %d (negative)' % (new_score))
             self.__score = new_score
         else:
             raise TypeError('Invalid type')

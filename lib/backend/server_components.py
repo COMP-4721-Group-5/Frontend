@@ -207,17 +207,14 @@ class QwirkeleController:
         """
         for i in range(len(self.__clients)):
             self.__clients[i].send_data(
-                ServerResponse(
-                    self.__clients[i].get_player().get_hand(),
-                    self.__board,
-                    self.__clients[i].get_player().score,
-                    valid = True,
-                    start_turn = (i == self.__curr_player),
-                    game_over = (not self.__active),
-                    winner = (i == self.__winner()),
-                    first = self.__is_first_turn()
-                )
-            )
+                ServerResponse(self.__clients[i].get_player().get_hand(),
+                               self.__board,
+                               self.__clients[i].get_player().score,
+                               valid=True,
+                               start_turn=(i == self.__curr_player),
+                               game_over=(not self.__active),
+                               winner=(i == self.__winner()),
+                               first=self.__is_first_turn()))
 
     def __winner(self) -> int:
         if not self.__active:
