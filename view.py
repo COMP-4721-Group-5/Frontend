@@ -69,6 +69,7 @@ class View:
         pygame.display.set_caption("Qwirkle")
         self.__screen.fill(background_color)
         self.update_view()
+        self.render_details()
         self.init_event_loop()
 
     def update_view(self):
@@ -80,7 +81,6 @@ class View:
         self.render_grid(self.__screen, self.__window_size, self.__top_left_x,
                          self.__top_left_y)
         self.render_hand(self.__screen, self.__window_size)
-        self.render_details()
         pygame.display.flip()
 
     def render_grid(self, screen, window_size, top_left_x, top_left_y):
@@ -164,7 +164,18 @@ class View:
 
     def render_details(self):
         """Renders details such as the server IP and the player's score."""
-        pass
+        connected_color = (50,205,50)
+        ip_color = (0,0,0)
+        pygame.font.init()
+        font = pygame.font.SysFont("Arial", 15)
+        server_ip = self.__socket.address
+        server_port = self.__socket.port
+        con_surface = font.render("Connected: ", True, connected_color)
+        ip_str = str(server_ip)+":"+str(server_port)
+        ip_surface = font.render(ip_str, True, ip_color)
+        screen.blit(con_surface, (715, 14))
+        screen.blit(ip_surface, (795, 14))
+        pygame.display.flip()
 
     def draw_hollow_rect(self, screen, color, border_color, x, y, width, height,
                          border_width):
