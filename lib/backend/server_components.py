@@ -141,7 +141,6 @@ class QwirkeleController:
         for client in self.__clients:
             for i in range(6):
                 # Add tiles to player
-                # TODO: Initialize underlying hand list inside Player
                 client.get_player()[i] = self.__tile_bag.pop(
                     rand.randrange(len(self.__tile_bag)))
         self.sync_all_players()
