@@ -156,7 +156,7 @@ class Gamerules:
 
             return True
 
-    def register_move(self, move, board: Board) -> bool:
+    def register_move(self, move: List[Placement], board: Board) -> bool:
         """Registers a given move.
 
         Updates the board to include the most recent move.
