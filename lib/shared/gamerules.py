@@ -68,7 +68,7 @@ class Gamerules:
                 else:  #If the line contains an invalid match
                     y_line = None
                     break
-            if temp_tile.__eq__(placement.tile):
+            if temp_tile == placement.tile:
                 y_line = None
                 skip = True
 
@@ -90,7 +90,7 @@ class Gamerules:
                         y_line = None
                         break
                 #Checks if line is too long or contains duplicate tiles
-                if y_count > 5 or temp_tile.__eq__(placement.tile):
+                if y_count > 5 or temp_tile == placement.tile:
                     y_line = None
                     break
 
