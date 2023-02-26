@@ -162,7 +162,7 @@ class Gamerules:
         Updates the board to include the most recent move.
 
         Args:
-            move: A list of tuples containing a tile and it's given indices
+            move: A list of placements containing a tile and it's given indices
                 to represent the most recent move. For example:
 
                 {(Tile 1, x cord 1, y cord 1), (Tile 2, x cord 2, y cord 2)...}
