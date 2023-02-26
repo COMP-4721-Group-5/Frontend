@@ -41,6 +41,9 @@ class Player:
         self.__hand[index] = None
         return played
 
+    def get_hand(self):
+        return self.__hand
+
     def __getitem__(self, key: int):
         return self.__hand[key]
 
