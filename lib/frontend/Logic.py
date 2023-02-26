@@ -18,6 +18,9 @@ class Logic:
         board: Contains the board
         tempMove: List that contains all temporary placements of current players move
         player: Contains the local player's data 
+        bag: contains the bag of tiles left to be drawn
+        is_first_turn: a boolean variable to keep track of whether or not it is the first move
+        is_curr_turn: a boolean variable to keep track of if it is this player's turn
     """
     __board: Board
     __tempMove: Placement
@@ -81,7 +84,6 @@ class Logic:
     def player(self):
         return self.__player
     
-
 
     @player.setter
     def player(self, new_player: Player):
