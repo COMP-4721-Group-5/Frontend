@@ -1,5 +1,6 @@
 import sys
-
+import tkinter as tk
+import tkinter.simpledialog
 import pygame
 
 from lib.shared.player import Player
@@ -13,7 +14,7 @@ def tile_img_load(tile: Tile):
     Args:
         tile: Tile to load to an image
 
-    Returns: 
+    Returns:
         The image of the tile.
     """
     if tile == 0:
@@ -41,13 +42,12 @@ class View:
         __screen: The screen object
         __logic: Instance of the logic class that will be used to access the logic methods
         __board: Instance of the board object that will be used to interact with the board
-
     """
 
     __top_left_x: int = 108
     __top_left_y: int = 108
     __frame_size: int = 8
-    __selected_tile: Tile = None
+    __selected_tile: int = -1
     __window_size = 0, 0
     __screen = None
     __logic: Logic = None
@@ -188,11 +188,25 @@ class View:
 
     def init_event_loop(self):
         """Event loop for handling UI interaction """
+
+        server_ip = tk.simpledialog.askstring("Connect", "Server IP:")
+        #TODO: Send to socket, verify validity, setup connection
+
         running = True
         while (running):
             for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:
                     sys.exit()
+                if ev.type == pygame.KEYDOWN:  # Handle navigation
+                    if ev.key == pygame.K_UP:
+                        self.__top_left_y = self.__top_left_y - 1
+                    if ev.key == pygame.K_DOWN:
+                        self.__top_left_y = self.__top_left_y + 1
+                    if ev.key == pygame.K_LEFT:
+                        self.__top_left_x = self.__top_left_x - 1
+                    if ev.key == pygame.K_RIGHT:
+                        self.__top_left_x = self.__top_left_x + 1
+                    self.update_view()
                 if ev.type == pygame.MOUSEBUTTONDOWN:
                     x = pygame.mouse.get_pos()[0]
                     y = pygame.mouse.get_pos()[1]
@@ -219,13 +233,16 @@ class View:
                                 for j in range(self.__frame_size):
                                     if relative_y < (
                                             615 / self.__frame_size) * (j + 1):
-                                        # self.__board[self.__top_left_x + j,self.__top_left_y + i] = self.__logic.player[self.__selected_tile]
-                                        placement = Placement(
+                                        placement = Placement(  # Creates and registers placement
                                             self.__logic.player[
                                                 self.__selected_tile],
                                             self.__top_left_x + j,
                                             self.__top_left_y + i)
                                         self.__board.add_tile(placement)
+                                        self.__logic.player[
+                                            self.__selected_tile] = None
+                                        self.__selected_tile = -1
+                                        self.update_view()
                                         found = True
                                         self.update_view()
                                         break
