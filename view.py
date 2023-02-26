@@ -49,7 +49,7 @@ class View:
     __top_left_x: int = 108
     __top_left_y: int = 108
     __frame_size: int = 8
-    __selected_tile: int = None
+    __selected_tile: int = -1
     __window_size = 0, 0
     __screen = None
     __logic: Logic = None
@@ -238,9 +238,10 @@ class View:
                                 self.__selected_tile = i
                                 self.update_view()
                                 break
-                    if (100 < x < 877) and (
-                            53 < y < 667
-                    ) and self.__selected_tile != 0:  # Handles interaction with the grid
+                    if (100 < x < 877) and (53 < y < 667) and (
+                            # Handles interaction with the grid
+                            self.__logic.player[self.__selected_tile]
+                            is not None):
                         relative_x = x - 100
                         relative_y = y - 53
                         found = False
@@ -249,14 +250,15 @@ class View:
                                 for j in range(self.__frame_size):
                                     if relative_y < (
                                             615 / self.__frame_size) * (j + 1):
-                                        placement = Placement( # Creates and registers placement
+                                        placement = Placement(  # Creates and registers placement
                                             self.__logic.player[
                                                 self.__selected_tile],
                                             self.__top_left_x + j,
                                             self.__top_left_y + i)
                                         self.__board.add_tile(placement)
-                                        self.__logic.player[self.__selected_tile] = None
-                                        self.__selected_tile = None
+                                        self.__logic.player[
+                                            self.__selected_tile] = None
+                                        self.__selected_tile = -1
                                         self.update_view()
                                         found = True
                                         self.update_view()
