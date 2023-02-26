@@ -56,7 +56,7 @@ class Gamerules:
         for i in range(5):  #Checks up to 5 tiles above the horizontal
             if placement.y_coord + i + 1 > 217:
                 break
-            temp_tile = self.board[placement.x_coord][placement.y_coord + i + 1]
+            temp_tile = board[placement.x_coord][placement.y_coord + i + 1]
             temp_placement = Placement(temp_tile, placement.x_coord,
                                        placement.y_coord + i + 1)
             if temp_tile is None:
@@ -76,8 +76,7 @@ class Gamerules:
             for i in range(5):  #Checks up to 5 tiles below the horizontal
                 if placement.y_coord - i - 1 < 0:
                     break
-                temp_tile = self.board[placement.x_coord][placement.y_coord -
-                                                          i - 1]
+                temp_tile = board[placement.x_coord][placement.y_coord - i - 1]
                 temp_placement = Placement(temp_tile, placement.x_coord,
                                            placement.y_coord - i - 1)
                 if temp_tile is None:
@@ -98,7 +97,7 @@ class Gamerules:
         for i in range(5):  #Checks up to 5 tiles to the right of the vertical
             if placement.x_coord - i - 1 < 0:
                 break
-            temp_tile = self.board[placement.x_coord - i - 1][placement.y_coord]
+            temp_tile = board[placement.x_coord - i - 1][placement.y_coord]
             temp_placement = Placement(temp_tile, placement.x_coord - i - 1,
                                        placement.y_coord)
             if temp_tile is None:
@@ -118,7 +117,7 @@ class Gamerules:
         for i in range(5):  #Checks up to 5 tiles to the left of the vertical
             if placement.x_coord + i + 1 > 217:
                 break
-            temp_tile = self.board[placement.x_coord + i + 1][placement.y_coord]
+            temp_tile = board[placement.x_coord + i + 1][placement.y_coord]
             temp_placement = Placement(temp_tile, placement.x_coord - i - 1,
                                        placement.y_coord)
             if temp_tile is None:
@@ -225,11 +224,11 @@ class Gamerules:
             if already_scored == True:
                 score += 1
             else:
-                score += len(y_line)
+                score += len(y_line) + 1
             if len(y_line) == 5:  #Checks for Quirkle
                 score += 6
         return score
-    
+
     def remove_placement(self, placement: Placement, board: Board):
         """Removes a given placement
 
@@ -240,28 +239,29 @@ class Gamerules:
         Returns:
             An integer representing the amount of points need to be deducted from the player's score. Returns -1 for invalid and unsuccessful removal
         """
-        if(placement.tile().is_temporary()):
+        if not placement.tile.is_temporary():
             return -1
-        
+
         x_line, y_line = self.get_lines(placement, board)
-        x_length = x_line.__len__()
-        y_length = y_line.__len__()
+
+        x_length = x_line.__len__() + 1
+        y_length = y_line.__len__() + 1
         scoreRemoval = 0
 
-        if(x_length == 6): #Removes Quirkle points
+        if (x_length == 6):  #Removes Quirkle points
             scoreRemoval += 6
-        
+
         hasTemp = False
         for placement in x_line:
             if placement.tile.is_temporary():
                 hasTemp = True
         if hasTemp:
-            scoreRemoval +=1
+            scoreRemoval += 1
         else:
             scoreRemoval += x_length
+            print(x_length)
 
-
-        if(y_length == 6): #Removes Quirkle points
+        if (y_length == 6):  #Removes Quirkle points
             scoreRemoval += 6
 
         hasTemp = False
@@ -272,4 +272,6 @@ class Gamerules:
             scoreRemoval += 1
         else:
             scoreRemoval += y_length
+            print(y_length)
 
+        return scoreRemoval
