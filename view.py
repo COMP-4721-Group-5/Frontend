@@ -229,7 +229,7 @@ class View:
                     self.__logic.player.score = ev.dict['score']
                     self.update_view()
                 if ev.type == pygame.KEYDOWN:  # Handle navigation
-                    if(self.__logic.is_first_turn):
+                    if self.__logic.is_first_turn:
                         if ev.key == pygame.K_UP:
                             self.__top_left_y = self.__top_left_y - 1
                         if ev.key == pygame.K_DOWN:
@@ -240,7 +240,7 @@ class View:
                             self.__top_left_x = self.__top_left_x + 1
                         self.update_view()
                 if ev.type == pygame.MOUSEBUTTONDOWN:
-                    if(self.__logic.is_curr_turn):
+                    if self.__logic.is_curr_turn:
                         x = pygame.mouse.get_pos()[0]
                         y = pygame.mouse.get_pos()[1]
                         tile_width = 90
