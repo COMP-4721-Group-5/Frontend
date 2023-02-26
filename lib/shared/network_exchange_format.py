@@ -100,16 +100,15 @@ class ServerResponse(JsonableObject):
                  first: bool = False,
                  start_turn: bool = False,
                  game_over: bool = False,
+                 winner: bool = False,
                  flag: int = -1) -> None:
-        self.__flag = (ServerResponse.ResponseFlag.VALID
-                       if valid else ~ServerResponse.ResponseFlag.VALID |
-                       ServerResponse.ResponseFlag.FIRST
-                       if first else ~ServerResponse.ResponseFlag.FIRST |
-                       ServerResponse.ResponseFlag.START_TURN if start_turn else
-                       ~ServerResponse.ResponseFlag.START_TURN |
-                       ServerResponse.ResponseFlag.GAME_OVER
-                       if game_over else ~ServerResponse.ResponseFlag.GAME_OVER
-                      ) if flag < 0 else ServerResponse.ResponseFlag(flag)
+        self.__flag = (
+            ServerResponse.ResponseFlag.VALID if valid else 0 |
+            ServerResponse.ResponseFlag.FIRST if first else 0 |
+            ServerResponse.ResponseFlag.START_TURN if start_turn else 0 |
+            ServerResponse.ResponseFlag.GAME_OVER if game_over else 0 |
+            ServerResponse.ResponseFlag.WINNER if winner else 0
+        ) if flag < 0 else ServerResponse.ResponseFlag(flag)
         self.__curr_hand = hand
         self.__curr_board = board
         self.__curr_score = score
@@ -153,7 +152,22 @@ class ServerResponse(JsonableObject):
                               flag=serialized_form['flag'])
 
     class ResponseFlag(IntFlag):
-        VALID = 0b0001
-        FIRST = 0b0010
-        START_TURN = 0b0100
-        GAME_OVER = 0b1000
+        """Flags being used for Server Response
+        
+        VALID:  Indicates whether this response is valid.
+                This flag should not be set when responding
+                to an invalid request.
+        FIRST:  Indicates whether the first tile has been placed
+                on the board.
+        START_TURN: Indicates whether the receiving client should
+                    start its turn.
+        GAME_OVER:  Indicates whether the game is over.
+        WINNER: Indicates whether the receiving client is the winner
+                of the game.
+                This flag should NOT be set if GAME_OVER is not set.
+        """
+        VALID = 0b00001
+        FIRST = 0b00010
+        START_TURN = 0b00100
+        GAME_OVER = 0b01000
+        WINNER = 0b10000
