@@ -1,4 +1,6 @@
-from internal_structures import Placement, Board, Tile
+from typing import List
+
+from .internal_structures import Placement, Board, Tile
 
 
 class Gamerules:
@@ -8,7 +10,7 @@ class Gamerules:
     as per legal moves by the game's rules.
     """
 
-    def verify_move(self, move, board):
+    def verify_move(self, move: List[Placement], board: Board):
         """Verifies the most recent move
 
         Ensures that a given move is legal by game rules.
@@ -32,7 +34,7 @@ class Gamerules:
 
         
 
-    def get_lines(self, placement: Placement, board):
+    def get_lines(self, placement: Placement, board: Board):
         """Check which lines a given placement could be a part of
 
         Interated through the board from the placement data to see what valid lines configurations
@@ -48,8 +50,8 @@ class Gamerules:
             max line length is 5, does not include current placement
             returns None in a list that contains an invalid line
         """
-        x_line: list() = []
-        y_line: list() = []
+        x_line = list()
+        y_line = list()
         y_count = 0
         x_count = 0
         skip = False
@@ -71,7 +73,7 @@ class Gamerules:
                 y_line = None
                 skip = True
 
-        if skip is False: #If the y_line has a duplicate skip checking below as it is invalid placement
+        if not skip: #If the y_line has a duplicate skip checking below as it is invalid placement
             for i in range(5): #Checks up to 5 tiles below the horizontal
                 if placement.y_coord - i - 1 < 0:
                     break
@@ -130,7 +132,7 @@ class Gamerules:
   
         return x_line, y_line
 
-    def verify_placement(self, placement: Placement, board) -> bool:
+    def verify_placement(self, placement: Placement, board: Board) -> bool:
         """Verifies placement of a single tile on the board
 
         Checks to make sure a given placement is a valid move.
@@ -149,7 +151,7 @@ class Gamerules:
 
             return True
 
-    def register_move(self, move, board) -> bool:
+    def register_move(self, move, board: Board) -> bool:
         """Registers a given move.
 
         Updates the board to include the most recent move.
@@ -165,7 +167,7 @@ class Gamerules:
             Boolean corresponding to if the move was succesfully registered.
         """
 
-    def score_move(self, move, board) -> int:
+    def score_move(self, move: List[Placement], board: Board) -> int:
         """Scores a given move.
 
         Currently score relies on temporary tile information so scoring must happen before a move is fully
@@ -187,7 +189,7 @@ class Gamerules:
 
         return score
 
-    def score_placement(self, placement, board) -> int:
+    def score_placement(self, placement: Placement, board: Board) -> int:
         """Scores a given placement
 
         Args: 
