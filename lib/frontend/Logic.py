@@ -23,6 +23,8 @@ class Logic:
     __tempMove: Placement
     __player: Player
     __bag: List[Tile]
+    __is_first_turn: bool
+    __is_curr_turn: bool
 
     def __init__(self) -> None:
         """Inits the game with one player"""
@@ -78,9 +80,32 @@ class Logic:
     @property
     def player(self):
         return self.__player
+    
+
 
     @player.setter
     def player(self, new_player: Player):
         if not isinstance(new_player, Player):
             raise TypeError
         self.__player = new_player
+
+    @property
+    def is_first_turn(self):
+        return self.__is_first_turn
+    
+    @is_first_turn.setter
+    def is_first_turn(self, is_first_turn: bool):
+        if not isinstance(is_first_turn, bool):
+            raise TypeError
+        self.is_first_turn = is_first_turn
+    
+    @property
+    def is_curr_turn(self):
+        return self.__is_curr_turn
+    
+    @is_first_turn.setter
+    def is_curr_turn(self, is_curr_turn: bool):
+        if not isinstance(is_curr_turn, bool):
+            raise TypeError
+        self.is_curr_turn = is_curr_turn
+    
