@@ -101,7 +101,8 @@ class ClientSocket:
                 if len(recv_data) == 0:
                     self.__connection.close()
                 else:
-                    response = json.loads(recv_data.decode(), cls=JsonableDecoder)
+                    response = json.loads(recv_data.decode(),
+                                          cls=JsonableDecoder)
                     pygame.event.post(DataReceivedEvent.create_event(response))
 
             self.__connection._sock.shutdown(socket.SHUT_WR)

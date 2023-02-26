@@ -78,10 +78,9 @@ class Logic:
     @property
     def player(self):
         return self.__player
-    
+
     @player.setter
     def player(self, new_player: Player):
         if not isinstance(new_player, Player):
             raise TypeError
         self.__player = new_player
-

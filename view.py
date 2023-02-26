@@ -193,8 +193,10 @@ class View:
     def connect_server():
         """Prompts user for server address and port.
         """
-        server_ip = tkinter.simpledialog.askstring("Connect","Server IP:")
-        server_port = tkinter.simpledialog.askinteger("Connect","Server Port:", minvalue=1)
+        server_ip = tkinter.simpledialog.askstring("Connect", "Server IP:")
+        server_port = tkinter.simpledialog.askinteger("Connect",
+                                                      "Server Port:",
+                                                      minvalue=1)
 
         return ClientSocket(server_ip, server_port)
 
@@ -214,7 +216,7 @@ class View:
                     for i in range(len(ev.dict['curr_hand'])):
                         self.__logic.player[i] = ev.dict['curr_hand'][i]
                     self.update_view()
-                if ev.type == pygame.KEYDOWN: # Handle navigation
+                if ev.type == pygame.KEYDOWN:  # Handle navigation
                     if ev.key == pygame.K_UP:
                         self.__top_left_y = self.__top_left_y - 1
                     if ev.key == pygame.K_DOWN:
