@@ -226,6 +226,7 @@ class View:
                     self.__board = ev.dict['curr_board']
                     for i in range(len(ev.dict['curr_hand'])):
                         self.__logic.player[i] = ev.dict['curr_hand'][i]
+                    self.__logic.player.score = ev.dict['score']
                     self.update_view()
                 if ev.type == pygame.KEYDOWN:  # Handle navigation
                     if ev.key == pygame.K_UP:
