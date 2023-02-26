@@ -4,7 +4,7 @@ import tkinter.simpledialog
 import pygame
 
 from lib.shared.player import Player
-from lib.frontend.Logic import Logic
+from lib.frontend.logic import Logic
 from lib.frontend.frontend_network import ClientSocket
 from lib.frontend.frontend_network import DataReceivedEvent
 from lib.shared.internal_structures import Board, Placement, Tile

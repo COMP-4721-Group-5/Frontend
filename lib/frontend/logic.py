@@ -18,14 +18,21 @@ class Logic:
         board: Contains the board
         tempMove: List that contains all temporary placements of current players move
         player: Contains the local player's data 
+        bag: contains the bag of tiles left to be drawn
+        is_first_turn: a boolean variable to keep track of whether or not it is the first move
+        is_curr_turn: a boolean variable to keep track of if it is this player's turn
     """
     __board: Board
     __tempMove: Placement
     __player: Player
     __bag: List[Tile]
+    __is_first_turn: bool
+    __is_curr_turn: bool
 
     def __init__(self) -> None:
         """Inits the game with one player"""
+        self.is_curr_turn = False
+        self.is_first_turn = False
         self.start_game(1)
 
     def start_game(self, playerCount: int):
@@ -84,3 +91,23 @@ class Logic:
         if not isinstance(new_player, Player):
             raise TypeError
         self.__player = new_player
+
+    @property
+    def is_first_turn(self):
+        return self.__is_first_turn
+
+    @is_first_turn.setter
+    def is_first_turn(self, is_first_turn: bool):
+        if not isinstance(is_first_turn, bool):
+            raise TypeError
+        self.is_first_turn = is_first_turn
+
+    @property
+    def is_curr_turn(self):
+        return self.__is_curr_turn
+
+    @is_first_turn.setter
+    def is_curr_turn(self, is_curr_turn: bool):
+        if not isinstance(is_curr_turn, bool):
+            raise TypeError
+        self.is_curr_turn = is_curr_turn
