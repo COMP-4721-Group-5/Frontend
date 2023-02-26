@@ -5,7 +5,9 @@ from queue import Queue
 import random as rand
 from typing import List
 
-from lib.backend.server_components import *
+from lib.backend.Logic_backend import QwirkeleController
+from lib.backend.server_components import ClientConnection
+from lib.backend.server_components import Request
 
 sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock_server.bind(("", 1234))
