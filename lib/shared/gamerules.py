@@ -229,3 +229,47 @@ class Gamerules:
             if len(y_line) == 5:  #Checks for Quirkle
                 score += 6
         return score
+    
+    def remove_placement(self, placement: Placement, board: Board):
+        """Removes a given placement
+
+        Args:
+            placement: the placement to be removed
+            board: contains the current game board
+
+        Returns:
+            The amount of points need to be deducted from the player's score. Returns -1 for invalid and unsuccessful removal
+        """
+        if(placement.tile().is_temporary()):
+            return -1
+        
+        x_line, y_line = self.get_lines(placement, board)
+        x_length = x_line.__len__()
+        y_length = y_line.__len__()
+        scoreRemoval = 0
+
+        if(x_length == 6): #Removes Quirkle points
+            scoreRemoval += 6
+        
+        hasTemp = False
+        for placement in x_line:
+            if placement.tile.is_temporary():
+                hasTemp = True
+        if hasTemp:
+            scoreRemoval +=1
+        else:
+            scoreRemoval += x_length
+
+
+        if(y_length == 6): #Removes Quirkle points
+            scoreRemoval += 6
+
+        hasTemp = False
+        for placement in y_line:
+            if placement.tile.is_temporary():
+                hasTemp = True
+        if hasTemp:
+            scoreRemoval += 1
+        else:
+            scoreRemoval += y_length
+
