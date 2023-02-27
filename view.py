@@ -8,6 +8,7 @@ from lib.frontend.logic import Logic
 from lib.frontend.frontend_network import ClientSocket
 from lib.frontend.frontend_network import DataReceivedEvent
 from lib.shared.internal_structures import Board, Placement, Tile
+from lib.shared.network_exchange_format import ServerResponse
 
 
 def tile_img_load(tile: Tile):
@@ -223,13 +224,15 @@ class View:
                 if ev.type == DataReceivedEvent.EVENTTYPE:
                     # TODO: Use data from event to update internal data
                     print(ev.dict)
+                    self.__logic.is_curr_turn = ServerResponse.ResponseFlag.START_TURN in ev.dict['flag']
+                    self.__logic.is_first_turn = ServerResponse.ResponseFlag.FIRST in ev.dict['flag']
                     self.__board = ev.dict['curr_board']
                     for i in range(len(ev.dict['curr_hand'])):
                         self.__logic.player[i] = ev.dict['curr_hand'][i]
-                    self.__logic.player.score = ev.dict['score']
+                    self.__logic.player.score = ev.dict['curr_score']
                     self.update_view()
                 if ev.type == pygame.KEYDOWN:  # Handle navigation
-                    if self.__logic.is_first_turn:
+                    if not self.__logic.is_first_turn:
                         if ev.key == pygame.K_UP:
                             self.__top_left_y = self.__top_left_y - 1
                         if ev.key == pygame.K_DOWN:
