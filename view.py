@@ -242,48 +242,47 @@ class View:
                         if ev.key == pygame.K_RIGHT:
                             self.__top_left_x = self.__top_left_x + 1
                         self.update_view()
-                if ev.type == pygame.MOUSEBUTTONDOWN:
-                    if self.__logic.is_curr_turn:
-                        x = pygame.mouse.get_pos()[0]
-                        y = pygame.mouse.get_pos()[1]
-                        tile_width = 90
-                        gap_width = 8
-                        total_width = 585
-                        if (100 < x < 685) and (
-                                700 < y < 770):  # Handles interaction with hand
-                            relative_x = x - 100
-                            for i in range(6):
-                                if relative_x < (585 / 6) * (i + 1):
-                                    self.__selected_tile = i
-                                    self.update_view()
-                                    break
-                        if (100 < x < 877) and (53 < y < 667) and (
-                                # Handles interaction with the grid
-                                self.__logic.player[self.__selected_tile]
-                                is not None):
-                            relative_x = x - 100
-                            relative_y = y - 53
-                            found = False
-                            for i in range(self.__frame_size):
-                                if relative_x < (777 / self.__frame_size) * (i + 1):
-                                    for j in range(self.__frame_size):
-                                        if relative_y < (
-                                                615 / self.__frame_size) * (j + 1):
-                                            placement = Placement(  # Creates and registers placement
-                                                self.__logic.player[
-                                                    self.__selected_tile],
-                                                self.__top_left_x + j,
-                                                self.__top_left_y + i)
-                                            self.__board.add_tile(placement)
+                if ev.type == pygame.MOUSEBUTTONDOWN and self.__logic.is_curr_turn:
+                    x = pygame.mouse.get_pos()[0]
+                    y = pygame.mouse.get_pos()[1]
+                    tile_width = 90
+                    gap_width = 8
+                    total_width = 585
+                    if (100 < x < 685) and (
+                            700 < y < 770):  # Handles interaction with hand
+                        relative_x = x - 100
+                        for i in range(6):
+                            if relative_x < (585 / 6) * (i + 1):
+                                self.__selected_tile = i
+                                self.update_view()
+                                break
+                    if (100 < x < 877) and (53 < y < 667) and (
+                            # Handles interaction with the grid
+                            self.__logic.player[self.__selected_tile]
+                            is not None):
+                        relative_x = x - 100
+                        relative_y = y - 53
+                        found = False
+                        for i in range(self.__frame_size):
+                            if relative_x < (777 / self.__frame_size) * (i + 1):
+                                for j in range(self.__frame_size):
+                                    if relative_y < (
+                                            615 / self.__frame_size) * (j + 1):
+                                        placement = Placement(  # Creates and registers placement
                                             self.__logic.player[
-                                                self.__selected_tile] = None
-                                            self.__selected_tile = -1
-                                            self.update_view()
-                                            found = True
-                                            self.update_view()
-                                            break
-                                    if found:
+                                                self.__selected_tile],
+                                            self.__top_left_x + j,
+                                            self.__top_left_y + i)
+                                        self.__board.add_tile(placement)
+                                        self.__logic.player[
+                                            self.__selected_tile] = None
+                                        self.__selected_tile = -1
+                                        self.update_view()
+                                        found = True
+                                        self.update_view()
                                         break
+                                if found:
+                                    break
 
 
 # Driver code
