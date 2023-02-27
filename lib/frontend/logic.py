@@ -100,14 +100,14 @@ class Logic:
     def is_first_turn(self, is_first_turn: bool):
         if not isinstance(is_first_turn, bool):
             raise TypeError
-        self.is_first_turn = is_first_turn
+        self.__is_first_turn = is_first_turn
 
     @property
     def is_curr_turn(self):
         return self.__is_curr_turn
 
-    @is_first_turn.setter
+    @is_curr_turn.setter
     def is_curr_turn(self, is_curr_turn: bool):
         if not isinstance(is_curr_turn, bool):
             raise TypeError
-        self.is_curr_turn = is_curr_turn
+        self.__is_curr_turn = is_curr_turn
