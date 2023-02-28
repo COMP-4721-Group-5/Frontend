@@ -4,10 +4,11 @@ import tkinter.simpledialog
 import pygame
 
 from lib.shared.player import Player
-from lib.frontend.Logic import Logic
+from lib.frontend.logic import Logic
 from lib.frontend.frontend_network import ClientSocket
 from lib.frontend.frontend_network import DataReceivedEvent
 from lib.shared.internal_structures import Board, Placement, Tile
+from lib.shared.network_exchange_format import ServerResponse
 
 
 def tile_img_load(tile: Tile):
@@ -69,6 +70,7 @@ class View:
         pygame.display.set_caption("Qwirkle")
         self.__screen.fill(background_color)
         self.update_view()
+        self.render_details()
         self.init_event_loop()
 
     def update_view(self):
@@ -80,7 +82,6 @@ class View:
         self.render_grid(self.__screen, self.__window_size, self.__top_left_x,
                          self.__top_left_y)
         self.render_hand(self.__screen, self.__window_size)
-        self.render_details()
         pygame.display.flip()
 
     def render_grid(self, screen, window_size, top_left_x, top_left_y):
@@ -164,7 +165,18 @@ class View:
 
     def render_details(self):
         """Renders details such as the server IP and the player's score."""
-        pass
+        connected_color = (50, 205, 50)
+        ip_color = (0, 0, 0)
+        pygame.font.init()
+        font = pygame.font.SysFont("Arial", 15)
+        server_ip = self.__socket.address
+        server_port = self.__socket.port
+        con_surface = font.render("Connected: ", True, connected_color)
+        ip_str = str(server_ip) + ":" + str(server_port)
+        ip_surface = font.render(ip_str, True, ip_color)
+        screen.blit(con_surface, (715, 14))
+        screen.blit(ip_surface, (795, 14))
+        pygame.display.flip()
 
     def draw_hollow_rect(self, screen, color, border_color, x, y, width, height,
                          border_width):
@@ -211,22 +223,28 @@ class View:
                     sys.exit()
                 if ev.type == DataReceivedEvent.EVENTTYPE:
                     # TODO: Use data from event to update internal data
-                    print(ev.dict)
+                    self.__logic.is_curr_turn = (
+                        ServerResponse.ResponseFlag.START_TURN
+                        in ev.dict['flag'])
+                    self.__logic.is_first_turn = (
+                        ServerResponse.ResponseFlag.FIRST in ev.dict['flag'])
                     self.__board = ev.dict['curr_board']
                     for i in range(len(ev.dict['curr_hand'])):
                         self.__logic.player[i] = ev.dict['curr_hand'][i]
+                    self.__logic.player.score = ev.dict['curr_score']
                     self.update_view()
                 if ev.type == pygame.KEYDOWN:  # Handle navigation
-                    if ev.key == pygame.K_UP:
-                        self.__top_left_y = self.__top_left_y - 1
-                    if ev.key == pygame.K_DOWN:
-                        self.__top_left_y = self.__top_left_y + 1
-                    if ev.key == pygame.K_LEFT:
-                        self.__top_left_x = self.__top_left_x - 1
-                    if ev.key == pygame.K_RIGHT:
-                        self.__top_left_x = self.__top_left_x + 1
-                    self.update_view()
-                if ev.type == pygame.MOUSEBUTTONDOWN:
+                    if not self.__logic.is_first_turn:
+                        if ev.key == pygame.K_UP:
+                            self.__top_left_y = self.__top_left_y - 1
+                        if ev.key == pygame.K_DOWN:
+                            self.__top_left_y = self.__top_left_y + 1
+                        if ev.key == pygame.K_LEFT:
+                            self.__top_left_x = self.__top_left_x - 1
+                        if ev.key == pygame.K_RIGHT:
+                            self.__top_left_x = self.__top_left_x + 1
+                        self.update_view()
+                if ev.type == pygame.MOUSEBUTTONDOWN and self.__logic.is_curr_turn:
                     x = pygame.mouse.get_pos()[0]
                     y = pygame.mouse.get_pos()[1]
                     tile_width = 90
