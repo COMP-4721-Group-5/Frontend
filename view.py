@@ -243,7 +243,7 @@ class View:
                     if (100 < x < 877) and (53 < y < 667) and (
                             # Handles interaction with the grid
                             self.__logic.player[self.__selected_tile]
-                            is not None):
+                            is not None) and (self.__selected_tile >= 0):
                         relative_x = x - 100
                         relative_y = y - 53
                         found = False
