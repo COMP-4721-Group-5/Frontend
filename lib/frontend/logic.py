@@ -81,7 +81,7 @@ class Logic:
         self.__discards.add(tile)
         pass
 
-    def end_turn(self, discard: bool):
+    def end_turn(self, discard: bool, client_socket: ClientSocket):
         """Ends the current turn
 
         Args:
@@ -91,10 +91,10 @@ class Logic:
 
         if discard:
             request = ClientRequest('discard', self.__discards)
-            self.__clien_socket.send_data(request)
+            clien_socket.send_data(request)
         else:
             request = ClientRequest('placement', self.__temp_move)
-            self.__clien_socket.send_data(request)
+            clien_socket.send_data(request)
 
         self.__discards = list[Tile]
         self.__temp_move = list[Placement]
