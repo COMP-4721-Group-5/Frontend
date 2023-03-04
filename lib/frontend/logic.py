@@ -89,10 +89,10 @@ class Logic:
 
         if discard:
             request = ClientRequest('discard', self.__discards)
-            clien_socket.send_data(request)
+            client_socket.send_data(request)
         else:
             request = ClientRequest('placement', self.__temp_move)
-            clien_socket.send_data(request)
+            client_socket.send_data(request)
 
         self.__discards = list[Tile]
         self.__temp_move = list[Placement]
