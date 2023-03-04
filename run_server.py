@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import logging
 import socket
 from queue import Queue
 import random as rand
@@ -7,8 +8,12 @@ from typing import List
 
 from lib.backend.server_components import *
 
+logging.basicConfig(encoding='utf-8', level=logging.DEBUG,format='%(asctime)s %(message)s')
+logging.info('Starting server...')
+
 sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock_server.bind(("", 1234))
+logging.info('Listening on port 1234')
 sock_server.listen()
 
 connections: List[ClientConnection] = list()
