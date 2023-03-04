@@ -3,6 +3,7 @@ from typing import List
 from ..shared.internal_structures import Board, Placement, Tile, TileColor, TileShape
 from ..shared.player import Player
 from ..shared import gamerules
+from .frontend_network import ClientSocket, ClientRequest
 
 
 class Logic:
@@ -21,16 +22,20 @@ class Logic:
         bag: contains the bag of tiles left to be drawn
         is_first_turn: a boolean variable to keep track of whether or not it is the first move
         is_curr_turn: a boolean variable to keep track of if it is this player's turn
+        discards: keeps track of tiles to discard
     """
     __board: Board
-    __tempMove: Placement
+    __temp_move: List[Placement]
     __player: Player
     __bag: List[Tile]
     __is_first_turn: bool
     __is_curr_turn: bool
+    __discards: List[Tile]
 
     def __init__(self) -> None:
         """Inits the game with one player"""
+        self.__temp_move = list()
+        self.__discards = list()
         self.is_curr_turn = False
         self.is_first_turn = False
         self.start_game(1)
@@ -57,15 +62,42 @@ class Logic:
 
         self.__player.update_hand(temp_hand)
 
-    def play_tile(self, placement, index):
+    def play_tile(self, placement: Placement):
         """Plays a tile given an index and desired placement
 
         Args:
             placement: desired placement of the tile, contains tile, x_coord and y_coord data
-            index: index of the tile within the players hand
         """
-        self.board.add_tile(placement)
+        self.__tempMove.append(placement)
+
+    def discard_tile(self, tile: Tile, index: int):
+        """Discards a tile at a given index
+
+        Args:
+            tile: tile to discard
+            index: index of tile within the hand
+        """
         self.player.play_tile(index)
+        self.__discards.append(tile)
+        pass
+
+    def end_turn(self, discard: bool, client_socket: ClientSocket):
+        """Ends the current turn
+
+        Args:
+            discard: keeps track of whether or not the player chose to discard this turn
+        """
+        self.__is_curr_turn = False
+
+        if discard:
+            request = ClientRequest('discard', self.__discards)
+            client_socket.send_data(request)
+        else:
+            request = ClientRequest('placement', self.__temp_move)
+            client_socket.send_data(request)
+
+        self.__discards = list()
+        self.__temp_move = list()
 
     @property
     def board(self):
