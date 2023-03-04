@@ -3,7 +3,7 @@ from typing import List
 from ..shared.internal_structures import Board, Placement, Tile, TileColor, TileShape
 from ..shared.player import Player
 from ..shared import gamerules
-from ..frontend.frontend_network import ClientSocket, ClientRequest
+from .frontend_network import ClientSocket, ClientRequest
 
 
 class Logic:
@@ -34,6 +34,8 @@ class Logic:
 
     def __init__(self) -> None:
         """Inits the game with one player"""
+        self.__temp_move = list()
+        self.__discards = list()
         self.is_curr_turn = False
         self.is_first_turn = False
         self.start_game(1)
@@ -85,7 +87,7 @@ class Logic:
         Args:
             discard: keeps track of whether or not the player chose to discard this turn
         """
-        __is_curr_turn = False
+        self.__is_curr_turn = False
 
         if discard:
             request = ClientRequest('discard', self.__discards)
