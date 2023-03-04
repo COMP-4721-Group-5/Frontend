@@ -92,7 +92,7 @@ class ClientSocket:
         __connection: 'ClientSocket'
 
         def __init__(self, connection: 'ClientSocket'):
-            Thread.__init__(self)
+            Thread.__init__(self, name='ServerMsgListener-%s,%d' % (connection.address, connection.port))
             self.__connection = connection
 
         def run(self):
