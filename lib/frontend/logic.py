@@ -80,7 +80,6 @@ class Logic:
         self.player.play_tile(index)
         self.__discards.add(tile)
         pass
-        
 
     def end_turn(self, discard: bool):
         """Ends the current turn
@@ -99,7 +98,6 @@ class Logic:
 
         self.__discards = list[Tile]
         self.__temp_move = list[Placement]
-
 
     @property
     def board(self):
