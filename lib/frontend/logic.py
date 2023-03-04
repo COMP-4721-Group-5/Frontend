@@ -94,8 +94,8 @@ class Logic:
             request = ClientRequest('placement', self.__temp_move)
             client_socket.send_data(request)
 
-        self.__discards = list[Tile]
-        self.__temp_move = list[Placement]
+        self.__discards = list()
+        self.__temp_move = list()
 
     @property
     def board(self):
