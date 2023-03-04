@@ -21,6 +21,7 @@ class QwirkeleController:
         tile_bag: Bag of tiles
         active: Indicates current state of server
         curr_player: Current player in turn
+        gamerules: set of gamerules
     """
     __clients: List[ClientConnection]
     __requests: Queue[Request]
@@ -28,6 +29,7 @@ class QwirkeleController:
     __tile_bag: List[Tile]
     __active: bool
     __curr_player: int
+    __gamerules = Gamerules()
 
     def __init__(self, client_list: List[ClientConnection],
                  request_queue: Queue[Request]) -> None:
@@ -82,9 +84,14 @@ class QwirkeleController:
         elif curr_request.data.request_type == 'placement':
             # Check if placements are valid
             valid_placement = True
+            for placement in curr_request:
+                valid_placement = self.__gamerules.verify_move(curr_request)
+                if not valid_placement:
+                    break
             # if placements are valid:
             if valid_placement:
-                pass
+                self.__curr_player.score += self.__gamerules.score_move(curr_request)
+                
                 # mark placed tiles as permanent using Tile.set_permanent()
                 # update score of current player
                 # then call self.__start_next_turn()
