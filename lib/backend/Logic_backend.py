@@ -90,11 +90,13 @@ class QwirkeleController:
                     break
             # if placements are valid:
             if valid_placement:
-                self.__curr_player.score += self.__gamerules.score_move(curr_request)
-                
-                # mark placed tiles as permanent using Tile.set_permanent()
                 # update score of current player
+                self.__curr_player.score += self.__gamerules.score_move(curr_request)
+                # mark placed tiles as permanent using Tile.set_permanent()
+                for placement in curr_request:
+                    placement.tile.set_permanent
                 # then call self.__start_next_turn()
+                self.__start_next_turn
             else:
                 # yell at client
                 curr_request.connection.send_data(
