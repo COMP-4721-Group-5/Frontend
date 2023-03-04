@@ -62,7 +62,7 @@ class Logic:
 
         self.__player.update_hand(temp_hand)
 
-    def play_tile(self, placement):
+    def play_tile(self, placement: Placement):
         """Plays a tile given an index and desired placement
 
         Args:
@@ -70,7 +70,7 @@ class Logic:
         """
         self.__tempMove.add(placement)
 
-    def discard_tile(self, tile, index):
+    def discard_tile(self, tile: Tile, index: int):
         """Discards a tile at a given index
 
         Args:
