@@ -66,7 +66,7 @@ class Logic:
         Args:
             placement: desired placement of the tile, contains tile, x_coord and y_coord data
         """
-        self.__tempMove.add(placement)
+        self.__tempMove.append(placement)
 
     def discard_tile(self, tile: Tile, index: int):
         """Discards a tile at a given index
@@ -76,7 +76,7 @@ class Logic:
             index: index of tile within the hand
         """
         self.player.play_tile(index)
-        self.__discards.add(tile)
+        self.__discards.append(tile)
         pass
 
     def end_turn(self, discard: bool, client_socket: ClientSocket):
