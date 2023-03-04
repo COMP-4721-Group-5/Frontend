@@ -29,7 +29,7 @@ class QwirkeleController:
     __tile_bag: List[Tile]
     __active: bool
     __curr_player: int
-    __gamerules = Gamerules()
+    __gamerules: Gamerules
 
     def __init__(self, client_list: List[ClientConnection],
                  request_queue: Queue[Request]) -> None:
@@ -39,6 +39,7 @@ class QwirkeleController:
         self.__active = True
         self.__board = Board()
         self.__tile_bag = list()
+        self.__gamerules = Gamerules()
         for i in range(3):
             for color in TileColor:
                 for shape in TileShape:
