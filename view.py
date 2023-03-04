@@ -166,14 +166,19 @@ class View:
     def render_details(self):
         """Renders details such as the server IP and the player's score."""
         connected_color = (50, 205, 50)
-        ip_color = (0, 0, 0)
+        black_color = (0, 0, 0)
         pygame.font.init()
         font = pygame.font.SysFont("Arial", 15)
         server_ip = self.__socket.address
         server_port = self.__socket.port
         con_surface = font.render("Connected: ", True, connected_color)
         ip_str = str(server_ip) + ":" + str(server_port)
-        ip_surface = font.render(ip_str, True, ip_color)
+        ip_surface = font.render(ip_str, True, black_color)
+        
+        score = self.__logic.player.score
+        score_surface = font.render("Score: "+str(score), True, black_color)
+        
+        screen.blit(score_surface, (90, 17))
         screen.blit(con_surface, (715, 14))
         screen.blit(ip_surface, (795, 14))
         pygame.display.flip()
@@ -276,6 +281,7 @@ class View:
                                             self.__top_left_x + j,
                                             self.__top_left_y + i)
                                         self.__board.add_tile(placement)
+                                        #self.__logic.play_tile(placement) # uncomment soon
                                         self.__logic.player[
                                             self.__selected_tile] = None
                                         self.__selected_tile = -1
