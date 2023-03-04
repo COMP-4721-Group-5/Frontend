@@ -22,7 +22,6 @@ class Logic:
         bag: contains the bag of tiles left to be drawn
         is_first_turn: a boolean variable to keep track of whether or not it is the first move
         is_curr_turn: a boolean variable to keep track of if it is this player's turn
-        client_socket: the client socket
         discards: keeps track of tiles to discard
     """
     __board: Board
@@ -31,7 +30,6 @@ class Logic:
     __bag: List[Tile]
     __is_first_turn: bool
     __is_curr_turn: bool
-    __clien_socket: ClientSocket
     __discards: List[Tile]
 
     def __init__(self) -> None:
