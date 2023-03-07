@@ -62,8 +62,9 @@ class QwirkeleController:
             curr_request.connection.send_data(
                 ServerResponse(curr_request.connection.get_player().get_hand(),
                                self.__board,
-                               curr_request.connection.get_player().__score,
-                               flag=0b0000))
+                               curr_request.connection.get_player().score,
+                               game_over=(not self.__active),
+                               first=self.__is_first_turn()))
         # if request is discarding hand: handle here
         if curr_request.data.request_type == 'discard':
             # Check if discarding is valid
@@ -79,8 +80,10 @@ class QwirkeleController:
                     ServerResponse(
                         curr_request.connection.get_player().get_hand(),
                         self.__board,
-                        curr_request.connection.get_player().__score,
-                        flag=0b0000))
+                        curr_request.connection.get_player().score,
+                        start_turn=True,
+                        game_over=(not self.__active),
+                        first=self.__is_first_turn()))
         # if request is placing tiles:
         elif curr_request.data.request_type == 'placement':
             # Check if placements are valid
@@ -106,16 +109,20 @@ class QwirkeleController:
                     ServerResponse(
                         curr_request.connection.get_player().get_hand(),
                         self.__board,
-                        curr_request.connection.get_player().__score,
-                        flag=0b0000))
+                        curr_request.connection.get_player().score,
+                        start_turn=True,
+                        game_over=(not self.__active),
+                        first=self.__is_first_turn()))
         # else:
         else:
             # this means that request is invalid, so yell at client
             curr_request.connection.send_data(
                 ServerResponse(curr_request.connection.get_player().get_hand(),
                                self.__board,
-                               curr_request.connection.get_player().__score,
-                               flag=0b0000))
+                               curr_request.connection.get_player().score,
+                               start_turn=True,
+                               game_over=(not self.__active),
+                               first=self.__is_first_turn()))
 
     def sync_all_players(self):
         """Synchronizes all player states
