@@ -45,6 +45,8 @@ class View:
         __screen: The screen object
         __logic: Instance of the logic class that will be used to access the logic methods
         __board: Instance of the board object that will be used to interact with the board
+        __discard_mode: Tracks whether the user is actively discarding tiles
+        __placing_mode: Tracks whether the user is actively placing tiles
     """
 
     __top_left_x: int = 108
@@ -56,6 +58,9 @@ class View:
     __logic: Logic = None
     __board: Board = None
     __socket: ClientSocket
+    __discard_mode: bool = False # Must be reset when turn/placements are confirmed
+    __placing_mode: bool = False # ^^^
+    __discarding_tiles: List[int]
 
     def __init__(self, size, g_logic):
         """Inits the view"""
@@ -64,6 +69,7 @@ class View:
         self.__socket = View.connect_server()
         self.__screen = pygame.display.set_mode(size)
         self.__board = self.__logic.board
+        self.__discarding_tiles = list()
         favicon = pygame.image.load('favicon.png')
         pygame.display.set_icon(favicon)
         background_color = (255, 255, 255)
@@ -148,6 +154,8 @@ class View:
         for i in range(num_tiles + 1):
             if self.__selected_tile == i:
                 border_color = (255, 0, 255)
+            if i in self.__discarding_tiles:
+                border_color = (255, 0, 0)
             if i < 6:
                 self.draw_hollow_rect(screen, background_color, border_color,
                                       x_pos, y_pos, tile_width, tile_height, 5)
@@ -174,10 +182,10 @@ class View:
         con_surface = font.render("Connected: ", True, connected_color)
         ip_str = str(server_ip) + ":" + str(server_port)
         ip_surface = font.render(ip_str, True, black_color)
-        
+
         score = self.__logic.player.score
         score_surface = font.render("Score: "+str(score), True, black_color)
-        
+
         screen.blit(score_surface, (90, 17))
         screen.blit(con_surface, (715, 14))
         screen.blit(ip_surface, (795, 14))
@@ -257,12 +265,21 @@ class View:
                     total_width = 585
                     if (100 < x < 685) and (
                             700 < y < 770):  # Handles interaction with hand
-                        relative_x = x - 100
-                        for i in range(6):
-                            if relative_x < (585 / 6) * (i + 1):
-                                self.__selected_tile = i
-                                self.update_view()
-                                break
+                        if ev.button == 1 and self.__discard_mode == False: # Select a tile for placing
+                            relative_x = x - 100
+                            for i in range(6):
+                                if relative_x < (585 / 6) * (i + 1):
+                                    self.__selected_tile = i
+                                    self.update_view()
+                                    break
+                        elif ev.button == 3 and self.__placing_mode == False: # Select a tile for discarding
+                            relative_x = x - 100
+                            for i in range(6):
+                                if relative_x < (585 / 6) * (i + 1):
+                                    if i in self.__discarding_tiles:
+                                        self.__discarding_tiles.remove(i)
+                                    else:
+                                        self.__discarding_tiles.append(i)
                     if (100 < x < 877) and (53 < y < 667) and (
                             # Handles interaction with the grid
                             self.__logic.player[self.__selected_tile]
