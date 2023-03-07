@@ -83,7 +83,9 @@ class ClientConnection:
 
         def __init__(self, connection: 'ClientConnection',
                      msg_queue: Queue[Request]):
-            Thread.__init__(self)
+            Thread.__init__(self,
+                            name="ClientMsgListener-%s:%d" %
+                            (connection.address[0], connection.address[1]))
             self.__connection = connection
             self.__msg_queue = msg_queue
 
