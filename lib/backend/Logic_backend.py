@@ -157,7 +157,7 @@ class QwirkeleController:
         return -1
 
     @staticmethod
-    def __is_valid_discard(player: Player, discard_tiles: List[Tile]):
+    def is_valid_discard(player: Player, discard_tiles: List[Tile]):
         if len(discard_tiles) == 0:
             return False
         elif len(discard_tiles) > 6:
@@ -166,9 +166,9 @@ class QwirkeleController:
         discard_stat = dict()
         for i in range(6):
             if player[i].hex_value in hand_stat:
-                hand_stat[player[i]] += 1
+                hand_stat[player[i].hex_value] += 1
             else:
-                hand_stat[player[i]] = 1
+                hand_stat[player[i].hex_value] = 1
         for discard in discard_tiles:
             if discard.hex_value in hand_stat:
                 hand_stat[discard.hex_value] += 1
