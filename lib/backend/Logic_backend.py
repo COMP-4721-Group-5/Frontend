@@ -94,8 +94,10 @@ class QwirkeleController:
                 # update score of current player
                 self.__curr_player.score += self.__gamerules.score_move(curr_request)
                 # mark placed tiles as permanent using Tile.set_permanent()
-                for placement in curr_request:
-                    placement.tile.set_permanent
+                # then add the tiles to the board
+                for placement in curr_request.data:
+                    placement.tile.set_permanent()
+                    self.__board.get_board()[placement.x_coord, placement.y_coord] = placement.tile
                 # then call self.__start_next_turn()
                 self.__start_next_turn
             else:
