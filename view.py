@@ -122,6 +122,9 @@ class View:
                 curr_tile = self.__board.get_board()[self.__top_left_y + i,
                                                      self.__top_left_x + j]
                 if curr_tile != 0:
+                    background_color = (0, 0, 0)
+                    if curr_tile.is_temporary():
+                        background_color = (255, 0, 255)
                     tile_img = pygame.transform.scale(
                         tile_img_load(curr_tile),
                         (tile_width - 10, tile_height - 10))
