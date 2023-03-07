@@ -9,6 +9,7 @@ from ..shared.internal_structures import Tile
 from ..shared.internal_structures import TileColor
 from ..shared.internal_structures import TileShape
 from ..shared.network_exchange_format import ServerResponse
+from ..shared.player import Player
 from ..shared.gamerules import Gamerules
 
 
@@ -69,12 +70,23 @@ class QwirkeleController:
         # if request is discarding hand: handle here
         if curr_request.data.request_type == 'discard':
             # Check if discarding is valid
-            valid_discard = True
+            discard_tiles: List[Tile] = list(curr_request.data.__iter__())
+            valid_discard = QwirkeleController.__is_valid_discard(
+                curr_request.connection.get_player(), discard_tiles)
             # if valid:
             if valid_discard:
-                pass
                 # remove tiles from hand and put back in bag
+                for i in range(len(curr_request.data)):
+                    for j in range(6):
+                        if curr_request.connection.get_player(
+                        )[j] == discard_tiles[i]:
+                            self.__tile_bag.append(
+                                curr_request.connection.get_player()[j])
+                            curr_request.connection.get_player()[j] = None
+                            break
                 # then call self.__start_next_turn()
+                self.__start_next_turn()
+
             # else: yell at client
             else:
                 curr_request.connection.send_data(
@@ -143,6 +155,31 @@ class QwirkeleController:
             # TODO: Check this
             NotImplemented
         return -1
+
+    @staticmethod
+    def __is_valid_discard(player: Player, discard_tiles: List[Tile]):
+        if len(discard_tiles) == 0:
+            return False
+        elif len(discard_tiles) > 6:
+            return False
+        hand_stat = dict()
+        discard_stat = dict()
+        for i in range(6):
+            if player[i].hex_value in hand_stat:
+                hand_stat[player[i]] += 1
+            else:
+                hand_stat[player[i]] = 1
+        for discard in discard_tiles:
+            if discard.hex_value in hand_stat:
+                hand_stat[discard.hex_value] += 1
+            else:
+                hand_stat[discard.hex_value] = 1
+        for discard_type in hand_stat.keys():
+            if discard_type not in hand_stat.keys():
+                return False
+            elif discard_stat[discard_type] > hand_stat[discard_type]:
+                return False
+        return True
 
     def __is_first_turn(self):
         for client in self.__clients:
