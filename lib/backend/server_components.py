@@ -103,7 +103,8 @@ class ClientConnection:
                 recv_data = json.loads(
                     self.__connection._csock.recv(4096).decode(),
                     cls=JsonableDecoder)
-                self.__connection._logger.info(f'Received data from {self.__connection.address}')
+                self.__connection._logger.info(
+                    f'Received data from {self.__connection.address}')
                 self.__msg_queue.put(
                     Request(self.__connection, time.time(), recv_data))
 

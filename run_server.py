@@ -8,7 +8,9 @@ from typing import List
 
 from lib.backend.server_components import *
 
-logging.basicConfig(encoding='utf-8', level=logging.DEBUG,format='%(asctime)s %(message)s')
+logging.basicConfig(encoding='utf-8',
+                    level=logging.DEBUG,
+                    format='%(asctime)s %(message)s')
 logging.info('Starting server...')
 
 sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
