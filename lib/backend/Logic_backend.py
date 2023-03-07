@@ -85,10 +85,7 @@ class QwirkeleController:
         elif curr_request.data.request_type == 'placement':
             # Check if placements are valid
             valid_placement = True
-            for placement in curr_request:
-                valid_placement = self.__gamerules.verify_move(curr_request)
-                if not valid_placement:
-                    break
+            valid_placement = self.__gamerules.verify_move(curr_request)
             # if placements are valid:
             if valid_placement:
                 # update score of current player
