@@ -99,7 +99,7 @@ class QwirkeleController:
                     placement.tile.set_permanent()
                     self.__board.get_board()[placement.x_coord, placement.y_coord] = placement.tile
                 # then call self.__start_next_turn()
-                self.__start_next_turn
+                self.__start_next_turn()
             else:
                 # yell at client
                 curr_request.connection.send_data(
