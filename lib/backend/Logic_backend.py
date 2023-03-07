@@ -11,6 +11,7 @@ from ..shared.internal_structures import TileShape
 from ..shared.network_exchange_format import ServerResponse
 from ..shared.gamerules import Gamerules
 
+
 class QwirkeleController:
     """Root controller for Qwirkle Server
 
@@ -92,12 +93,14 @@ class QwirkeleController:
             # if placements are valid:
             if valid_placement:
                 # update score of current player
-                self.__curr_player.score += self.__gamerules.score_move(curr_request)
+                self.__curr_player.score += self.__gamerules.score_move(
+                    curr_request)
                 # mark placed tiles as permanent using Tile.set_permanent()
                 # then add the tiles to the board
                 for placement in curr_request.data:
                     placement.tile.set_permanent()
-                    self.__board.get_board()[placement.x_coord, placement.y_coord] = placement.tile
+                    self.__board.get_board()[placement.x_coord,
+                                             placement.y_coord] = placement.tile
                 # then call self.__start_next_turn()
                 self.__start_next_turn()
             else:

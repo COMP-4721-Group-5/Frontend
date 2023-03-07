@@ -101,6 +101,3 @@ class ClientConnection:
                 recv_data = self.__connection._csock.recv(1024)
 
             self.__connection._csock.close()
-
-
-
