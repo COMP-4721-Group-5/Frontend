@@ -231,7 +231,8 @@ class View:
                     self.__board = ev.dict['curr_board']
                     for i in range(len(ev.dict['curr_hand'])):
                         self.__logic.player[i] = ev.dict['curr_hand'][i]
-                    self.__logic.player.score = ev.dict['curr_score']
+                    self.__logic.player.score = ev.dict['scores'][
+                        ev.dict['user_id']]
                     self.update_view()
                 if ev.type == pygame.KEYDOWN:  # Handle navigation
                     if not self.__logic.is_first_turn:
