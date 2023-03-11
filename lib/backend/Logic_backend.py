@@ -64,7 +64,8 @@ class QwirkeleController:
             curr_request.connection.send_data(
                 ServerResponse(curr_request.connection.get_player().get_hand(),
                                self.__board,
-                               curr_request.connection.get_player().score,
+                               self.__clients.index(curr_request.connection),
+                               self.__scores(),
                                game_over=(not self.__active),
                                first=self.__is_first_turn()))
         # if request is discarding hand: handle here
@@ -93,7 +94,8 @@ class QwirkeleController:
                     ServerResponse(
                         curr_request.connection.get_player().get_hand(),
                         self.__board,
-                        curr_request.connection.get_player().score,
+                        self.__clients.index(curr_request.connection),
+                        self.__scores(),
                         start_turn=True,
                         game_over=(not self.__active),
                         first=self.__is_first_turn()))
@@ -121,7 +123,8 @@ class QwirkeleController:
                     ServerResponse(
                         curr_request.connection.get_player().get_hand(),
                         self.__board,
-                        curr_request.connection.get_player().score,
+                        self.__clients.index(curr_request.connection),
+                        self.__scores(),
                         start_turn=True,
                         game_over=(not self.__active),
                         first=self.__is_first_turn()))
@@ -131,7 +134,8 @@ class QwirkeleController:
             curr_request.connection.send_data(
                 ServerResponse(curr_request.connection.get_player().get_hand(),
                                self.__board,
-                               curr_request.connection.get_player().score,
+                               self.__clients.index(curr_request.connection),
+                               self.__scores(),
                                start_turn=True,
                                game_over=(not self.__active),
                                first=self.__is_first_turn()))
@@ -143,12 +147,19 @@ class QwirkeleController:
             self.__clients[i].send_data(
                 ServerResponse(self.__clients[i].get_player().get_hand(),
                                self.__board,
-                               self.__clients[i].get_player().score,
+                               i,
+                               self.__scores(),
                                valid=True,
                                start_turn=(i == self.__curr_player),
                                game_over=(not self.__active),
                                winner=(i == self.__winner()),
                                first=self.__is_first_turn()))
+
+    def __scores(self) -> List[int]:
+        scores = list()
+        for client in self.__clients:
+            scores.append(client.get_player().score)
+        return scores
 
     def __winner(self) -> int:
         if not self.__active:

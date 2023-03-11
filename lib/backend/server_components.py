@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import json
+import logging
 from queue import Queue
 import socket
 import time
@@ -38,6 +39,7 @@ class ClientConnection:
     __listener: '_ClientMsgListener'
     _stop_listen: Event
     __player: Player
+    _logger: logging.Logger
 
     def __init__(self, csock: socket.socket, addr: Address,
                  msg_queue: Queue[Request]) -> None:
@@ -47,6 +49,7 @@ class ClientConnection:
         self._stop_listen = Event()
         self.__listener.start()
         self.__player = Player()
+        self._logger = logging.getLogger(str(self.__addr))
 
     def send_data(self, data: ServerResponse):
         """Sends data to client.
@@ -54,6 +57,7 @@ class ClientConnection:
         Args:
             data: Data to send to client
         """
+        self._logger.info(f'Sending message to {self.__addr}')
         self._csock.send(json.dumps(data, cls=JsonableEncoder).encode())
 
     def stop_listening(self) -> None:
@@ -94,6 +98,8 @@ class ClientConnection:
                 recv_data = json.loads(
                     self.__connection._csock.recv(4096).decode(),
                     cls=JsonableDecoder)
+                self.__connection._logger.info(
+                    f'Received data from {self.__connection.address}')
                 self.__msg_queue.put(
                     Request(self.__connection, time.time(), recv_data))
 
