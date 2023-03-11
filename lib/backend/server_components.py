@@ -101,7 +101,7 @@ class ClientConnection:
 
         def run(self):
             self.__connection._csock.settimeout(0)
-            recv_data = bytes()
+            recv_data = b''
             while not self.__connection._stop_listen.is_set():
                 try:
                     recv_data = json.loads(
@@ -114,6 +114,7 @@ class ClientConnection:
                         f'Received data from {self.__connection.address}')
                     self.__msg_queue.put(
                         Request(self.__connection, time.time(), recv_data))
+                    recv_data = b''
 
             self.__connection._csock.shutdown(socket.SHUT_WR)
 
