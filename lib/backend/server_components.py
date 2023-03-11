@@ -165,7 +165,7 @@ class QwirkeleController:
                 ServerResponse(curr_request.connection.get_player().get_hand(),
                                self.__board,
                                self.__clients.index(
-                                   curr_request.connection.get_player()),
+                                   curr_request.connection),
                                self.__scores(),
                                flag=0b0000))
         # if request is discarding hand: handle here
@@ -184,7 +184,7 @@ class QwirkeleController:
                         curr_request.connection.get_player().get_hand(),
                         self.__board,
                         self.__clients.index(
-                            curr_request.connection.get_player()),
+                            curr_request.connection),
                         self.__scores(),
                         flag=0b0000))
         # if request is placing tiles:
@@ -214,7 +214,7 @@ class QwirkeleController:
                 ServerResponse(curr_request.connection.get_player().get_hand(),
                                self.__board,
                                self.__clients.index(
-                                   curr_request.connection.get_player()),
+                                   curr_request.connection),
                                self.__scores(),
                                flag=0b0000))
 
