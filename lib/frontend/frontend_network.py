@@ -80,6 +80,7 @@ class ClientSocket:
         if self._closed.is_set():
             return
         self._sock.settimeout(0)
+        self._sock.send(b'')
         self._closed.set()
 
     @property
@@ -100,23 +101,24 @@ class ClientSocket:
 
         def run(self):
             self.__connection._sock.settimeout(0)
-            recv_data = b''
+            recv_data = None
             while not self.__connection._closed.is_set():
                 try:
                     recv_data = self.__connection._sock.recv(4096)
                 except:
                     pass
-                if len(recv_data) != 0:
+                if recv_data is None:
+                    pass
+                elif len(recv_data) != 0:
                     response = json.loads(recv_data.decode(),
                                           cls=JsonableDecoder)
                     pygame.event.post(DataReceivedEvent.create_event(response))
-                    recv_data = b''
+                    recv_data = None
+                else:
+                    self.__connection.close()
+                    recv_data = None
 
             self.__connection._sock.shutdown(socket.SHUT_WR)
-
-            while len(self.__connection._sock.recv(1024)) != 0:
-                self.__connection._sock.send(b'')
-
             self.__connection._sock.close()
 
     @property
