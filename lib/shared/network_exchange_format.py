@@ -90,12 +90,14 @@ class ServerResponse(JsonableObject):
     __flag: 'ServerResponse.ResponseFlag'
     __curr_hand: List[Tile]
     __curr_board: Board
-    __curr_score: int
+    __user_id: int
+    __scores: int
 
     def __init__(self,
                  hand: List[Tile],
                  board: Board,
-                 score: int,
+                 user_id: int,
+                 scores: List[int],
                  valid: bool = False,
                  first: bool = False,
                  start_turn: bool = False,
@@ -111,7 +113,8 @@ class ServerResponse(JsonableObject):
         ) if flag < 0 else ServerResponse.ResponseFlag(flag)
         self.__curr_hand = hand
         self.__curr_board = board
-        self.__curr_score = score
+        self.__user_id = user_id
+        self.__scores = scores
 
     @property
     def valid(self):
@@ -133,7 +136,7 @@ class ServerResponse(JsonableObject):
     def curr_score(self):
         """Gets current score.
         """
-        return self.__curr_score
+        return self.__scores[self.__user_id]
 
     def json_serialize(self) -> Dict[str, List[Tile] | Board | int]:
         dict_form = {
@@ -141,14 +144,16 @@ class ServerResponse(JsonableObject):
             'flag': int(self.__flag),
             'curr_hand': self.__curr_hand,
             'curr_board': self.__curr_board,
-            'curr_score': self.__curr_score
+            'user_id': self.__user_id,
+            'scores': self.__scores
         }
         return dict_form
 
     def json_deserialize(serialized_form: Dict[str, List[Tile] | Board | int]):
         return ServerResponse(serialized_form['curr_hand'],
                               serialized_form['curr_board'],
-                              serialized_form['curr_score'],
+                              serialized_form['user_id'],
+                              serialized_form['scores'],
                               flag=serialized_form['flag'])
 
     class ResponseFlag(IntFlag):

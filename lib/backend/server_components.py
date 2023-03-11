@@ -164,7 +164,9 @@ class QwirkeleController:
             curr_request.connection.send_data(
                 ServerResponse(curr_request.connection.get_player().get_hand(),
                                self.__board,
-                               curr_request.connection.get_player().__score,
+                               self.__clients.index(
+                                   curr_request.connection.get_player()),
+                               self.__scores(),
                                flag=0b0000))
         # if request is discarding hand: handle here
         if curr_request.data.request_type == 'discard':
@@ -181,7 +183,9 @@ class QwirkeleController:
                     ServerResponse(
                         curr_request.connection.get_player().get_hand(),
                         self.__board,
-                        curr_request.connection.get_player().__score,
+                        self.__clients.index(
+                            curr_request.connection.get_player()),
+                        self.__scores(),
                         flag=0b0000))
         # if request is placing tiles:
         elif curr_request.data.request_type == 'placement':
@@ -199,7 +203,9 @@ class QwirkeleController:
                     ServerResponse(
                         curr_request.connection.get_player().get_hand(),
                         self.__board,
-                        curr_request.connection.get_player().__score,
+                        self.__clients.index(
+                            curr_request.connection.get_player()),
+                        self.__scores(),
                         flag=0b0000))
         # else:
         else:
@@ -207,7 +213,9 @@ class QwirkeleController:
             curr_request.connection.send_data(
                 ServerResponse(curr_request.connection.get_player().get_hand(),
                                self.__board,
-                               curr_request.connection.get_player().__score,
+                               self.__clients.index(
+                                   curr_request.connection.get_player()),
+                               self.__scores(),
                                flag=0b0000))
 
     def sync_all_players(self):
@@ -217,12 +225,19 @@ class QwirkeleController:
             self.__clients[i].send_data(
                 ServerResponse(self.__clients[i].get_player().get_hand(),
                                self.__board,
-                               self.__clients[i].get_player().score,
+                               i,
+                               self.__scores(),
                                valid=True,
                                start_turn=(i == self.__curr_player),
                                game_over=(not self.__active),
                                winner=(i == self.__winner()),
                                first=self.__is_first_turn()))
+
+    def __scores(self) -> List[int]:
+        scores = list()
+        for client in self.__clients:
+            scores.append(client.get_player().score)
+        return scores
 
     def __winner(self) -> int:
         if not self.__active:
