@@ -8,14 +8,16 @@ from typing import List
 
 from lib.backend.server_components import *
 
+port = 12345
+
 logging.basicConfig(encoding='utf-8',
                     level=logging.DEBUG,
                     format='%(asctime)s %(message)s')
 logging.info('Starting server...')
 
 sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock_server.bind(("", 1234))
-logging.info('Listening on port 1234')
+sock_server.bind(("", port))
+logging.info(f'Listening on port {port}')
 sock_server.listen()
 
 connections: List[ClientConnection] = list()
@@ -37,6 +39,12 @@ while game_controller.in_game():
         logging.critical('Ctrl+C received, exiting.')
         for connection in connections:
             connection.stop_listening()
+        break
+    except ConnectionError:
+        logging.error('Closing all other connections.')
+        for connection in connections:
+            connection.stop_listening()
+        logging.error('Exiting')
         break
 
 # TODO: Cleanup / Close

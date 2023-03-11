@@ -80,6 +80,10 @@ class ClientConnection:
         return self.__player
 
     @property
+    def listening(self):
+        return not self._stop_listen.is_set()
+
+    @property
     def address(self) -> Address:
         """Gets address of the client.
         """
@@ -101,26 +105,30 @@ class ClientConnection:
 
         def run(self):
             self.__connection._csock.settimeout(0)
-            recv_data = b''
-            while not self.__connection._stop_listen.is_set():
+            recv_data = None
+            while self.__connection.listening:
                 try:
-                    recv_data = json.loads(
-                        self.__connection._csock.recv(4096).decode(),
-                        cls=JsonableDecoder)
+                    recv_data = self.__connection._csock.recv(4096)
                 except:
                     pass
-                if len(recv_data) != 0:
+                if recv_data is None:
+                    pass
+                elif len(recv_data) != 0:
                     self.__connection._logger.info(
                         f'Received data from {self.__connection.address}')
                     self.__msg_queue.put(
-                        Request(self.__connection, time.time(), recv_data))
-                    recv_data = b''
+                        Request(
+                            self.__connection, time.time(),
+                            json.loads(recv_data.decode(),
+                                       cls=JsonableDecoder)))
+                    recv_data = None
+                else:
+                    self.__connection._logger.critical(
+                        f'Connection lost with {self.__connection.address}')
+                    self.__connection.stop_listening()
+                    recv_data = None
 
             self.__connection._csock.shutdown(socket.SHUT_WR)
-
-            while len(recv_data) != 0:
-                recv_data = self.__connection._csock.recv(1024)
-
             self.__connection._csock.close()
 
 
@@ -165,7 +173,9 @@ class QwirkeleController:
         """Processes a request from client
         """
         while self.__requests.empty():
-            pass
+            for client in self.__clients:
+                if not client.listening:
+                    raise ConnectionError
 
         curr_request = self.__requests.get()
         # use curr_request.data to access the content of request directly
