@@ -69,6 +69,7 @@ class ClientConnection:
         """Stops listening from client.
         """
         self._stop_listen.set()
+        self._csock.settimeout(0)
 
     def get_player(self):
         """Gets underlying player data for this client.
@@ -99,14 +100,20 @@ class ClientConnection:
             self.__msg_queue = msg_queue
 
         def run(self):
+            self.__connection._csock.settimeout(0)
+            recv_data = bytes()
             while not self.__connection._stop_listen.is_set():
-                recv_data = json.loads(
-                    self.__connection._csock.recv(4096).decode(),
-                    cls=JsonableDecoder)
-                self.__connection._logger.info(
-                    f'Received data from {self.__connection.address}')
-                self.__msg_queue.put(
-                    Request(self.__connection, time.time(), recv_data))
+                try:
+                    recv_data = json.loads(
+                        self.__connection._csock.recv(4096).decode(),
+                        cls=JsonableDecoder)
+                except:
+                    pass
+                if len(recv_data) != 0:
+                    self.__connection._logger.info(
+                        f'Received data from {self.__connection.address}')
+                    self.__msg_queue.put(
+                        Request(self.__connection, time.time(), recv_data))
 
             self.__connection._csock.shutdown(socket.SHUT_WR)
 
