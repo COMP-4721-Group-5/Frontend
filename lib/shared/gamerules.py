@@ -1,5 +1,7 @@
 from typing import List
 
+import numpy as np
+
 from .internal_structures import Placement, Board, Tile
 from .player import Player
 
@@ -287,6 +289,11 @@ class Gamerules:
 
         Returns: True if the game is over, false if not
         """
+        tile_pos = np.where(board.get_board() != 0)
+        pos_tuples = list(zip(tile_pos[0], tile_pos[1]))
+        # Every element in pos_tuple give (x,y) tuple
+        # that has tile on the board
+
         for x in range(217):
             for y in range(217):
                 for player in players:
