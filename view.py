@@ -23,6 +23,7 @@ from lib.shared.network_exchange_format import ServerResponse
 # 1. When a tile is selected on the board and then a tile is selected in the hand, the tile on the board disappears.
 # 2. When a tile on the board is selected and another tile of that type is also on the board, they are both selected.
 
+
 def tile_img_load(tile: Tile):
     """Method for getting the images for the tile
 
@@ -72,8 +73,8 @@ class View:
     __logic: Logic = None
     __board: Board = None
     __socket: ClientSocket
-    __discard_mode: bool = False # Must be reset when turn/placements are confirmed
-    __placing_mode: bool = False # ^^^
+    __discard_mode: bool = False  # Must be reset when turn/placements are confirmed
+    __placing_mode: bool = False  # ^^^
     __discarding_tiles: List[int]
     __selected_board_tile: Tile
     __selected_board_x_y: List[int]
@@ -120,7 +121,7 @@ class View:
             Returns:
                 Nothing
         """
-        
+
         border_color = (0, 0, 0)
         background_color = (255, 255, 255)
         self.draw_hollow_rect(screen, background_color, border_color,
@@ -143,8 +144,9 @@ class View:
                 if curr_tile != 0:
                     if curr_tile == self.__selected_board_tile:
                         border_color = (255, 0, 255)
-                        self.draw_hollow_rect(screen, background_color, border_color,
-                                              x_pos, y_pos, tile_width, tile_height, 5)
+                        self.draw_hollow_rect(screen, background_color,
+                                              border_color, x_pos, y_pos,
+                                              tile_width, tile_height, 5)
                         border_color = (0, 0, 0)
                     tile_img = pygame.transform.scale(
                         tile_img_load(curr_tile),
@@ -152,7 +154,6 @@ class View:
                     screen.blit(tile_img, (x_pos + 5, y_pos + 5))
                 x_pos = x_pos + tile_width - 2
             y_pos = y_pos + tile_height - 2
-
 
     def render_hand(self, screen, window_size):
         """Renders the tiles currently held by the player.
@@ -209,7 +210,7 @@ class View:
         ip_surface = font.render(ip_str, True, black_color)
 
         score = self.__logic.player.score
-        score_surface = font.render("Score: "+str(score), True, black_color)
+        score_surface = font.render("Score: " + str(score), True, black_color)
 
         screen.blit(score_surface, (90, 17))
         screen.blit(con_surface, (715, 14))
@@ -291,22 +292,26 @@ class View:
                     total_width = 585
                     if (100 < x < 685) and (
                             700 < y < 770):  # Handles interaction with hand
-                        if ev.button == 1 and self.__discard_mode == False: # Select a tile for placing
+                        if ev.button == 1 and self.__discard_mode == False:  # Select a tile for placing
                             relative_x = x - 100
                             for i in range(6):
                                 if relative_x < (585 / 6) * (i + 1):
                                     self.__selected_tile = i
-                                    
-                                    if self.__selected_board_tile != None and self.__logic.player[i] == None:
-                                        self.__logic.player[i] = self.__selected_board_tile
+
+                                    if self.__selected_board_tile != 0 and self.__logic.player[
+                                            i] == None:
+                                        self.__logic.player[
+                                            i] = self.__selected_board_tile
                                         self.__selected_board_tile = None
-                                        
-                                        self.__board.remove_tile(self.__selected_board_x_y[0], self.__selected_board_x_y[1])
+
+                                        self.__board.remove_tile(
+                                            self.__selected_board_x_y[0],
+                                            self.__selected_board_x_y[1])
                                         self.__selected_board_x_y = None
-                                    
+
                                     self.update_view()
                                     break
-                        elif ev.button == 3 and self.__placing_mode == False: # Select a tile for discarding
+                        elif ev.button == 3 and self.__placing_mode == False:  # Select a tile for discarding
                             relative_x = x - 100
                             for i in range(6):
                                 if relative_x < (585 / 6) * (i + 1):
@@ -316,10 +321,7 @@ class View:
                                         self.__discarding_tiles.append(i)
                                     self.update_view()
                                     break
-                    if (100 < x < 877) and (53 < y < 667):
-                            
-                        
-                            
+                    elif (100 < x < 877) and (53 < y < 667):
                         relative_x = x - 100
                         relative_y = y - 53
                         found = False
@@ -333,11 +335,23 @@ class View:
                                                 self.__selected_tile],
                                             self.__top_left_x + j,
                                             self.__top_left_y + i)
-                                        self.__selected_board_tile = self.__board.get_board()[self.__top_left_x + j, # Need to verify tile is temporary
-                                                                                              self.__top_left_y + i]
-                                        self.__selected_board_x_y = [self.__top_left_x + j, self.__top_left_y + i]
-                                        
-                                        if (self.__logic.player[self.__selected_tile] is not None) and (self.__selected_tile >= 0):
+                                        self.__selected_board_tile = self.__board.get_board(
+                                        )[self.__top_left_x +
+                                          j,  # Need to verify tile is temporary
+                                          self.__top_left_y + i]
+                                        self.__selected_board_x_y = [
+                                            self.__top_left_x + j,
+                                            self.__top_left_y + i
+                                        ]
+
+                                        if (self.__logic.player[
+                                                self.__selected_tile]
+                                                is not None) and (
+                                                    self.__selected_tile >= 0
+                                                ) and (self.__board.get_board(
+                                                )[self.__selected_board_x_y[0],
+                                                  self.__selected_board_x_y[1]]
+                                                       == 0):
                                             self.__board.add_tile(placement)
                                             self.__logic.play_tile(placement)
                                             self.__logic.player[
