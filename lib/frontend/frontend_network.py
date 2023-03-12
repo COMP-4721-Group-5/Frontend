@@ -79,8 +79,6 @@ class ClientSocket:
         """
         if self._closed.is_set():
             return
-        self._sock.settimeout(0)
-        self._sock.send(b'')
         self._closed.set()
 
     @property
