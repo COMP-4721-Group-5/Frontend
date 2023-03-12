@@ -69,7 +69,6 @@ class ClientConnection:
         """Stops listening from client.
         """
         self._stop_listen.set()
-        self._csock.settimeout(0)
 
     def get_player(self):
         """Gets underlying player data for this client.
