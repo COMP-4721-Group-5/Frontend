@@ -19,6 +19,10 @@ from lib.shared.network_exchange_format import ServerResponse
 # 5. Add instructions rendering
 # 6. Prevent user from placing tiles ontop of one another
 
+# PROBLEMS
+# 1. When a tile is selected on the board and then a tile is selected in the hand, the tile on the board disappears.
+# 2. When a tile on the board is selected and another tile of that type is also on the board, they are both selected.
+
 def tile_img_load(tile: Tile):
     """Method for getting the images for the tile
 
@@ -56,6 +60,7 @@ class View:
         __discard_mode: Tracks whether the user is actively discarding tiles
         __placing_mode: Tracks whether the user is actively placing tiles
         __selected_board_tile: Tracks tiles selected on the board
+        __selected_board_x_y: Tracks x,y coordinate of selected tile on the board
     """
 
     __top_left_x: int = 108
@@ -71,6 +76,7 @@ class View:
     __placing_mode: bool = False # ^^^
     __discarding_tiles: List[int]
     __selected_board_tile: Tile
+    __selected_board_x_y: List[int]
 
     def __init__(self, size, g_logic):
         """Inits the view"""
@@ -81,6 +87,7 @@ class View:
         self.__board = self.__logic.board
         self.__discarding_tiles = list()
         self.__selected_board_tile = None
+        self.__selected_board_x_y = None
         favicon = pygame.image.load('favicon.png')
         pygame.display.set_icon(favicon)
         background_color = (255, 255, 255)
@@ -293,6 +300,9 @@ class View:
                                     if self.__selected_board_tile != None and self.__logic.player[i] == None:
                                         self.__logic.player[i] = self.__selected_board_tile
                                         self.__selected_board_tile = None
+                                        
+                                        self.__board.remove_tile(self.__selected_board_x_y[0], self.__selected_board_x_y[1])
+                                        self.__selected_board_x_y = None
                                     
                                     self.update_view()
                                     break
@@ -325,6 +335,7 @@ class View:
                                             self.__top_left_y + i)
                                         self.__selected_board_tile = self.__board.get_board()[self.__top_left_x + j, # Need to verify tile is temporary
                                                                                               self.__top_left_y + i]
+                                        self.__selected_board_x_y = [self.__top_left_x + j, self.__top_left_y + i]
                                         
                                         if (self.__logic.player[self.__selected_tile] is not None) and (self.__selected_tile >= 0):
                                             self.__board.add_tile(placement)
