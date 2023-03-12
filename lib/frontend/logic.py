@@ -78,9 +78,6 @@ class Logic:
             Tile: tile to place back in the hand
         """
         self.__temp_move.remove(tile)
-        t_hand = self.player.get_hand()
-        t_hand.append(tile)
-        self.player.update_hand(t_hand)
 
     def discard_tile(self, tile: Tile, index: int):
         """Discards a tile at a given index
