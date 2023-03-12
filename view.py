@@ -306,8 +306,7 @@ class View:
                                         self.__board.remove_tile(
                                             self.__selected_board_x_y[0],
                                             self.__selected_board_x_y[1])
-                                        self.__selected_board_x_y = np.full(
-                                            2, -1)
+                                        self.__selected_board_x_y.fill(-1)
 
                                     self.update_view()
                                     break
@@ -340,10 +339,8 @@ class View:
                                         )[self.__top_left_x +
                                           j,  # Need to verify tile is temporary
                                           self.__top_left_y + i]
-                                        self.__selected_board_x_y = np.array([
-                                            self.__top_left_x + j,
-                                            self.__top_left_y + i
-                                        ], np.int_)
+                                        self.__selected_board_x_y[0] = self.__top_left_x + j
+                                        self.__selected_board_x_y[1] = self.__top_left_y + i
 
                                         if (self.__logic.player[
                                                 self.__selected_tile]
