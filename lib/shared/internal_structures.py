@@ -252,6 +252,18 @@ class Board(JsonableObject):
         if self.__board[placement.x_coord, placement.y_coord] == 0:
             self.__board[placement.x_coord, placement.y_coord] = placement.tile
 
+    def remove_tile(self, x, y):
+        """Removes a tile at a given x and y
+        
+        Args:
+            x: x coordinate
+            y: y coordinate
+        Returns: the tile that was removed
+        """
+        tile = self.__board[x][y]
+        self.__board[x][y] = 0
+        return tile
+
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, Board):
             self_tile_pos = np.where(self.__board != 0)
