@@ -215,9 +215,13 @@ class QwirkeleController:
             if self.__get_curr_turn_client().get_player()[i] is None:
                 self.__get_curr_turn_client().get_player(
                 )[i] = self.__tile_bag.pop(rand.randrange(len(self.__tile_bag)))
-        # check if game is over (i.e., no more tiles can be placed)
-        # if game over:
-        # set self.__active to false
+        if len(self.__tile_bag) == 0: #only checks for game over if bag is empty
+            players = list()
+            for client in self.__clients:
+                players.append(client.get_player)
+            if self.__gamerules.game_over(players, self.__board):
+                self.__active = False
+                # set self.__active to false
         self.__curr_player = (self.__curr_player + 1) % len(self.__clients)
         self.sync_all_players()
 
