@@ -190,7 +190,7 @@ class QwirkeleController:
                 hand_stat[discard.hex_value] += 1
             else:
                 hand_stat[discard.hex_value] = 1
-        for discard_type in hand_stat.keys():
+        for discard_type in discard_stat.keys():
             if discard_type not in hand_stat.keys():
                 return False
             elif discard_stat[discard_type] > hand_stat[discard_type]:
