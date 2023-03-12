@@ -120,6 +120,16 @@ class Logic:
         self.__discards = list()
         self.__temp_move = list()
 
+    def tile_played(self):
+        """Checks if a tile has been played
+        Returns:
+            True: if true
+            False: if false
+        """
+        if len(self.__temp_move) == 0:
+            return True
+        return False
+
     @property
     def board(self):
         return self.__board
