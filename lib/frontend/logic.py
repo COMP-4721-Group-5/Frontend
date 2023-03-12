@@ -126,9 +126,7 @@ class Logic:
             True: if true
             False: if false
         """
-        if len(self.__temp_move) == 0:
-            return True
-        return False
+        return len(self.__temp_move) != 0
 
     @property
     def board(self):
