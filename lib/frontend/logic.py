@@ -68,7 +68,18 @@ class Logic:
         Args:
             placement: desired placement of the tile, contains tile, x_coord and y_coord data
         """
-        self.__tempMove.append(placement)
+        self.__temp_move.append(placement)
+
+    def undo_play(self, tile: Tile):
+        """Undoes a given placement
+        
+        Args: 
+            Tile: tile to place back in the hand
+        """
+        self.__temp_move.remove(tile)
+        t_hand = self.player.get_hand()
+        t_hand.append(tile)
+        self.player.update_hand(t_hand)
 
     def discard_tile(self, tile: Tile, index: int):
         """Discards a tile at a given index
@@ -78,8 +89,19 @@ class Logic:
             index: index of tile within the hand
         """
         self.player.play_tile(index)
-        self.__discards.append(tile)
-        pass
+        self.__discards.insert(index, tile)
+
+    def undo_discard(self, index):
+        """Undoes a given discard
+
+        Args:
+            index: index of tile in question in the player's hand
+        """
+        tile = self.__discards.pop(index)
+        t_hand = self.player.get_hand()
+        t_hand.append(tile)
+        self.player.update_hand(t_hand)
+
 
     def end_turn(self, discard: bool, client_socket: ClientSocket):
         """Ends the current turn
