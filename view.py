@@ -2,6 +2,8 @@ from typing import List
 import sys
 import tkinter as tk
 import tkinter.simpledialog
+import numpy as np
+import numpy.typing as npt
 import pygame
 
 from lib.shared.player import Player
@@ -77,7 +79,7 @@ class View:
     __placing_mode: bool = False  # ^^^
     __discarding_tiles: List[int]
     __selected_board_tile: Tile
-    __selected_board_x_y: List[int]
+    __selected_board_x_y: npt.NDArray[np.int_]
 
     def __init__(self, size, g_logic):
         """Inits the view"""
@@ -88,7 +90,7 @@ class View:
         self.__board = self.__logic.board
         self.__discarding_tiles = list()
         self.__selected_board_tile = None
-        self.__selected_board_x_y = None
+        self.__selected_board_x_y = np.full(2, -1)
         favicon = pygame.image.load('favicon.png')
         pygame.display.set_icon(favicon)
         background_color = (255, 255, 255)
@@ -299,7 +301,8 @@ class View:
                                     self.__selected_tile = i
 
                                     if self.__selected_board_tile != 0 and self.__logic.player[
-                                            i] == None:
+                                            i] == None and self.__selected_board_x_y[
+                                                0] != -1:
                                         self.__logic.player[
                                             i] = self.__selected_board_tile
                                         self.__selected_board_tile = None
@@ -307,7 +310,8 @@ class View:
                                         self.__board.remove_tile(
                                             self.__selected_board_x_y[0],
                                             self.__selected_board_x_y[1])
-                                        self.__selected_board_x_y = None
+                                        self.__selected_board_x_y = np.full(
+                                            2, -1)
 
                                     self.update_view()
                                     break
@@ -339,10 +343,10 @@ class View:
                                         )[self.__top_left_x +
                                           j,  # Need to verify tile is temporary
                                           self.__top_left_y + i]
-                                        self.__selected_board_x_y = [
+                                        self.__selected_board_x_y = np.array([
                                             self.__top_left_x + j,
                                             self.__top_left_y + i
-                                        ]
+                                        ], np.int_)
 
                                         if (self.__logic.player[
                                                 self.__selected_tile]
