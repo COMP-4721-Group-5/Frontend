@@ -292,6 +292,6 @@ def game_over(self, players: List[Player], board: Board):
                     for tile in player:
                         placement = Placement(tile, x, y)
                         if self.verify_placement(placement):
-                            return True
+                            return False
                         
-        return False
+        return True
