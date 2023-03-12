@@ -149,7 +149,7 @@ class Gamerules:
             True: if it is a valid placement
             False: if it is not a valid placement
         """
-        x_line, y_line = self.get_lines(placement)
+        x_line, y_line = self.get_lines(placement, board)
         if x_line == [] and y_line == [] or x_line is None or y_line is None:
             return False
         else:
@@ -278,21 +278,21 @@ class Gamerules:
         return scoreRemoval
 
 
-def game_over(self, players: List[Player], board: Board):
-    """Checks if the game is over
+    def game_over(self, players: List[Player], board: Board):
+        """Checks if the game is over
 
-    Args:
-        players: list of all involved player in the game
-        board: current game board
+        Args:
+            players: list of all involved player in the game
+            board: current game board
 
-    Returns: True if the game is over, false if not
-    """
-    for x in range(217):
-        for y in range(217):
-            for player in players:
-                for tile in player:
-                    placement = Placement(tile, x, y)
-                    if self.verify_placement(placement):
-                        return False
+        Returns: True if the game is over, false if not
+        """
+        for x in range(217):
+            for y in range(217):
+                for player in players:
+                    for tile in player:
+                        placement = Placement(tile, x, y)
+                        if self.verify_placement(placement, board):
+                            return False
 
-    return True
+        return True
