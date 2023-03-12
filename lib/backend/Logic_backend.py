@@ -56,6 +56,11 @@ class QwirkeleController:
     def process_request(self):
         """Processes a request from client
         """
+        while self.__requests.empty():
+            for client in self.__clients:
+                if not client.listening:
+                    raise ConnectionError
+
         curr_request = self.__requests.get()
         # use curr_request.data to access the content of request directly
         if curr_request.connection != self.__get_curr_turn_client():

@@ -74,6 +74,10 @@ class ClientConnection:
         return self.__player
 
     @property
+    def listening(self):
+        return not self._stop_listen.is_set()
+
+    @property
     def address(self) -> Address:
         """Gets address of the client.
         """
@@ -94,18 +98,29 @@ class ClientConnection:
             self.__msg_queue = msg_queue
 
         def run(self):
-            while not self.__connection._stop_listen.is_set():
-                recv_data = json.loads(
-                    self.__connection._csock.recv(4096).decode(),
-                    cls=JsonableDecoder)
-                self.__connection._logger.info(
-                    f'Received data from {self.__connection.address}')
-                self.__msg_queue.put(
-                    Request(self.__connection, time.time(), recv_data))
+            self.__connection._csock.settimeout(0)
+            recv_data = None
+            while self.__connection.listening:
+                try:
+                    recv_data = self.__connection._csock.recv(4096)
+                except:
+                    pass
+                if recv_data is None:
+                    pass
+                elif len(recv_data) != 0:
+                    self.__connection._logger.info(
+                        f'Received data from {self.__connection.address}')
+                    self.__msg_queue.put(
+                        Request(
+                            self.__connection, time.time(),
+                            json.loads(recv_data.decode(),
+                                       cls=JsonableDecoder)))
+                    recv_data = None
+                else:
+                    self.__connection._logger.critical(
+                        f'Connection lost with {self.__connection.address}')
+                    self.__connection.stop_listening()
+                    recv_data = None
 
             self.__connection._csock.shutdown(socket.SHUT_WR)
-
-            while len(recv_data) != 0:
-                recv_data = self.__connection._csock.recv(1024)
-
             self.__connection._csock.close()
