@@ -11,6 +11,13 @@ from lib.frontend.frontend_network import DataReceivedEvent
 from lib.shared.internal_structures import Board, Placement, Tile
 from lib.shared.network_exchange_format import ServerResponse
 
+# TODO List
+# 1. Implement logic for returning selected board tile to hand
+# 2. Fix up logic for deletion/placing - prevent both from occuring simultaneously
+# 3. Implement confirm button
+# 4. Verify selected tile on grid is temporary
+# 5. Add instructions rendering
+# 6. Prevent user from placing tiles ontop of one another
 
 def tile_img_load(tile: Tile):
     """Method for getting the images for the tile
@@ -107,10 +114,6 @@ class View:
                 Nothing
         """
         
-        # Problems
-        # 1. Tiles can be placed ontop of one another
-        # 2. Tiles need to be selectable - coloring issue
-        
         border_color = (0, 0, 0)
         background_color = (255, 255, 255)
         self.draw_hollow_rect(screen, background_color, border_color,
@@ -131,7 +134,7 @@ class View:
                 curr_tile = self.__board.get_board()[self.__top_left_y + i,
                                                      self.__top_left_x + j]
                 if curr_tile != 0:
-                    if curr_tile == self.__selected_board_tile: # change to is selected tile
+                    if curr_tile == self.__selected_board_tile:
                         border_color = (255, 0, 255)
                         self.draw_hollow_rect(screen, background_color, border_color,
                                               x_pos, y_pos, tile_width, tile_height, 5)
@@ -286,6 +289,11 @@ class View:
                             for i in range(6):
                                 if relative_x < (585 / 6) * (i + 1):
                                     self.__selected_tile = i
+                                    
+                                    if self.__selected_board_tile != None and self.__logic.player[i] == None:
+                                        self.__logic.player[i] = self.__selected_board_tile
+                                        self.__selected_board_tile = None
+                                    
                                     self.update_view()
                                     break
                         elif ev.button == 3 and self.__placing_mode == False: # Select a tile for discarding
@@ -315,7 +323,7 @@ class View:
                                                 self.__selected_tile],
                                             self.__top_left_x + j,
                                             self.__top_left_y + i)
-                                        self.__selected_board_tile = self.__board.get_board()[self.__top_left_x + j,
+                                        self.__selected_board_tile = self.__board.get_board()[self.__top_left_x + j, # Need to verify tile is temporary
                                                                                               self.__top_left_y + i]
                                         
                                         if (self.__logic.player[self.__selected_tile] is not None) and (self.__selected_tile >= 0):
