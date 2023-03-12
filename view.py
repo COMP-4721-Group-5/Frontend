@@ -60,8 +60,6 @@ class View:
         __screen: The screen object
         __logic: Instance of the logic class that will be used to access the logic methods
         __board: Instance of the board object that will be used to interact with the board
-        __discard_mode: Tracks whether the user is actively discarding tiles
-        __placing_mode: Tracks whether the user is actively placing tiles
         __selected_board_tile: Tracks tiles selected on the board
         __selected_board_x_y: Tracks x,y coordinate of selected tile on the board
     """
@@ -75,8 +73,6 @@ class View:
     __logic: Logic = None
     __board: Board = None
     __socket: ClientSocket
-    __discard_mode: bool = False  # Must be reset when turn/placements are confirmed
-    __placing_mode: bool = False  # ^^^
     __discarding_tiles: List[int]
     __selected_board_tile: Tile
     __selected_board_x_y: npt.NDArray[np.int_]
@@ -294,7 +290,7 @@ class View:
                     total_width = 585
                     if (100 < x < 685) and (
                             700 < y < 770):  # Handles interaction with hand
-                        if ev.button == 1 and self.__discard_mode == False:  # Select a tile for placing
+                        if ev.button == 1 and len(self.__discarding_tiles) == 0:  # Select a tile for placing
                             relative_x = x - 100
                             for i in range(6):
                                 if relative_x < (585 / 6) * (i + 1):
@@ -305,16 +301,18 @@ class View:
                                                 0] != -1:
                                         self.__logic.player[
                                             i] = self.__selected_board_tile
+                                        #self.__logic.undo_play(self.__selected_board_tile)
+                                        self.__logic.undo_play(Placement(self.__selected_board_tile, self.__selected_board_x_y[0], self.__selected_board_x_y[1]))
                                         self.__selected_board_tile = None
-
                                         self.__board.remove_tile(
                                             self.__selected_board_x_y[0],
                                             self.__selected_board_x_y[1])
-                                        self.__selected_board_x_y.fill(-1)
+                                        self.__selected_board_x_y = np.full(
+                                            2, -1)
 
                                     self.update_view()
                                     break
-                        elif ev.button == 3 and self.__placing_mode == False:  # Select a tile for discarding
+                        elif ev.button == 3 and self.__logic.tile_played() == False:  # Select a tile for discarding
                             relative_x = x - 100
                             for i in range(6):
                                 if relative_x < (585 / 6) * (i + 1):
@@ -342,8 +340,10 @@ class View:
                                         )[self.__top_left_x +
                                           j,  # Need to verify tile is temporary
                                           self.__top_left_y + i]
-                                        self.__selected_board_x_y[0] = self.__top_left_x + j
-                                        self.__selected_board_x_y[1] = self.__top_left_y + i
+                                        self.__selected_board_x_y = np.array([
+                                            self.__top_left_x + j,
+                                            self.__top_left_y + i
+                                        ], np.int_)
 
                                         if (self.__logic.player[
                                                 self.__selected_tile]
