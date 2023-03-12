@@ -319,6 +319,7 @@ class View:
                                     if i in self.__discarding_tiles:
                                         self.__discarding_tiles.remove(i)
                                     else:
+                                        self.__selected_tile = -1
                                         self.__discarding_tiles.append(i)
                                     self.update_view()
                                     break
