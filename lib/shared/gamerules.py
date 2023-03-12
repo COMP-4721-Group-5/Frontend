@@ -1,6 +1,7 @@
 from typing import List
 
 from .internal_structures import Placement, Board, Tile
+from .player import Player
 
 
 class Gamerules:
