@@ -2,6 +2,7 @@ from typing import List
 import sys
 import tkinter as tk
 import tkinter.simpledialog
+from PIL import ImageTk, Image
 import numpy as np
 import numpy.typing as npt
 import pygame
@@ -14,8 +15,6 @@ from lib.shared.internal_structures import Board, Placement, Tile
 from lib.shared.network_exchange_format import ServerResponse
 
 # TODO List
-# 1. Implement logic for returning selected board tile to hand
-# 2. Fix up logic for deletion/placing - prevent both from occuring simultaneously
 # 3. Implement confirm button
 # 4. Verify selected tile on grid is temporary
 # 5. Add instructions rendering
@@ -81,7 +80,7 @@ class View:
         """Inits the view"""
         self.__logic = g_logic
         self.__window_size = size
-        self.__socket = View.connect_server()
+        self.__socket = View.connect_server()      
         self.__screen = pygame.display.set_mode(size)
         self.__board = self.__logic.board
         self.__discarding_tiles = list()
@@ -94,7 +93,32 @@ class View:
         self.__screen.fill(background_color)
         self.update_view()
         self.render_details()
+        #self.render_instructions() # Fix window geometry before uncommenting
         self.init_event_loop()
+        
+    def render_instructions(self):
+        """Renders the instructions when the game is launched
+        
+            Returns:
+                Nothing
+        """
+        root = tk.Tk()
+        gamerules_png = Image.open("GameRule.png")
+        gamerules_png = ImageTk.PhotoImage(gamerules_png)
+        instructions_png = Image.open("PlayInstruct.png")
+        instructions_png = ImageTk.PhotoImage(instructions_png)
+        scoreguide_png = Image.open("ScoreGuide.png")
+        scoreguide_png = ImageTk.PhotoImage(scoreguide_png)
+        win1 = tk.Toplevel(root)
+        gr_label = tk.Label(win1, image=gamerules_png)
+        gr_label.pack()
+        win2 = tk.Toplevel(root)
+        ins_label = tk.Label(win2, image=instructions_png)
+        ins_label.pack()
+        win3 = tk.Toplevel(root)
+        sc_label = tk.Label(win3, image=scoreguide_png)
+        sc_label.pack()
+        root.mainloop()    
 
     def update_view(self):
         """Updates the entire view.
