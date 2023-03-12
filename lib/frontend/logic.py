@@ -105,7 +105,6 @@ class Logic:
         t_hand.append(tile)
         self.player.update_hand(t_hand)
 
-
     def end_turn(self, discard: bool, client_socket: ClientSocket):
         """Ends the current turn
 
