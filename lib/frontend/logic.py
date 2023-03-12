@@ -70,14 +70,14 @@ class Logic:
         """
         self.__temp_move.append(placement)
 
-    def undo_play(self, tile: Tile):
+    def undo_play(self, placement: Placement):
         """Undoes a given placement
         
         Removes tile from the temp_move list and places it back into the player's hand
         Args: 
             Tile: tile to place back in the hand
         """
-        self.__temp_move.remove(tile)
+        self.__temp_move.remove(placement)
 
     def discard_tile(self, tile: Tile, index: int):
         """Discards a tile at a given index
