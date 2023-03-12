@@ -186,10 +186,10 @@ class QwirkeleController:
             else:
                 hand_stat[player[i].hex_value] = 1
         for discard in discard_tiles:
-            if discard.hex_value in hand_stat:
-                hand_stat[discard.hex_value] += 1
+            if discard.hex_value in discard_stat:
+                discard_stat[discard.hex_value] += 1
             else:
-                hand_stat[discard.hex_value] = 1
+                discard_stat[discard.hex_value] = 1
         for discard_type in discard_stat.keys():
             if discard_type not in hand_stat.keys():
                 return False
