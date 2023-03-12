@@ -275,3 +275,22 @@ class Gamerules:
             print(y_length)
 
         return scoreRemoval
+
+def game_over(self, players: List[Player], board: Board):
+        """Checks if the game is over
+
+        Args:
+            players: list of all involved player in the game
+            board: current game board
+
+        Returns: True if the game is over, false if not
+        """
+        for x in range(217):
+            for y in range(217):
+                for player in players:
+                    for tile in player:
+                        placement = Placement(tile, x, y)
+                        if self.verify_placement(placement):
+                            return True
+                        
+        return False
