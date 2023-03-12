@@ -68,7 +68,7 @@ class Logic:
         Args:
             placement: desired placement of the tile, contains tile, x_coord and y_coord data
         """
-        self.__tempMove.append(placement)
+        self.__temp_move.append(placement)
 
     def discard_tile(self, tile: Tile, index: int):
         """Discards a tile at a given index

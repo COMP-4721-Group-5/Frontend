@@ -48,6 +48,7 @@ class View:
         __board: Instance of the board object that will be used to interact with the board
         __discard_mode: Tracks whether the user is actively discarding tiles
         __placing_mode: Tracks whether the user is actively placing tiles
+        __selected_board_tile: Tracks tiles selected on the board
     """
 
     __top_left_x: int = 108
@@ -62,6 +63,7 @@ class View:
     __discard_mode: bool = False # Must be reset when turn/placements are confirmed
     __placing_mode: bool = False # ^^^
     __discarding_tiles: List[int]
+    __selected_board_tile: Tile
 
     def __init__(self, size, g_logic):
         """Inits the view"""
@@ -71,6 +73,7 @@ class View:
         self.__screen = pygame.display.set_mode(size)
         self.__board = self.__logic.board
         self.__discarding_tiles = list()
+        self.__selected_board_tile = None
         favicon = pygame.image.load('favicon.png')
         pygame.display.set_icon(favicon)
         background_color = (255, 255, 255)
@@ -103,6 +106,11 @@ class View:
             Returns:
                 Nothing
         """
+        
+        # Problems
+        # 1. Tiles can be placed ontop of one another
+        # 2. Tiles need to be selectable - coloring issue
+        
         border_color = (0, 0, 0)
         background_color = (255, 255, 255)
         self.draw_hollow_rect(screen, background_color, border_color,
@@ -123,15 +131,18 @@ class View:
                 curr_tile = self.__board.get_board()[self.__top_left_y + i,
                                                      self.__top_left_x + j]
                 if curr_tile != 0:
-                    background_color = (0, 0, 0)
-                    if curr_tile.is_temporary():
-                        background_color = (255, 0, 255)
+                    if curr_tile == self.__selected_board_tile: # change to is selected tile
+                        border_color = (255, 0, 255)
+                        self.draw_hollow_rect(screen, background_color, border_color,
+                                              x_pos, y_pos, tile_width, tile_height, 5)
+                        border_color = (0, 0, 0)
                     tile_img = pygame.transform.scale(
                         tile_img_load(curr_tile),
                         (tile_width - 10, tile_height - 10))
                     screen.blit(tile_img, (x_pos + 5, y_pos + 5))
                 x_pos = x_pos + tile_width - 2
             y_pos = y_pos + tile_height - 2
+
 
     def render_hand(self, screen, window_size):
         """Renders the tiles currently held by the player.
@@ -285,10 +296,12 @@ class View:
                                         self.__discarding_tiles.remove(i)
                                     else:
                                         self.__discarding_tiles.append(i)
-                    if (100 < x < 877) and (53 < y < 667) and (
-                            # Handles interaction with the grid
-                            self.__logic.player[self.__selected_tile]
-                            is not None) and (self.__selected_tile >= 0):
+                                    self.update_view()
+                                    break
+                    if (100 < x < 877) and (53 < y < 667):
+                            
+                        
+                            
                         relative_x = x - 100
                         relative_y = y - 53
                         found = False
@@ -302,12 +315,16 @@ class View:
                                                 self.__selected_tile],
                                             self.__top_left_x + j,
                                             self.__top_left_y + i)
-                                        self.__board.add_tile(placement)
-                                        #self.__logic.play_tile(placement) # uncomment soon
-                                        self.__logic.player[
-                                            self.__selected_tile] = None
-                                        self.__selected_tile = -1
-                                        self.update_view()
+                                        self.__selected_board_tile = self.__board.get_board()[self.__top_left_x + j,
+                                                                                              self.__top_left_y + i]
+                                        
+                                        if (self.__logic.player[self.__selected_tile] is not None) and (self.__selected_tile >= 0):
+                                            self.__board.add_tile(placement)
+                                            self.__logic.play_tile(placement)
+                                            self.__logic.player[
+                                                self.__selected_tile] = None
+                                            self.__selected_tile = -1
+                                            self.update_view()
                                         found = True
                                         self.update_view()
                                         break
