@@ -1,3 +1,4 @@
+import logging
 from queue import Queue
 import random as rand
 from typing import List
@@ -32,6 +33,7 @@ class QwirkeleController:
     __active: bool
     __curr_player: int
     __gamerules: Gamerules
+    __logger: logging.Logger
 
     def __init__(self, client_list: List[ClientConnection],
                  request_queue: Queue[Request]) -> None:
@@ -42,6 +44,7 @@ class QwirkeleController:
         self.__board = Board()
         self.__tile_bag = list()
         self.__gamerules = Gamerules()
+        self.__logger = logging.getLogger('QuirkleController')
         for i in range(3):
             for color in TileColor:
                 for shape in TileShape:
@@ -51,6 +54,7 @@ class QwirkeleController:
                 # Add tiles to player
                 client.get_player()[i] = self.__tile_bag.pop(
                     rand.randrange(len(self.__tile_bag)))
+        self.__logger.info('Generated initial set of hands')
         self.sync_all_players()
 
     def process_request(self):
@@ -66,6 +70,7 @@ class QwirkeleController:
         if curr_request.connection != self.__get_curr_turn_client():
             # request made from client not in turn
             # yell at the client
+            self.__logger.error(f'Invalid request from {curr_request.connection.address}: Not this client\'s turn')
             curr_request.connection.send_data(
                 ServerResponse(curr_request.connection.get_player().get_hand(),
                                self.__board,
@@ -81,6 +86,7 @@ class QwirkeleController:
                 curr_request.connection.get_player(), discard_tiles)
             # if valid:
             if valid_discard:
+                self.__logger.info(f'Valid discard request from {curr_request.connection.address}')
                 # remove tiles from hand and put back in bag
                 for i in range(len(curr_request.data)):
                     for j in range(6):
@@ -95,6 +101,7 @@ class QwirkeleController:
 
             # else: yell at client
             else:
+                self.__logger.error(f'Invalid discard request from {curr_request.connection.address}')
                 curr_request.connection.send_data(
                     ServerResponse(
                         curr_request.connection.get_player().get_hand(),
@@ -111,6 +118,8 @@ class QwirkeleController:
             valid_placement = self.__gamerules.verify_move(curr_request)
             # if placements are valid:
             if valid_placement:
+                self.__logger.info(f'Valid placement request from {curr_request.connection.address}')
+
                 # update score of current player
                 self.__curr_player.score += self.__gamerules.score_move(
                     curr_request)
@@ -123,6 +132,7 @@ class QwirkeleController:
                 # then call self.__start_next_turn()
                 self.__start_next_turn()
             else:
+                self.__logger.error(f'Invalid placement request from {curr_request.connection.address}')
                 # yell at client
                 curr_request.connection.send_data(
                     ServerResponse(
@@ -135,6 +145,7 @@ class QwirkeleController:
                         first=self.__is_first_turn()))
         # else:
         else:
+            self.__logger.error(f'Invalid request from {curr_request.connection.address}: Unrecognized type')
             # this means that request is invalid, so yell at client
             curr_request.connection.send_data(
                 ServerResponse(curr_request.connection.get_player().get_hand(),
