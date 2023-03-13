@@ -84,7 +84,7 @@ class QwirkeleController:
         if curr_request.data.request_type == 'discard':
             # Check if discarding is valid
             discard_tiles: List[Tile] = list(curr_request.data.__iter__())
-            valid_discard = QwirkeleController.__is_valid_discard(
+            valid_discard = QwirkeleController.is_valid_discard(
                 curr_request.connection.get_player(), discard_tiles)
             # if valid:
             if valid_discard:
@@ -121,7 +121,7 @@ class QwirkeleController:
         elif curr_request.data.request_type == 'placement':
             # Check if placements are valid
             valid_placement = True
-            valid_placement = self.__gamerules.verify_move(curr_request)
+            valid_placement = self.__gamerules.verify_move(curr_request.data, self.__board)
             # if placements are valid:
             if valid_placement:
                 self.__logger.info(
@@ -129,8 +129,8 @@ class QwirkeleController:
                 )
 
                 # update score of current player
-                self.__curr_player.score += self.__gamerules.score_move(
-                    curr_request)
+                self.__get_curr_turn_client().get_player().score += self.__gamerules.score_move(
+                    curr_request.data, self.__board)
                 # mark placed tiles as permanent using Tile.set_permanent()
                 # then add the tiles to the board
                 for placement in curr_request.data:
