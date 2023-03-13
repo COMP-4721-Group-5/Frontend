@@ -48,5 +48,9 @@ while game_controller.in_game():
             connection.stop_listening()
         logging.error('Exiting')
         break
+    except Exception as ex:
+        for connection in connections:
+            connection.stop_listening()
+        raise ex
 
 # TODO: Cleanup / Close
