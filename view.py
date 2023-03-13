@@ -71,7 +71,14 @@ class View:
         self.__screen.fill(background_color)
         self.update_view()
         self.render_details()
-        self.init_event_loop()
+        try:
+            self.init_event_loop()
+        except Exception as ex:
+            self.__socket.close()
+            raise ex
+        except KeyboardInterrupt as ki:
+            self.__socket.close()
+            raise ki
 
     def update_view(self):
         """Updates the entire view.
