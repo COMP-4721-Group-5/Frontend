@@ -317,9 +317,11 @@ class View:
                                 if relative_x < (585 / 6) * (i + 1):
                                     if i in self.__discarding_tiles:
                                         self.__discarding_tiles.remove(i)
+                                        self.__logic.undo_discard(i)
                                     else:
                                         self.__selected_tile = -1
                                         self.__discarding_tiles.append(i)
+                                        self.__logic.discard_tile(self.__logic.player[i], i)
                                     self.update_view()
                                     break
                     elif (100 < x < 877) and (53 < y < 667):

@@ -59,6 +59,7 @@ class Logic:
         temp_hand = []
         for i in range(6):
             temp_hand.append(self.__bag.pop())
+            self.__discards.append(None)
 
         self.__player.update_hand(temp_hand)
 
@@ -87,8 +88,9 @@ class Logic:
             tile: tile to discard
             index: index of tile within the hand
         """
-        self.player.play_tile(index)
-        self.__discards.insert(index, tile)
+        #self.player.play_tile(index)
+        #self.__discards.insert(index, tile)
+        self.__discards[index] = tile
 
     def undo_discard(self, index):
         """Undoes a given discard
@@ -97,10 +99,12 @@ class Logic:
         Args:
             index: index of tile in question in the player's hand
         """
-        tile = self.__discards.pop(index)
-        t_hand = self.player.get_hand()
-        t_hand.append(tile)
-        self.player.update_hand(t_hand)
+        #tile = self.__discards.pop(index)
+        #self.__discards.pop(index)
+        self.__discards[index] = None
+        #t_hand = self.player.get_hand()
+        #t_hand.append(tile)
+        #self.player.update_hand(t_hand)
 
     def end_turn(self, discard: bool, client_socket: ClientSocket):
         """Ends the current turn
