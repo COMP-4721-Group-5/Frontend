@@ -128,7 +128,7 @@ class Logic:
             client_socket.send_data(request)
 
         self.__discards.fill(None)
-        self.__temp_move = list()
+        self.__temp_move.clear()
 
     def tile_played(self):
         """Checks if a tile has been played
