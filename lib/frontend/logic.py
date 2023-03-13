@@ -1,5 +1,8 @@
 from typing import List
 
+import numpy as np
+import numpy.typing as npt
+
 from ..shared.internal_structures import Board, Placement, Tile, TileColor, TileShape
 from ..shared.player import Player
 from ..shared import gamerules
@@ -30,12 +33,12 @@ class Logic:
     __bag: List[Tile]
     __is_first_turn: bool
     __is_curr_turn: bool
-    __discards: List[Tile]
+    __discards: npt.NDArray[np.object_]
 
     def __init__(self) -> None:
         """Inits the game with one player"""
         self.__temp_move = list()
-        self.__discards = list()
+        self.__discards = np.full(6, None, np.object_)
         self.is_curr_turn = False
         self.is_first_turn = False
         self.start_game(1)
@@ -59,7 +62,6 @@ class Logic:
         temp_hand = []
         for i in range(6):
             temp_hand.append(self.__bag.pop())
-            self.__discards.append(None)
 
         self.__player.update_hand(temp_hand)
 
@@ -125,7 +127,7 @@ class Logic:
             request = ClientRequest('placement', self.__temp_move)
             client_socket.send_data(request)
 
-        self.__discards = list()
+        self.__discards.fill(None)
         self.__temp_move = list()
 
     def tile_played(self):
