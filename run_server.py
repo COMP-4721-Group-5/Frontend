@@ -12,7 +12,7 @@ port = 12345
 
 logging.basicConfig(encoding='utf-8',
                     level=logging.DEBUG,
-                    format='%(asctime)s %(message)s')
+                    format='%(asctime)s [%(levelname)s] %(message)s')
 logging.info('Starting server...')
 
 sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
