@@ -116,7 +116,7 @@ class Logic:
 
         if discard:
             trimmed_discard: List[Tile] = list()
-            for tile in self.__discard_tile:
+            for tile in self.__discards:
                 if tile is not None:
                     trimmed_discard.append(tile)
             request = ClientRequest('discard', trimmed_discard)
