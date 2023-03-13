@@ -13,19 +13,6 @@ from lib.frontend.frontend_network import DataReceivedEvent
 from lib.shared.internal_structures import Board, Placement, Tile
 from lib.shared.network_exchange_format import ServerResponse
 
-# TODO List
-# 1. Implement logic for returning selected board tile to hand
-# 2. Fix up logic for deletion/placing - prevent both from occuring simultaneously
-# 3. Implement confirm button
-# 4. Verify selected tile on grid is temporary
-# 5. Add instructions rendering
-# 6. Prevent user from placing tiles ontop of one another
-
-# PROBLEMS
-# 1. When a tile is selected on the board and then a tile is selected in the hand, the tile on the board disappears.
-# 2. When a tile on the board is selected and another tile of that type is also on the board, they are both selected.
-
-
 def tile_img_load(tile: Tile):
     """Method for getting the images for the tile
 
@@ -152,6 +139,11 @@ class View:
                     screen.blit(tile_img, (x_pos + 5, y_pos + 5))
                 x_pos = x_pos + tile_width - 2
             y_pos = y_pos + tile_height - 2
+        if self.__logic.is_curr_turn and (self.__logic.tile_played() or len(self.__discarding_tiles) != 0):
+            confirm_image = pygame.transform.scale(
+                            pygame.image.load("confirm-image.png"),
+                            (tile_width - 10, tile_height - 10))
+            screen.blit(confirm_image, (789, 770 - tile_height))
 
     def render_hand(self, screen, window_size):
         """Renders the tiles currently held by the player.
@@ -284,10 +276,16 @@ class View:
                         self.update_view()
                 if ev.type == pygame.MOUSEBUTTONDOWN and self.__logic.is_curr_turn:
                     x = pygame.mouse.get_pos()[0]
-                    y = pygame.mouse.get_pos()[1]
+                    y = pygame.mouse.get_pos()[1] 
                     tile_width = 90
                     gap_width = 8
                     total_width = 585
+                                 
+                    if (789 < x < 878) and (770 < y < 699): # Confirm move
+                        if self.__logic.tile_played() == False: # Remove tiles
+                            self.__logic.end_turn(True, self.__socket)
+                        else: # Play tiles
+                            self.__logic.end_turn(False, self.__socket)
                     if (100 < x < 685) and (
                             700 < y < 770):  # Handles interaction with hand
                         if ev.button == 1 and len(self.__discarding_tiles) == 0:  # Select a tile for placing
