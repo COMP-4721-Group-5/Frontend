@@ -282,7 +282,7 @@ class View:
                     gap_width = 8
                     total_width = 585
                                  
-                    if (789 < x < 878) and (770 < y < 699): # Confirm move
+                    if (789 < x < 878) and (699 < y < 770) and self.__logic.is_curr_turn and (self.__logic.tile_played() or len(self.__discarding_tiles) != 0): # Confirm move
                         if self.__logic.tile_played() == False: # Remove tiles
                             self.__logic.end_turn(True, self.__socket)
                         else: # Play tiles
