@@ -6,7 +6,9 @@ from queue import Queue
 import random as rand
 from typing import List
 
-from lib.backend.server_components import *
+from lib.backend.Logic_backend import QwirkeleController
+from lib.backend.server_components import ClientConnection
+from lib.backend.server_components import Request
 
 port = 12345
 
@@ -46,5 +48,9 @@ while game_controller.in_game():
             connection.stop_listening()
         logging.error('Exiting')
         break
+    except Exception as ex:
+        for connection in connections:
+            connection.stop_listening()
+        raise ex
 
 # TODO: Cleanup / Close

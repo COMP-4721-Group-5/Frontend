@@ -1,6 +1,9 @@
 from typing import List
 
+import numpy as np
+
 from .internal_structures import Placement, Board, Tile
+from .player import Player
 
 
 class Gamerules:
@@ -56,10 +59,11 @@ class Gamerules:
         for i in range(5):  #Checks up to 5 tiles above the horizontal
             if placement.y_coord + i + 1 > 217:
                 break
-            temp_tile = board[placement.x_coord][placement.y_coord + i + 1]
+            temp_tile = board.get_board()[placement.x_coord][placement.y_coord +
+                                                             i + 1]
             temp_placement = Placement(temp_tile, placement.x_coord,
                                        placement.y_coord + i + 1)
-            if temp_tile is None:
+            if temp_tile == 0:
                 break
             else:
                 if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
@@ -76,10 +80,11 @@ class Gamerules:
             for i in range(5):  #Checks up to 5 tiles below the horizontal
                 if placement.y_coord - i - 1 < 0:
                     break
-                temp_tile = board[placement.x_coord][placement.y_coord - i - 1]
+                temp_tile = board.get_board()[placement.x_coord][
+                    placement.y_coord - i - 1]
                 temp_placement = Placement(temp_tile, placement.x_coord,
                                            placement.y_coord - i - 1)
-                if temp_tile is None:
+                if temp_tile == 0:
                     break
                 else:
                     if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
@@ -97,10 +102,11 @@ class Gamerules:
         for i in range(5):  #Checks up to 5 tiles to the right of the vertical
             if placement.x_coord - i - 1 < 0:
                 break
-            temp_tile = board[placement.x_coord - i - 1][placement.y_coord]
+            temp_tile = board.get_board()[placement.x_coord - i -
+                                          1][placement.y_coord]
             temp_placement = Placement(temp_tile, placement.x_coord - i - 1,
                                        placement.y_coord)
-            if temp_tile is None:
+            if temp_tile == 0:
                 break
             else:
                 if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
@@ -109,18 +115,17 @@ class Gamerules:
                 else:  #if there is an invalid match in the line
                     x_line = None
                     break
-            if temp_tile.__eq__(
-                    placement.tile
-            ):  #if line already contains this tile, it is invalid
+            if temp_tile == placement.tile:  #if line already contains this tile, it is invalid
                 return None, y_line
 
         for i in range(5):  #Checks up to 5 tiles to the left of the vertical
             if placement.x_coord + i + 1 > 217:
                 break
-            temp_tile = board[placement.x_coord + i + 1][placement.y_coord]
+            temp_tile = board.get_board()[placement.x_coord + i +
+                                          1][placement.y_coord]
             temp_placement = Placement(temp_tile, placement.x_coord - i - 1,
                                        placement.y_coord)
-            if temp_tile is None:
+            if temp_tile == 0:
                 break
             else:
                 if temp_tile.shape == placement.tile.shape or temp_tile.color == placement.tile.color:
@@ -130,7 +135,7 @@ class Gamerules:
                     x_line = None
                     break
             #Checks if line is too large or if it already contains a given tile
-            if x_count > 5 or temp_tile.__eq__(placement.tile):
+            if x_count > 5 or temp_tile == placement.tile:
                 x_line = None
                 break
 
@@ -148,8 +153,10 @@ class Gamerules:
             True: if it is a valid placement
             False: if it is not a valid placement
         """
-        x_line, y_line = self.get_lines(placement)
-        if x_line == [] and y_line == [] or x_line is None or y_line is None:
+        x_line, y_line = self.get_lines(placement, board)
+        if np.count_nonzero(board.get_board()) == 0:
+            return True
+        elif x_line == [] and y_line == [] or x_line is None or y_line is None:
             return False
         else:
 
@@ -244,8 +251,8 @@ class Gamerules:
 
         x_line, y_line = self.get_lines(placement, board)
 
-        x_length = x_line.__len__() + 1
-        y_length = y_line.__len__() + 1
+        x_length = len(x_line) + 1
+        y_length = len(y_line) + 1
         scoreRemoval = 0
 
         if (x_length == 6):  #Removes Quirkle points
@@ -275,3 +282,27 @@ class Gamerules:
             print(y_length)
 
         return scoreRemoval
+
+    def game_over(self, players: List[Player], board: Board):
+        """Checks if the game is over
+
+        Args:
+            players: list of all involved player in the game
+            board: current game board
+
+        Returns: True if the game is over, false if not
+        """
+        tile_pos = np.where(board.get_board() != 0)
+        pos_tuples = list(zip(tile_pos[0], tile_pos[1]))
+        # Every element in pos_tuple give (x,y) tuple
+        # that has tile on the board
+
+        for x in range(217):
+            for y in range(217):
+                for player in players:
+                    for tile in player:
+                        placement = Placement(tile, x, y)
+                        if self.verify_placement(placement, board):
+                            return False
+
+        return True
