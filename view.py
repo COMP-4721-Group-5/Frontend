@@ -139,12 +139,7 @@ class View:
                     screen.blit(tile_img, (x_pos + 5, y_pos + 5))
                 x_pos = x_pos + tile_width - 2
             y_pos = y_pos + tile_height - 2
-        if self.__logic.is_curr_turn and (self.__logic.tile_played() or len(self.__discarding_tiles) != 0):
-            confirm_image = pygame.transform.scale(
-                            pygame.image.load("confirm-image.png"),
-                            (tile_width - 10, tile_height - 10))
-            screen.blit(confirm_image, (789, 770 - tile_height))
-
+        
     def render_hand(self, screen, window_size):
         """Renders the tiles currently held by the player.
 
@@ -186,6 +181,12 @@ class View:
                                       x_pos, y_pos, tile_width, tile_height, 5)
             x_pos = x_pos + tile_width - 2
             border_color = (0, 0, 0)
+        if self.__logic.is_curr_turn and (self.__logic.tile_played() or len(self.__discarding_tiles) != 0):
+            confirm_image = pygame.transform.scale(
+                            pygame.image.load("confirm-image.png"),
+                            (tile_width - 10, tile_height - 10))
+            screen.blit(confirm_image, (789, 770 - tile_height + 10))
+
 
     def render_details(self):
         """Renders details such as the server IP and the player's score."""
