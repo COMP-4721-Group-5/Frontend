@@ -74,7 +74,7 @@ class View:
         self.__discarding_tiles = list()
         self.__selected_board_tile = None
         self.__selected_board_x_y = np.full(2, -1)
-        favicon = pygame.image.load('favicon.png')
+        favicon = pygame.image.load('assets/favicon.png')
         pygame.display.set_icon(favicon)
         background_color = (255, 255, 255)
         pygame.display.set_caption("Qwirkle")
@@ -183,7 +183,7 @@ class View:
             border_color = (0, 0, 0)
         if self.__logic.is_curr_turn and (self.__logic.tile_played() or len(self.__discarding_tiles) != 0):
             confirm_image = pygame.transform.scale(
-                            pygame.image.load("confirm-image.png"),
+                            pygame.image.load("assets/buttons/confirm-image.png"),
                             (tile_width - 10, tile_height - 10))
             screen.blit(confirm_image, (789, 770 - tile_height + 10))
 
