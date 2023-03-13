@@ -115,7 +115,11 @@ class Logic:
         self.__is_curr_turn = False
 
         if discard:
-            request = ClientRequest('discard', self.__discards)
+            trimmed_discard: List[Tile] = list()
+            for tile in self.discard_tile:
+                if tile is not None:
+                    trimmed_discard.append(tile)
+            request = ClientRequest('discard', trimmed_discard)
             client_socket.send_data(request)
         else:
             request = ClientRequest('placement', self.__temp_move)
