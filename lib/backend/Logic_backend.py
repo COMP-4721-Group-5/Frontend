@@ -92,7 +92,7 @@ class QwirkeleController:
                     f'Valid discard request from {curr_request.connection.address}'
                 )
                 # remove tiles from hand and put back in bag
-                for i in range(len(curr_request.data)):
+                for i in range(len(discard_tiles)):
                     for j in range(6):
                         if curr_request.connection.get_player(
                         )[j] == discard_tiles[i]:
