@@ -284,6 +284,7 @@ class View:
                                  
                     if (789 < x < 878) and (699 < y < 770) and self.__logic.is_curr_turn and (self.__logic.tile_played() or len(self.__discarding_tiles) != 0): # Confirm move
                         if self.__logic.tile_played() == False: # Remove tiles
+                            self.__discarding_tiles.clear()
                             self.__logic.end_turn(True, self.__socket)
                         else: # Play tiles
                             self.__logic.end_turn(False, self.__socket)
