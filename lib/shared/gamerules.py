@@ -59,7 +59,8 @@ class Gamerules:
         for i in range(5):  #Checks up to 5 tiles above the horizontal
             if placement.y_coord + i + 1 > 217:
                 break
-            temp_tile = board.get_board()[placement.x_coord][placement.y_coord + i + 1]
+            temp_tile = board.get_board()[placement.x_coord][placement.y_coord +
+                                                             i + 1]
             temp_placement = Placement(temp_tile, placement.x_coord,
                                        placement.y_coord + i + 1)
             if temp_tile == 0:
@@ -79,7 +80,8 @@ class Gamerules:
             for i in range(5):  #Checks up to 5 tiles below the horizontal
                 if placement.y_coord - i - 1 < 0:
                     break
-                temp_tile = board.get_board()[placement.x_coord][placement.y_coord - i - 1]
+                temp_tile = board.get_board()[placement.x_coord][
+                    placement.y_coord - i - 1]
                 temp_placement = Placement(temp_tile, placement.x_coord,
                                            placement.y_coord - i - 1)
                 if temp_tile == 0:
@@ -100,7 +102,8 @@ class Gamerules:
         for i in range(5):  #Checks up to 5 tiles to the right of the vertical
             if placement.x_coord - i - 1 < 0:
                 break
-            temp_tile = board.get_board()[placement.x_coord - i - 1][placement.y_coord]
+            temp_tile = board.get_board()[placement.x_coord - i -
+                                          1][placement.y_coord]
             temp_placement = Placement(temp_tile, placement.x_coord - i - 1,
                                        placement.y_coord)
             if temp_tile == 0:
@@ -118,7 +121,8 @@ class Gamerules:
         for i in range(5):  #Checks up to 5 tiles to the left of the vertical
             if placement.x_coord + i + 1 > 217:
                 break
-            temp_tile = board.get_board()[placement.x_coord + i + 1][placement.y_coord]
+            temp_tile = board.get_board()[placement.x_coord + i +
+                                          1][placement.y_coord]
             temp_placement = Placement(temp_tile, placement.x_coord - i - 1,
                                        placement.y_coord)
             if temp_tile == 0:
@@ -278,7 +282,6 @@ class Gamerules:
             print(y_length)
 
         return scoreRemoval
-
 
     def game_over(self, players: List[Player], board: Board):
         """Checks if the game is over
