@@ -74,7 +74,7 @@ class View:
         self.__board = self.__logic.board
         self.__discarding_tiles = list()
         self.__selected_board_tile = None
-        self.__selected_board_x_y = np.full(2, -1)
+        self.__selected_board_x_y = np.full(2, -1, np.int_)
         favicon = pygame.image.load('assets/favicon.png')
         pygame.display.set_icon(favicon)
         background_color = (255, 255, 255)
