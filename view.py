@@ -13,6 +13,7 @@ from lib.frontend.frontend_network import DataReceivedEvent
 from lib.shared.internal_structures import Board, Placement, Tile
 from lib.shared.network_exchange_format import ServerResponse
 
+
 def tile_img_load(tile: Tile):
     """Method for getting the images for the tile
 
@@ -139,7 +140,7 @@ class View:
                     screen.blit(tile_img, (x_pos + 5, y_pos + 5))
                 x_pos = x_pos + tile_width - 2
             y_pos = y_pos + tile_height - 2
-        
+
     def render_hand(self, screen, window_size):
         """Renders the tiles currently held by the player.
 
@@ -181,12 +182,12 @@ class View:
                                       x_pos, y_pos, tile_width, tile_height, 5)
             x_pos = x_pos + tile_width - 2
             border_color = (0, 0, 0)
-        if self.__logic.is_curr_turn and (self.__logic.tile_played() or len(self.__discarding_tiles) != 0):
+        if self.__logic.is_curr_turn and (self.__logic.tile_played() or
+                                          len(self.__discarding_tiles) != 0):
             confirm_image = pygame.transform.scale(
-                            pygame.image.load("assets/buttons/confirm-image.png"),
-                            (tile_width - 10, tile_height - 10))
+                pygame.image.load("assets/buttons/confirm-image.png"),
+                (tile_width - 10, tile_height - 10))
             screen.blit(confirm_image, (789, 770 - tile_height + 10))
-
 
     def render_details(self):
         """Renders details such as the server IP and the player's score."""
@@ -277,20 +278,25 @@ class View:
                         self.update_view()
                 if ev.type == pygame.MOUSEBUTTONDOWN and self.__logic.is_curr_turn:
                     x = pygame.mouse.get_pos()[0]
-                    y = pygame.mouse.get_pos()[1] 
+                    y = pygame.mouse.get_pos()[1]
                     tile_width = 90
                     gap_width = 8
                     total_width = 585
-                                 
-                    if (789 < x < 878) and (699 < y < 770) and self.__logic.is_curr_turn and (self.__logic.tile_played() or len(self.__discarding_tiles) != 0): # Confirm move
-                        if self.__logic.tile_played() == False: # Remove tiles
+
+                    if (789 < x < 878
+                       ) and (699 < y < 770) and self.__logic.is_curr_turn and (
+                           self.__logic.tile_played() or
+                           len(self.__discarding_tiles) != 0):  # Confirm move
+                        if self.__logic.tile_played() == False:  # Remove tiles
                             self.__discarding_tiles.clear()
                             self.__logic.end_turn(True, self.__socket)
-                        else: # Play tiles
+                        else:  # Play tiles
                             self.__logic.end_turn(False, self.__socket)
                     if (100 < x < 685) and (
                             700 < y < 770):  # Handles interaction with hand
-                        if ev.button == 1 and len(self.__discarding_tiles) == 0:  # Select a tile for placing
+                        if ev.button == 1 and len(
+                                self.__discarding_tiles
+                        ) == 0:  # Select a tile for placing
                             relative_x = x - 100
                             for i in range(6):
                                 if relative_x < (585 / 6) * (i + 1):
@@ -302,7 +308,11 @@ class View:
                                         self.__logic.player[
                                             i] = self.__selected_board_tile
                                         #self.__logic.undo_play(self.__selected_board_tile)
-                                        self.__logic.undo_play(Placement(self.__selected_board_tile, self.__selected_board_x_y[0], self.__selected_board_x_y[1]))
+                                        self.__logic.undo_play(
+                                            Placement(
+                                                self.__selected_board_tile,
+                                                self.__selected_board_x_y[0],
+                                                self.__selected_board_x_y[1]))
                                         self.__selected_board_tile = None
                                         self.__board.remove_tile(
                                             self.__selected_board_x_y[0],
@@ -311,7 +321,8 @@ class View:
 
                                     self.update_view()
                                     break
-                        elif ev.button == 3 and self.__logic.tile_played() == False:  # Select a tile for discarding
+                        elif ev.button == 3 and not self.__logic.tile_played():
+                            # Select a tile for discarding
                             relative_x = x - 100
                             for i in range(6):
                                 if relative_x < (585 / 6) * (i + 1):
@@ -321,7 +332,8 @@ class View:
                                     else:
                                         self.__selected_tile = -1
                                         self.__discarding_tiles.append(i)
-                                        self.__logic.discard_tile(self.__logic.player[i], i)
+                                        self.__logic.discard_tile(
+                                            self.__logic.player[i], i)
                                     self.update_view()
                                     break
                     elif (100 < x < 877) and (53 < y < 667):
@@ -342,8 +354,10 @@ class View:
                                         )[self.__top_left_x +
                                           j,  # Need to verify tile is temporary
                                           self.__top_left_y + i]
-                                        self.__selected_board_x_y[0] = self.__top_left_x + j
-                                        self.__selected_board_x_y[1] = self.__top_left_y + i
+                                        self.__selected_board_x_y[
+                                            0] = self.__top_left_x + j
+                                        self.__selected_board_x_y[
+                                            1] = self.__top_left_y + i
 
                                         if (self.__logic.player[
                                                 self.__selected_tile]
