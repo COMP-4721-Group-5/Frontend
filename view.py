@@ -1,6 +1,9 @@
+from typing import List
 import sys
 import tkinter as tk
 import tkinter.simpledialog
+import numpy as np
+import numpy.typing as npt
 import pygame
 
 from lib.shared.player import Player
@@ -45,6 +48,8 @@ class View:
         __screen: The screen object
         __logic: Instance of the logic class that will be used to access the logic methods
         __board: Instance of the board object that will be used to interact with the board
+        __selected_board_tile: Tracks tiles selected on the board
+        __selected_board_x_y: Tracks x,y coordinate of selected tile on the board
     """
 
     __top_left_x: int = 108
@@ -56,6 +61,9 @@ class View:
     __logic: Logic = None
     __board: Board = None
     __socket: ClientSocket
+    __discarding_tiles: List[int]
+    __selected_board_tile: Tile
+    __selected_board_x_y: npt.NDArray[np.int_]
 
     def __init__(self, size, g_logic):
         """Inits the view"""
@@ -64,7 +72,10 @@ class View:
         self.__socket = View.connect_server()
         self.__screen = pygame.display.set_mode(size)
         self.__board = self.__logic.board
-        favicon = pygame.image.load('favicon.png')
+        self.__discarding_tiles = list()
+        self.__selected_board_tile = None
+        self.__selected_board_x_y = np.full(2, -1)
+        favicon = pygame.image.load('assets/favicon.png')
         pygame.display.set_icon(favicon)
         background_color = (255, 255, 255)
         pygame.display.set_caption("Qwirkle")
@@ -103,6 +114,7 @@ class View:
             Returns:
                 Nothing
         """
+
         border_color = (0, 0, 0)
         background_color = (255, 255, 255)
         self.draw_hollow_rect(screen, background_color, border_color,
@@ -123,6 +135,12 @@ class View:
                 curr_tile = self.__board.get_board()[self.__top_left_y + i,
                                                      self.__top_left_x + j]
                 if curr_tile != 0:
+                    if curr_tile == self.__selected_board_tile:
+                        border_color = (255, 0, 255)
+                        self.draw_hollow_rect(screen, background_color,
+                                              border_color, x_pos, y_pos,
+                                              tile_width, tile_height, 5)
+                        border_color = (0, 0, 0)
                     tile_img = pygame.transform.scale(
                         tile_img_load(curr_tile),
                         (tile_width - 10, tile_height - 10))
@@ -155,6 +173,8 @@ class View:
         for i in range(num_tiles + 1):
             if self.__selected_tile == i:
                 border_color = (255, 0, 255)
+            if i in self.__discarding_tiles:
+                border_color = (255, 0, 0)
             if i < 6:
                 self.draw_hollow_rect(screen, background_color, border_color,
                                       x_pos, y_pos, tile_width, tile_height, 5)
@@ -169,18 +189,29 @@ class View:
                                       x_pos, y_pos, tile_width, tile_height, 5)
             x_pos = x_pos + tile_width - 2
             border_color = (0, 0, 0)
+        if self.__logic.is_curr_turn and (self.__logic.tile_played() or
+                                          len(self.__discarding_tiles) != 0):
+            confirm_image = pygame.transform.scale(
+                pygame.image.load("assets/buttons/confirm-image.png"),
+                (tile_width - 10, tile_height - 10))
+            screen.blit(confirm_image, (789, 770 - tile_height + 10))
 
     def render_details(self):
         """Renders details such as the server IP and the player's score."""
         connected_color = (50, 205, 50)
-        ip_color = (0, 0, 0)
+        black_color = (0, 0, 0)
         pygame.font.init()
         font = pygame.font.SysFont("Arial", 15)
         server_ip = self.__socket.address
         server_port = self.__socket.port
         con_surface = font.render("Connected: ", True, connected_color)
         ip_str = str(server_ip) + ":" + str(server_port)
-        ip_surface = font.render(ip_str, True, ip_color)
+        ip_surface = font.render(ip_str, True, black_color)
+
+        score = self.__logic.player.score
+        score_surface = font.render("Score: " + str(score), True, black_color)
+
+        screen.blit(score_surface, (90, 17))
         screen.blit(con_surface, (715, 14))
         screen.blit(ip_surface, (795, 14))
         pygame.display.flip()
@@ -258,18 +289,61 @@ class View:
                     tile_width = 90
                     gap_width = 8
                     total_width = 585
+
+                    if (789 < x < 878
+                       ) and (699 < y < 770) and self.__logic.is_curr_turn and (
+                           self.__logic.tile_played() or
+                           len(self.__discarding_tiles) != 0):  # Confirm move
+                        if self.__logic.tile_played() == False:  # Remove tiles
+                            self.__discarding_tiles.clear()
+                            self.__logic.end_turn(True, self.__socket)
+                        else:  # Play tiles
+                            self.__logic.end_turn(False, self.__socket)
                     if (100 < x < 685) and (
                             700 < y < 770):  # Handles interaction with hand
-                        relative_x = x - 100
-                        for i in range(6):
-                            if relative_x < (585 / 6) * (i + 1):
-                                self.__selected_tile = i
-                                self.update_view()
-                                break
-                    if (100 < x < 877) and (53 < y < 667) and (
-                            # Handles interaction with the grid
-                            self.__logic.player[self.__selected_tile]
-                            is not None) and (self.__selected_tile >= 0):
+                        if ev.button == 1 and len(
+                                self.__discarding_tiles
+                        ) == 0:  # Select a tile for placing
+                            relative_x = x - 100
+                            for i in range(6):
+                                if relative_x < (585 / 6) * (i + 1):
+                                    self.__selected_tile = i
+
+                                    if self.__selected_board_tile != 0 and self.__logic.player[
+                                            i] == None and self.__selected_board_x_y[
+                                                0] != -1:
+                                        self.__logic.player[
+                                            i] = self.__selected_board_tile
+                                        #self.__logic.undo_play(self.__selected_board_tile)
+                                        self.__logic.undo_play(
+                                            Placement(
+                                                self.__selected_board_tile,
+                                                self.__selected_board_x_y[0],
+                                                self.__selected_board_x_y[1]))
+                                        self.__selected_board_tile = None
+                                        self.__board.remove_tile(
+                                            self.__selected_board_x_y[0],
+                                            self.__selected_board_x_y[1])
+                                        self.__selected_board_x_y.fill(-1)
+
+                                    self.update_view()
+                                    break
+                        elif ev.button == 3 and not self.__logic.tile_played():
+                            # Select a tile for discarding
+                            relative_x = x - 100
+                            for i in range(6):
+                                if relative_x < (585 / 6) * (i + 1):
+                                    if i in self.__discarding_tiles:
+                                        self.__discarding_tiles.remove(i)
+                                        self.__logic.undo_discard(i)
+                                    else:
+                                        self.__selected_tile = -1
+                                        self.__discarding_tiles.append(i)
+                                        self.__logic.discard_tile(
+                                            self.__logic.player[i], i)
+                                    self.update_view()
+                                    break
+                    elif (100 < x < 877) and (53 < y < 667):
                         relative_x = x - 100
                         relative_y = y - 53
                         found = False
@@ -283,11 +357,29 @@ class View:
                                                 self.__selected_tile],
                                             self.__top_left_x + j,
                                             self.__top_left_y + i)
-                                        self.__board.add_tile(placement)
-                                        self.__logic.player[
-                                            self.__selected_tile] = None
-                                        self.__selected_tile = -1
-                                        self.update_view()
+                                        self.__selected_board_tile = self.__board.get_board(
+                                        )[self.__top_left_x +
+                                          j,  # Need to verify tile is temporary
+                                          self.__top_left_y + i]
+                                        self.__selected_board_x_y[
+                                            0] = self.__top_left_x + j
+                                        self.__selected_board_x_y[
+                                            1] = self.__top_left_y + i
+
+                                        if (self.__logic.player[
+                                                self.__selected_tile]
+                                                is not None) and (
+                                                    self.__selected_tile >= 0
+                                                ) and (self.__board.get_board(
+                                                )[self.__selected_board_x_y[0],
+                                                  self.__selected_board_x_y[1]]
+                                                       == 0):
+                                            self.__board.add_tile(placement)
+                                            self.__logic.play_tile(placement)
+                                            self.__logic.player[
+                                                self.__selected_tile] = None
+                                            self.__selected_tile = -1
+                                            self.update_view()
                                         found = True
                                         self.update_view()
                                         break

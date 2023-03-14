@@ -1,8 +1,12 @@
 from typing import List
 
+import numpy as np
+import numpy.typing as npt
+
 from ..shared.internal_structures import Board, Placement, Tile, TileColor, TileShape
 from ..shared.player import Player
 from ..shared import gamerules
+from .frontend_network import ClientSocket, ClientRequest
 
 
 class Logic:
@@ -21,16 +25,20 @@ class Logic:
         bag: contains the bag of tiles left to be drawn
         is_first_turn: a boolean variable to keep track of whether or not it is the first move
         is_curr_turn: a boolean variable to keep track of if it is this player's turn
+        discards: keeps track of tiles to discard
     """
     __board: Board
-    __tempMove: Placement
+    __temp_move: List[Placement]
     __player: Player
     __bag: List[Tile]
     __is_first_turn: bool
     __is_curr_turn: bool
+    __discards: npt.NDArray[np.object_]
 
     def __init__(self) -> None:
         """Inits the game with one player"""
+        self.__temp_move = list()
+        self.__discards = np.full(6, None, np.object_)
         self.is_curr_turn = False
         self.is_first_turn = False
         self.start_game(1)
@@ -57,15 +65,78 @@ class Logic:
 
         self.__player.update_hand(temp_hand)
 
-    def play_tile(self, placement, index):
+    def play_tile(self, placement: Placement):
         """Plays a tile given an index and desired placement
 
         Args:
             placement: desired placement of the tile, contains tile, x_coord and y_coord data
-            index: index of the tile within the players hand
         """
-        self.board.add_tile(placement)
-        self.player.play_tile(index)
+        self.__temp_move.append(placement)
+
+    def undo_play(self, placement: Placement):
+        """Undoes a given placement
+        
+        Removes tile from the temp_move list and places it back into the player's hand
+        Args: 
+            Tile: tile to place back in the hand
+        """
+        self.__temp_move.remove(placement)
+
+    def discard_tile(self, tile: Tile, index: int):
+        """Discards a tile at a given index
+
+        Removes tiles from player's hand and places into the discard list
+        Args:
+            tile: tile to discard
+            index: index of tile within the hand
+        """
+        #self.player.play_tile(index)
+        #self.__discards.insert(index, tile)
+        self.__discards[index] = tile
+
+    def undo_discard(self, index):
+        """Undoes a given discard
+
+        Removes the discarded tile from discar list and places it back into the players hand
+        Args:
+            index: index of tile in question in the player's hand
+        """
+        #tile = self.__discards.pop(index)
+        #self.__discards.pop(index)
+        self.__discards[index] = None
+        #t_hand = self.player.get_hand()
+        #t_hand.append(tile)
+        #self.player.update_hand(t_hand)
+
+    def end_turn(self, discard: bool, client_socket: ClientSocket):
+        """Ends the current turn
+
+        Args:
+            discard: keeps track of whether or not the player chose to discard this turn
+        """
+        self.__is_curr_turn = False
+
+        if discard:
+            trimmed_discard: List[Tile] = list()
+            for tile in self.__discards:
+                if tile is not None:
+                    trimmed_discard.append(tile)
+            request = ClientRequest('discard', trimmed_discard)
+            client_socket.send_data(request)
+        else:
+            request = ClientRequest('placement', self.__temp_move)
+            client_socket.send_data(request)
+
+        self.__discards.fill(None)
+        self.__temp_move.clear()
+
+    def tile_played(self):
+        """Checks if a tile has been played
+        Returns:
+            True: if true
+            False: if false
+        """
+        return len(self.__temp_move) != 0
 
     @property
     def board(self):
