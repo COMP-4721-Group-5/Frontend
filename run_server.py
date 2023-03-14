@@ -10,7 +10,7 @@ from lib.backend.Logic_backend import QwirkeleController
 from lib.backend.server_components import ClientConnection
 from lib.backend.server_components import Request
 
-port = 12345
+port = 1234
 
 logging.basicConfig(encoding='utf-8',
                     level=logging.DEBUG,
