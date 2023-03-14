@@ -139,6 +139,15 @@ class QwirkeleController:
                     placement.tile.set_permanent()
                     self.__board.get_board()[placement.x_coord,
                                              placement.y_coord] = placement.tile
+                # Remove placed tiles from hand
+                for placement in curr_request.data:
+                    for j in range(6):
+                        if curr_request.connection.get_player(
+                        )[j] == placement.tile:
+                            self.__tile_bag.append(
+                                curr_request.connection.get_player()[j])
+                            curr_request.connection.get_player()[j] = None
+                            break
                 # then call self.__start_next_turn()
                 self.__start_next_turn()
             else:
