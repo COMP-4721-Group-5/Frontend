@@ -120,7 +120,7 @@ class Tile(JsonableObject):
         """
         Marks this tile as permanent
         """
-        self._temporary = False
+        self.__temporary = False
 
     def __eq__(self, __o: object) -> bool:
         """Checks if two tiles are equal
@@ -249,8 +249,23 @@ class Board(JsonableObject):
         Args:
             placement: contains (Tile, x_coord, y_coord)
         """
-        if self.__board[placement.x_coord, placement.y_coord] == 0:
-            self.__board[placement.x_coord, placement.y_coord] = placement.tile
+        if self.__board[placement.y_coord, placement.x_coord] == 0:
+            self.__board[placement.y_coord, placement.x_coord] = placement.tile
+
+    def get_tile(self, x: int, y: int) -> Tile:
+        return self.__board[y][x]
+
+    def remove_tile(self, x, y):
+        """Removes a tile at a given x and y
+        
+        Args:
+            x: x coordinate
+            y: y coordinate
+        Returns: the tile that was removed
+        """
+        tile = self.__board[y][x]
+        self.__board[y][x] = 0
+        return tile
 
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, Board):
