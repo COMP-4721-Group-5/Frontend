@@ -132,8 +132,8 @@ class View:
             for j in range(num_cols):
                 self.draw_hollow_rect(screen, background_color, border_color,
                                       x_pos, y_pos, tile_width, tile_height, 5)
-                curr_tile = self.__board.get_board()[self.__top_left_y + i,
-                                                     self.__top_left_x + j]
+                curr_tile = self.__board.get_tile(self.__top_left_x + j,
+                                                     self.__top_left_y + i)
                 if curr_tile != 0:
                     if curr_tile == self.__selected_board_tile:
                         border_color = (255, 0, 255)
@@ -355,12 +355,12 @@ class View:
                                         placement = Placement(  # Creates and registers placement
                                             self.__logic.player[
                                                 self.__selected_tile],
-                                            self.__top_left_x + j,
-                                            self.__top_left_y + i)
-                                        self.__selected_board_tile = self.__board.get_board(
-                                        )[self.__top_left_x +
+                                            self.__top_left_x + i,
+                                            self.__top_left_y + j)
+                                        self.__selected_board_tile = self.__board.get_tile(
+                                        self.__top_left_x +
                                           i,  # Need to verify tile is temporary
-                                          self.__top_left_y + j]
+                                          self.__top_left_y + j)
                                         self.__selected_board_x_y[
                                             0] = self.__top_left_x + i
                                         self.__selected_board_x_y[
@@ -369,9 +369,9 @@ class View:
                                                 self.__selected_tile]
                                                 is not None) and (
                                                     self.__selected_tile >= 0
-                                                ) and (self.__board.get_board(
-                                                )[self.__selected_board_x_y[0],
-                                                  self.__selected_board_x_y[1]]
+                                                ) and (self.__board.get_tile(
+                                                self.__selected_board_x_y[0],
+                                                  self.__selected_board_x_y[1])
                                                        == 0):
                                             self.__board.add_tile(placement)
                                             self.__logic.play_tile(placement)
