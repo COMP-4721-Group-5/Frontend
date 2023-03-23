@@ -72,7 +72,26 @@ jobs:
           libsdl2-image-2.0-0 libsdl2-mixer-2.0-0 libsdl2-ttf-2.0-0
     - name: Install PIP dependencies
       run: python3 -m pip install -r requirements.txt
-    - name: Run style checker
+    - name: Run Black Formatter
+      id: blackcheck
       uses: psf/black@stable
       with:
         version: "~= 23.0"
+    - name: Apply Black style
+      if: ${{ github.event_name == 'pull_request' && failure() && steps.blackcheck.conclusion == 'failure' }}
+      uses: psf/black@stable
+      with:
+        options: ""
+        jupyter: true
+    - name: Commit style-changed code
+      if: ${{ github.event_name == 'pull_request'&& failure() && steps.blackcheck.conclusion == 'failure' }}
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add *
+        git commit -m "Format using Black"
+    - name: Push changes
+      if: ${{ github.event_name == 'pull_request' && failure() && steps.blackcheck.conclusion == 'failure' }}
+      uses: ad-m/github-push-action@master
+      with:
+        branch: ${{ github.ref }}
