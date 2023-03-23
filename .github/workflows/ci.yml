@@ -73,4 +73,6 @@ jobs:
     - name: Install PIP dependencies
       run: python3 -m pip install -r requirements.txt
     - name: Run style checker
-      run: yapf -r --style google -d . 
+      uses: psf/black@stable
+      with:
+        version: "~= 23.0"
