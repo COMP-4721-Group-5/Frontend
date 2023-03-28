@@ -314,7 +314,6 @@ class View:
                                                 0] != -1:
                                         self.__logic.player[
                                             i] = self.__selected_board_tile
-                                        #self.__logic.undo_play(self.__selected_board_tile)
                                         self.__logic.undo_play(
                                             Placement(
                                                 self.__selected_board_tile,
@@ -357,14 +356,15 @@ class View:
                                                 self.__selected_tile],
                                             self.__top_left_x + i,
                                             self.__top_left_y + j)
-                                        self.__selected_board_tile = self.__board.get_tile(
-                                            self.__top_left_x +
-                                            i,  # Need to verify tile is temporary
-                                            self.__top_left_y + j)
-                                        self.__selected_board_x_y[
-                                            0] = self.__top_left_x + i
-                                        self.__selected_board_x_y[
-                                            1] = self.__top_left_y + j
+                                        if self._board.get_board()[self.__top_left_x + j, self.__top_left_y + i].isTemporary():
+                                            self.__selected_board_tile = self.__board.get_tile(
+                                                self.__top_left_x +
+                                                i,  # Need to verify tile is temporary
+                                                self.__top_left_y + j)
+                                            self.__selected_board_x_y[
+                                                0] = self.__top_left_x + i
+                                            self.__selected_board_x_y[
+                                                1] = self.__top_left_y + j
                                         if (self.__logic.player[
                                                 self.__selected_tile]
                                                 is not None
