@@ -10,23 +10,24 @@ from .frontend_network import ClientSocket, ClientRequest
 
 
 class Logic:
-    """ Controls all game logic.
+    """Controls all game logic.
 
     Responsible for recieving input messages from the player
     and verfiying the validity of the input. Passes the updated
     game state to the socket for transmission to the server
     Recieves game state data from the socket and updates the model
-    accordingly. 
+    accordingly.
 
     Attributes:
         board: Contains the board
         tempMove: List that contains all temporary placements of current players move
-        player: Contains the local player's data 
+        player: Contains the local player's data
         bag: contains the bag of tiles left to be drawn
         is_first_turn: a boolean variable to keep track of whether or not it is the first move
         is_curr_turn: a boolean variable to keep track of if it is this player's turn
         discards: keeps track of tiles to discard
     """
+
     __board: Board
     __temp_move: List[Placement]
     __player: Player
@@ -75,9 +76,9 @@ class Logic:
 
     def undo_play(self, placement: Placement):
         """Undoes a given placement
-        
+
         Removes tile from the temp_move list and places it back into the player's hand
-        Args: 
+        Args:
             Tile: tile to place back in the hand
         """
         self.__temp_move.remove(placement)
@@ -90,8 +91,8 @@ class Logic:
             tile: tile to discard
             index: index of tile within the hand
         """
-        #self.player.play_tile(index)
-        #self.__discards.insert(index, tile)
+        # self.player.play_tile(index)
+        # self.__discards.insert(index, tile)
         self.__discards[index] = tile
 
     def undo_discard(self, index):
@@ -101,12 +102,12 @@ class Logic:
         Args:
             index: index of tile in question in the player's hand
         """
-        #tile = self.__discards.pop(index)
-        #self.__discards.pop(index)
+        # tile = self.__discards.pop(index)
+        # self.__discards.pop(index)
         self.__discards[index] = None
-        #t_hand = self.player.get_hand()
-        #t_hand.append(tile)
-        #self.player.update_hand(t_hand)
+        # t_hand = self.player.get_hand()
+        # t_hand.append(tile)
+        # self.player.update_hand(t_hand)
 
     def end_turn(self, discard: bool, client_socket: ClientSocket):
         """Ends the current turn
@@ -121,10 +122,10 @@ class Logic:
             for tile in self.__discards:
                 if tile is not None:
                     trimmed_discard.append(tile)
-            request = ClientRequest('discard', trimmed_discard)
+            request = ClientRequest("discard", trimmed_discard)
             client_socket.send_data(request)
         else:
-            request = ClientRequest('placement', self.__temp_move)
+            request = ClientRequest("placement", self.__temp_move)
             client_socket.send_data(request)
 
         self.__discards.fill(None)

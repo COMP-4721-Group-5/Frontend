@@ -19,6 +19,7 @@ class DataReceivedEvent:
 
     Do not instantiate object of this type.
     """
+
     EVENTTYPE: Final[int] = USEREVENT + 1
 
     def __init__(self) -> NoReturn:
@@ -27,14 +28,14 @@ class DataReceivedEvent:
     @staticmethod
     def create_event(data: ServerResponse):
         amended_data = data.json_serialize()
-        amended_data.pop('type')
-        amended_data['flag'] = ServerResponse.ResponseFlag(amended_data['flag'])
+        amended_data.pop("type")
+        amended_data["flag"] = ServerResponse.ResponseFlag(amended_data["flag"])
         return pygame.event.Event(DataReceivedEvent.EVENTTYPE, amended_data)
 
 
 class ClientSocket:
     """Python Implementation of Client socket.
-    
+
     Provides implementation of network socket the
     client needs for communicating with the server.
 
@@ -49,7 +50,7 @@ class ClientSocket:
     __port: int
     _sock: socket.socket
     _closed: Event
-    __listener: '_ServerMsgListener'
+    __listener: "_ServerMsgListener"
 
     def __init__(self, host: str, port: int) -> None:
         """Initializes the socket instance
@@ -75,8 +76,7 @@ class ClientSocket:
         self._sock.send(json.dumps(data, cls=JsonableEncoder).encode())
 
     def close(self) -> None:
-        """Closes connection with the server.
-        """
+        """Closes connection with the server."""
         if self._closed.is_set():
             return
         self._closed.set()
@@ -87,14 +87,15 @@ class ClientSocket:
         return self._closed.is_set()
 
     class _ServerMsgListener(Thread):
-        """Multithreaded socket listener implementation for client
-        """
-        __connection: 'ClientSocket'
+        """Multithreaded socket listener implementation for client"""
 
-        def __init__(self, connection: 'ClientSocket'):
-            Thread.__init__(self,
-                            name='ServerMsgListener-%s:%d' %
-                            (connection.address, connection.port))
+        __connection: "ClientSocket"
+
+        def __init__(self, connection: "ClientSocket"):
+            Thread.__init__(
+                self,
+                name="ServerMsgListener-%s:%d" % (connection.address, connection.port),
+            )
             self.__connection = connection
 
         def run(self):
@@ -108,8 +109,7 @@ class ClientSocket:
                 if recv_data is None:
                     pass
                 elif len(recv_data) != 0:
-                    response = json.loads(recv_data.decode(),
-                                          cls=JsonableDecoder)
+                    response = json.loads(recv_data.decode(), cls=JsonableDecoder)
                     pygame.event.post(DataReceivedEvent.create_event(response))
                     recv_data = None
                 else:
@@ -121,12 +121,10 @@ class ClientSocket:
 
     @property
     def address(self):
-        """Address of the host server
-        """
+        """Address of the host server"""
         return self.__host
 
     @property
     def port(self):
-        """Port being used on host server
-        """
+        """Port being used on host server"""
         return self.__port
