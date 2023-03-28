@@ -9,7 +9,7 @@ import numpy.typing as npt
 
 class JsonableObject(ABC):
     """Base class of objects that can be represented as JSON.
-    
+
     Subclasses of this object support conversion to / from
     its JSON form.
     """
@@ -27,10 +27,10 @@ class JsonableObject(ABC):
     @abstractmethod
     def json_deserialize(serialized_form: Dict[str, Any]):
         """Constructs object of this type from JSON serialized form
-        
+
         Args:
             json_form: JSON serialized form of an object of this type
-        
+
         Returns:
             Object of this type that the argument represents
         """
@@ -41,6 +41,7 @@ class TileColor(IntEnum):
     """
     Set of constants defining color of a tile
     """
+
     RED = 0x01
     ORANGE = 0x02
     YELLOW = 0x03
@@ -53,6 +54,7 @@ class TileShape(IntEnum):
     """
     Set of constants defining shape of a tile
     """
+
     CIRCLE = 0x10
     CROSS = 0x20
     DIAMOND = 0x30
@@ -70,15 +72,13 @@ class Tile(JsonableObject):
         __shape: shape of the tile
         __temporary: boolean to tell if the tile is temporary
     """
-    JSONABLE_TYPE: Final[str] = 'tile'
+
+    JSONABLE_TYPE: Final[str] = "tile"
     __color: TileColor
     __shape: TileShape
     __temporary: bool
 
-    def __init__(self,
-                 color: TileColor,
-                 shape: TileShape,
-                 temp: bool = True) -> None:
+    def __init__(self, color: TileColor, shape: TileShape, temp: bool = True) -> None:
         self.__color = color
         self.__shape = shape
         self.__temporary = temp
@@ -102,7 +102,7 @@ class Tile(JsonableObject):
         """
         Hexadecimal value uniquely representing type of this tile
 
-        Returns: 
+        Returns:
             Specific hex value for the tile type
         """
         return self.color.value ^ self.shape.value
@@ -130,22 +130,25 @@ class Tile(JsonableObject):
             False: if not
         """
         if isinstance(__o, Tile):
-            return self.__color == __o.__color and self.__shape == __o.__shape and self.__temporary == __o.__temporary
+            return (
+                self.__color == __o.__color
+                and self.__shape == __o.__shape
+                and self.__temporary == __o.__temporary
+            )
         else:
             return False
 
     def __repr__(self) -> str:
         if self.__temporary:
-            return 'Temporary %s %s tile' % (self.__color.name,
-                                             self.__shape.name)
+            return "Temporary %s %s tile" % (self.__color.name, self.__shape.name)
         else:
-            return '%s %s tile' % (self.__color.name, self.__shape.name)
+            return "%s %s tile" % (self.__color.name, self.__shape.name)
 
     def json_serialize(self) -> Dict[str, bool | int]:
         dict_form: Dict[str, bool | int] = {
-            'type': Tile.JSONABLE_TYPE,
-            'tile_type': self.hex_value,
-            'temporary': self.__temporary
+            "type": Tile.JSONABLE_TYPE,
+            "tile_type": self.hex_value,
+            "temporary": self.__temporary,
         }
         return dict_form
 
@@ -154,9 +157,9 @@ class Tile(JsonableObject):
         if type(serialized_form) is not dict:
             raise TypeError
         new_tile = Tile(0, 0)
-        new_tile.__color = TileColor(serialized_form['tile_type'] & 0x0f)
-        new_tile.__shape = TileShape(serialized_form['tile_type'] & 0xf0)
-        new_tile.__temporary = serialized_form['temporary']
+        new_tile.__color = TileColor(serialized_form["tile_type"] & 0x0F)
+        new_tile.__shape = TileShape(serialized_form["tile_type"] & 0xF0)
+        new_tile.__temporary = serialized_form["temporary"]
         return new_tile
 
 
@@ -168,7 +171,8 @@ class Placement(JsonableObject):
         x_coord: x coordinate of the tile to be placed within the game board
         y_coord: y coordinate of the tile to be placed within the game board
     """
-    JSONABLE_TYPE: Final[str] = 'placement'
+
+    JSONABLE_TYPE: Final[str] = "placement"
     __tile: Tile
     __x_coord: int
     __y_coord: int
@@ -199,19 +203,22 @@ class Placement(JsonableObject):
 
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, Placement):
-            return self.__tile == __o.__tile and self.__x_coord == __o.__x_coord and self.__y_coord == __o.__y_coord
+            return (
+                self.__tile == __o.__tile
+                and self.__x_coord == __o.__x_coord
+                and self.__y_coord == __o.__y_coord
+            )
         else:
             return False
 
     def __repr__(self) -> str:
-        return '%s at (%d, %d)' % (self.__tile.__repr__(), self.x_coord,
-                                   self.y_coord)
+        return "%s at (%d, %d)" % (self.__tile.__repr__(), self.x_coord, self.y_coord)
 
     def json_serialize(self) -> Dict[str, str | Tile | List[int]]:
         dict_form: Dict[str, str | Tile | List[int]] = {
-            'type': Placement.JSONABLE_TYPE,
-            'tile': self.__tile.json_serialize(),
-            'pos': [self.x_coord, self.y_coord]
+            "type": Placement.JSONABLE_TYPE,
+            "tile": self.__tile.json_serialize(),
+            "pos": [self.x_coord, self.y_coord],
         }
         return dict_form
 
@@ -220,9 +227,9 @@ class Placement(JsonableObject):
         if type(serialized_form) is not dict:
             raise TypeError
         new_placement = Placement(None, -1, -1)
-        new_placement.__tile = serialized_form['tile']
-        new_placement.__x_coord = serialized_form['pos'][0]
-        new_placement.__y_coord = serialized_form['pos'][1]
+        new_placement.__tile = serialized_form["tile"]
+        new_placement.__x_coord = serialized_form["pos"][0]
+        new_placement.__y_coord = serialized_form["pos"][1]
         return new_placement
 
 
@@ -232,7 +239,8 @@ class Board(JsonableObject):
     Attributes:
         board: a 217x217 array of Tiles
     """
-    JSONABLE_TYPE: Final[str] = 'board'
+
+    JSONABLE_TYPE: Final[str] = "board"
     ROW: Final = 217
     COLUMN: Final = 217
 
@@ -257,7 +265,7 @@ class Board(JsonableObject):
 
     def remove_tile(self, x, y):
         """Removes a tile at a given x and y
-        
+
         Args:
             x: x coordinate
             y: y coordinate
@@ -278,9 +286,10 @@ class Board(JsonableObject):
             for self_pos_tuple in self_pos_tuples:
                 if self_pos_tuple not in other_pos_tuples:
                     return False
-                elif self.__board[self_pos_tuple[0],
-                                  self_pos_tuple[1]] != __o.__board[
-                                      self_pos_tuple[0], self_pos_tuple[1]]:
+                elif (
+                    self.__board[self_pos_tuple[0], self_pos_tuple[1]]
+                    != __o.__board[self_pos_tuple[0], self_pos_tuple[1]]
+                ):
                     return False
             return True
         else:
@@ -290,7 +299,7 @@ class Board(JsonableObject):
         tile_pos = np.where(self.__board != 0)
         pos_tuples = list(zip(tile_pos[1], tile_pos[0]))
         dict_form = dict()
-        dict_form['type'] = Board.JSONABLE_TYPE
+        dict_form["type"] = Board.JSONABLE_TYPE
         for pos_tuple in pos_tuples:
             tile: Tile = self.get_tile(pos_tuple[0], pos_tuple[1])
             dict_form[str(pos_tuple)] = tile.json_serialize()
@@ -301,8 +310,7 @@ class Board(JsonableObject):
             raise TypeError
         new_board = Board()
         for pos_tuple in serialized_form.keys():
-            if pos_tuple != 'type':
+            if pos_tuple != "type":
                 position = eval(pos_tuple)
-                new_board.__board[position[1],
-                                  position[0]] = serialized_form[pos_tuple]
+                new_board.__board[position[1], position[0]] = serialized_form[pos_tuple]
         return new_board

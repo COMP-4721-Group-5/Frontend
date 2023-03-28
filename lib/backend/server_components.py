@@ -26,23 +26,25 @@ class Request:
         time: Time of request
         data: Content of request
     """
-    connection: 'ClientConnection'
+
+    connection: "ClientConnection"
     time: float
     data: ClientRequest
 
 
 class ClientConnection:
-    """Python Representation of Connection to a Client
-    """
+    """Python Representation of Connection to a Client"""
+
     _csock: socket.socket
     __addr: Address
-    __listener: '_ClientMsgListener'
+    __listener: "_ClientMsgListener"
     _stop_listen: Event
     __player: Player
     _logger: logging.Logger
 
-    def __init__(self, csock: socket.socket, addr: Address,
-                 msg_queue: Queue[Request]) -> None:
+    def __init__(
+        self, csock: socket.socket, addr: Address, msg_queue: Queue[Request]
+    ) -> None:
         self._csock = csock
         self.__addr = addr
         self.__listener = ClientConnection._ClientMsgListener(self, msg_queue)
@@ -57,12 +59,11 @@ class ClientConnection:
         Args:
             data: Data to send to client
         """
-        self._logger.info(f'Sending message to {self.__addr}')
+        self._logger.info(f"Sending message to {self.__addr}")
         self._csock.send(json.dumps(data, cls=JsonableEncoder).encode())
 
     def stop_listening(self) -> None:
-        """Stops listening from client.
-        """
+        """Stops listening from client."""
         self._stop_listen.set()
 
     def get_player(self):
@@ -79,21 +80,21 @@ class ClientConnection:
 
     @property
     def address(self) -> Address:
-        """Gets address of the client.
-        """
+        """Gets address of the client."""
         return self.__addr
 
     class _ClientMsgListener(Thread):
-        """Multithreaded socket listener implementation for server
-        """
-        __connection: 'ClientConnection'
+        """Multithreaded socket listener implementation for server"""
+
+        __connection: "ClientConnection"
         __msg_queue: Queue[Request]
 
-        def __init__(self, connection: 'ClientConnection',
-                     msg_queue: Queue[Request]):
-            Thread.__init__(self,
-                            name="ClientMsgListener-%s:%d" %
-                            (connection.address[0], connection.address[1]))
+        def __init__(self, connection: "ClientConnection", msg_queue: Queue[Request]):
+            Thread.__init__(
+                self,
+                name="ClientMsgListener-%s:%d"
+                % (connection.address[0], connection.address[1]),
+            )
             self.__connection = connection
             self.__msg_queue = msg_queue
 
@@ -109,16 +110,20 @@ class ClientConnection:
                     pass
                 elif len(recv_data) != 0:
                     self.__connection._logger.info(
-                        f'Received data from {self.__connection.address}')
+                        f"Received data from {self.__connection.address}"
+                    )
                     self.__msg_queue.put(
                         Request(
-                            self.__connection, time.time(),
-                            json.loads(recv_data.decode(),
-                                       cls=JsonableDecoder)))
+                            self.__connection,
+                            time.time(),
+                            json.loads(recv_data.decode(), cls=JsonableDecoder),
+                        )
+                    )
                     recv_data = None
                 else:
                     self.__connection._logger.critical(
-                        f'Connection lost with {self.__connection.address}')
+                        f"Connection lost with {self.__connection.address}"
+                    )
                     self.__connection.stop_listening()
                     recv_data = None
 
