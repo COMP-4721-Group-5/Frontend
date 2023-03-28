@@ -135,10 +135,6 @@ class QwirkeleController:
                                                        self.__board)
                 # mark placed tiles as permanent using Tile.set_permanent()
                 # then add the tiles to the board
-                for placement in curr_request.data:
-                    placement.tile.set_permanent()
-                    self.__board.get_board()[placement.x_coord,
-                                             placement.y_coord] = placement.tile
                 # Remove placed tiles from hand
                 for placement in curr_request.data:
                     for j in range(6):
@@ -148,6 +144,8 @@ class QwirkeleController:
                                 curr_request.connection.get_player()[j])
                             curr_request.connection.get_player()[j] = None
                             break
+                    self.__board.add_tile(placement)
+                    self.__board.get_tile(placement.x_coord, placement.y_coord).set_permanent()
                 # then call self.__start_next_turn()
                 self.__start_next_turn()
             else:
