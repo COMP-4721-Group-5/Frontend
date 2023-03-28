@@ -120,7 +120,7 @@ class Tile(JsonableObject):
         """
         Marks this tile as permanent
         """
-        self._temporary = False
+        self.__temporary = False
 
     def __eq__(self, __o: object) -> bool:
         """Checks if two tiles are equal
@@ -249,8 +249,23 @@ class Board(JsonableObject):
         Args:
             placement: contains (Tile, x_coord, y_coord)
         """
-        if self.__board[placement.x_coord, placement.y_coord] == 0:
-            self.__board[placement.x_coord, placement.y_coord] = placement.tile
+        if self.__board[placement.y_coord, placement.x_coord] == 0:
+            self.__board[placement.y_coord, placement.x_coord] = placement.tile
+
+    def get_tile(self, x: int, y: int) -> Tile:
+        return self.__board[y][x]
+
+    def remove_tile(self, x, y):
+        """Removes a tile at a given x and y
+        
+        Args:
+            x: x coordinate
+            y: y coordinate
+        Returns: the tile that was removed
+        """
+        tile = self.__board[y][x]
+        self.__board[y][x] = 0
+        return tile
 
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, Board):
@@ -273,11 +288,11 @@ class Board(JsonableObject):
 
     def json_serialize(self) -> Dict[str, Dict[str, bool | int]]:
         tile_pos = np.where(self.__board != 0)
-        pos_tuples = list(zip(tile_pos[0], tile_pos[1]))
+        pos_tuples = list(zip(tile_pos[1], tile_pos[0]))
         dict_form = dict()
         dict_form['type'] = Board.JSONABLE_TYPE
         for pos_tuple in pos_tuples:
-            tile: Tile = self.__board[pos_tuple[0], pos_tuple[1]]
+            tile: Tile = self.get_tile(pos_tuple[0], pos_tuple[1])
             dict_form[str(pos_tuple)] = tile.json_serialize()
         return dict_form
 
@@ -288,6 +303,6 @@ class Board(JsonableObject):
         for pos_tuple in serialized_form.keys():
             if pos_tuple != 'type':
                 position = eval(pos_tuple)
-                new_board.__board[position[0],
-                                  position[1]] = serialized_form[pos_tuple]
+                new_board.__board[position[1],
+                                  position[0]] = serialized_form[pos_tuple]
         return new_board
