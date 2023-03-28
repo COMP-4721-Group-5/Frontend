@@ -120,7 +120,7 @@ class Tile(JsonableObject):
         """
         Marks this tile as permanent
         """
-        self._temporary = False
+        self.__temporary = False
 
     def __eq__(self, __o: object) -> bool:
         """Checks if two tiles are equal
