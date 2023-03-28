@@ -1,4 +1,4 @@
 numpy >= 1.24.2
 pygame >= 2.1
 pytest >= 7.2
-yapf >= 0.32
+black == 23.1.0
