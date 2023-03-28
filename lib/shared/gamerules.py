@@ -191,7 +191,7 @@ class Gamerules:
         x_line, y_line = self.get_lines(placement, board)
         if np.count_nonzero(board.get_board()) == 0:
             return True
-        elif x_line == [] and y_line == [] or x_line is None or y_line is None:
+        elif (x_line == [] and y_line == []) or x_line is None or y_line is None:
             return False
         else:
             return True
