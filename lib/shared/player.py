@@ -6,13 +6,14 @@ from .internal_structures import Tile
 class Player:
     """Keeps track of all player specific data
 
-    Contains all player data, 
+    Contains all player data,
 
     Attributes:
         hand: list of tiles representing the player's hand
         score: keeps trick of player's score
 
     """
+
     __hand: List[Tile]
     __score: int
 
@@ -22,7 +23,7 @@ class Player:
 
     def update_hand(self, hand: List[Tile]):
         """Updates the hand
-        
+
         Args:
             hand: List of tiles to represent the player's hand
         """
@@ -33,7 +34,7 @@ class Player:
 
         Args:
             index: index of the tile to be removed
-        
+
         Returns:
             The tile that was removed from hand
         """
@@ -58,7 +59,7 @@ class Player:
     def score(self, new_score: int):
         if isinstance(new_score, int):
             if new_score < 0:
-                raise ValueError('Invalid score: %d (negative)' % (new_score))
+                raise ValueError("Invalid score: %d (negative)" % (new_score))
             self.__score = new_score
         else:
-            raise TypeError('Invalid type')
+            raise TypeError("Invalid type")
