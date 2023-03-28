@@ -103,6 +103,7 @@ class View:
             self.__screen, self.__window_size, self.__top_left_x, self.__top_left_y
         )
         self.render_hand(self.__screen, self.__window_size)
+        self.render_details()
         pygame.display.flip()
 
     def render_grid(self, screen, window_size, top_left_x, top_left_y):
@@ -261,6 +262,11 @@ class View:
         score = self.__logic.player.score
         score_surface = font.render("Score: " + str(score), True, black_color)
 
+
+        # NEED TO WHITEOUT
+        # COORDS: x 0-995, y 0-35
+        pygame.draw.rect(screen, (255, 255, 255),pygame.Rect(0, 0, 995, 35))
+
         screen.blit(score_surface, (90, 17))
         screen.blit(con_surface, (715, 14))
         screen.blit(ip_surface, (795, 14))
@@ -341,6 +347,7 @@ class View:
                 if ev.type == pygame.MOUSEBUTTONDOWN and self.__logic.is_curr_turn:
                     x = pygame.mouse.get_pos()[0]
                     y = pygame.mouse.get_pos()[1]
+
                     tile_width = 90
                     gap_width = 8
                     total_width = 585
