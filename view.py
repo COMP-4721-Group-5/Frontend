@@ -356,7 +356,10 @@ class View:
                                                 self.__selected_tile],
                                             self.__top_left_x + i,
                                             self.__top_left_y + j)
-                                        if self._board.get_board()[self.__top_left_x + j, self.__top_left_y + i].isTemporary():
+                                        if self.__board.get_tile(
+                                                self.__top_left_x + i,
+                                                self.__top_left_y +
+                                                j).isTemporary():
                                             self.__selected_board_tile = self.__board.get_tile(
                                                 self.__top_left_x +
                                                 i,  # Need to verify tile is temporary
