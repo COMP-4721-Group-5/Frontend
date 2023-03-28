@@ -56,6 +56,8 @@ class Gamerules:
         y_count = 0
         x_count = 0
         skip = False
+        check_shape = True
+        check_color = True
         for i in range(5):  # Checks up to 5 tiles above the horizontal
             if placement.y_coord + i + 1 > 217:
                 break
@@ -67,9 +69,12 @@ class Gamerules:
                 break
             else:
                 if (
-                    temp_tile.shape == placement.tile.shape
-                    or temp_tile.color == placement.tile.color
+                    temp_tile.shape == placement.tile.shape #if shape matches we are not checking for color
                 ):
+                    check_color = False
+                elif temp_tile.color == placement.tile.shape: #if color matches we are not checking for shape
+                    check_shape = False
+                elif check_color != check_shape: #if one is true then we have valid line
                     y_line.append(temp_placement)
                     y_count += 1
                 else:  # If the line contains an invalid match
@@ -95,9 +100,12 @@ class Gamerules:
                     break
                 else:
                     if (
-                        temp_tile.shape == placement.tile.shape
-                        or temp_tile.color == placement.tile.color
+                    temp_tile.shape == placement.tile.shape #if shape matches we are not checking for color
                     ):
+                        check_color = False
+                    elif temp_tile.color == placement.tile.shape: #if color matches we are not checking for shape
+                        check_shape = False
+                    elif check_color != check_shape: #if one is true then we have valid line
                         y_line.append(temp_placement)
                         y_count += 1
                     else:  # If the line contains an invalid match
@@ -107,6 +115,9 @@ class Gamerules:
                 if y_count > 5 or temp_tile == placement.tile:
                     y_line = None
                     break
+
+        check_shape = True
+        check_color = True
 
         # Gets the x_line
         for i in range(5):  # Checks up to 5 tiles to the right of the vertical
@@ -120,11 +131,14 @@ class Gamerules:
                 break
             else:
                 if (
-                    temp_tile.shape == placement.tile.shape
-                    or temp_tile.color == placement.tile.color
+                    temp_tile.shape == placement.tile.shape #if shape matches we are not checking for color
                 ):
-                    x_line.append(temp_placement)
-                    x_count += 1
+                    check_color = False
+                elif temp_tile.color == placement.tile.shape: #if color matches we are not checking for shape
+                    check_shape = False
+                elif check_color != check_shape: #if one is true then we have valid line
+                    y_line.append(temp_placement)
+                    y_count += 1
                 else:  # if there is an invalid match in the line
                     x_line = None
                     break
@@ -144,11 +158,14 @@ class Gamerules:
                 break
             else:
                 if (
-                    temp_tile.shape == placement.tile.shape
-                    or temp_tile.color == placement.tile.color
+                    temp_tile.shape == placement.tile.shape #if shape matches we are not checking for color
                 ):
-                    x_line.append(temp_placement)
-                    x_count += 1
+                    check_color = False
+                elif temp_tile.color == placement.tile.shape: #if color matches we are not checking for shape
+                    check_shape = False
+                elif check_color != check_shape: #if one is true then we have valid line
+                    y_line.append(temp_placement)
+                    y_count += 1
                 else:
                     x_line = None
                     break
