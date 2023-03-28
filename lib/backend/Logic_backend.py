@@ -145,7 +145,8 @@ class QwirkeleController:
                             curr_request.connection.get_player()[j] = None
                             break
                     self.__board.add_tile(placement)
-                    self.__board.get_tile(placement.x_coord, placement.y_coord).set_permanent()
+                    self.__board.get_tile(placement.x_coord,
+                                          placement.y_coord).set_permanent()
                 # then call self.__start_next_turn()
                 self.__start_next_turn()
             else:
