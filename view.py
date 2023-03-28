@@ -424,6 +424,12 @@ class View:
                                             self.__top_left_x + i,
                                             self.__top_left_y + j,
                                         )
+                                        self.__selected_board_x_y[0] = (
+                                            self.__top_left_x + i
+                                        )
+                                        self.__selected_board_x_y[1] = (
+                                            self.__top_left_y + j
+                                        )
                                         if (
                                             self.__board.get_tile(
                                                 self.__selected_board_x_y[0],
@@ -439,12 +445,6 @@ class View:
                                                 + i,  # Need to verify tile is temporary
                                                 self.__top_left_y + j,
                                             )
-                                        self.__selected_board_x_y[0] = (
-                                            self.__top_left_x + i
-                                        )
-                                        self.__selected_board_x_y[1] = (
-                                            self.__top_left_y + j
-                                        )
                                         if (
                                             (
                                                 self.__logic.player[
