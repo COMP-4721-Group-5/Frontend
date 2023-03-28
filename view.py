@@ -357,10 +357,18 @@ class View:
                                                 self.__selected_tile],
                                             self.__top_left_x + i,
                                             self.__top_left_y + j)
-                                        self.__selected_board_tile = self.__board.get_tile(
-                                            self.__top_left_x +
-                                            i,  # Need to verify tile is temporary
-                                            self.__top_left_y + j)
+                                        if (self.__board.get_tile(
+                                                self.__selected_board_x_y[0],
+                                                self.__selected_board_x_y[1]) !=
+                                                0
+                                           ) and self.__board.get_tile(
+                                               self.__selected_board_x_y[0],
+                                               self.__selected_board_x_y[1]
+                                           ).is_temporary():
+                                            self.__selected_board_tile = self.__board.get_tile(
+                                                self.__top_left_x +
+                                                i,  # Need to verify tile is temporary
+                                                self.__top_left_y + j)
                                         self.__selected_board_x_y[
                                             0] = self.__top_left_x + i
                                         self.__selected_board_x_y[
