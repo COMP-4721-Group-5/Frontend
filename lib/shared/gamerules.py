@@ -72,7 +72,7 @@ class Gamerules:
                     temp_tile.shape == placement.tile.shape #if shape matches we are not checking for color
                 ):
                     check_color = False
-                elif temp_tile.color == placement.tile.shape: #if color matches we are not checking for shape
+                elif temp_tile.color == placement.tile.color: #if color matches we are not checking for shape
                     check_shape = False
 
                 if check_color != check_shape: #if one is true then we have valid line
@@ -104,7 +104,7 @@ class Gamerules:
                     temp_tile.shape == placement.tile.shape #if shape matches we are not checking for color
                     ):
                         check_color = False
-                    elif temp_tile.color == placement.tile.shape: #if color matches we are not checking for shape
+                    elif temp_tile.color == placement.tile.color: #if color matches we are not checking for shape
                         check_shape = False
 
                     if check_color != check_shape: #if one is true then we have valid line
@@ -136,7 +136,7 @@ class Gamerules:
                     temp_tile.shape == placement.tile.shape #if shape matches we are not checking for color
                 ):
                     check_color = False
-                elif temp_tile.color == placement.tile.shape: #if color matches we are not checking for shape
+                elif temp_tile.color == placement.tile.color: #if color matches we are not checking for shape
                     check_shape = False
 
                 if check_color != check_shape: #if one is true then we have valid line
@@ -164,7 +164,7 @@ class Gamerules:
                     temp_tile.shape == placement.tile.shape #if shape matches we are not checking for color
                 ):
                     check_color = False
-                elif temp_tile.color == placement.tile.shape: #if color matches we are not checking for shape
+                elif temp_tile.color == placement.tile.color: #if color matches we are not checking for shape
                     check_shape = False
                     
                 if check_color != check_shape: #if one is true then we have valid line
