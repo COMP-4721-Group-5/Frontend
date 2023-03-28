@@ -74,7 +74,8 @@ class Gamerules:
                     check_color = False
                 elif temp_tile.color == placement.tile.shape: #if color matches we are not checking for shape
                     check_shape = False
-                elif check_color != check_shape: #if one is true then we have valid line
+
+                if check_color != check_shape: #if one is true then we have valid line
                     y_line.append(temp_placement)
                     y_count += 1
                 else:  # If the line contains an invalid match
@@ -105,7 +106,8 @@ class Gamerules:
                         check_color = False
                     elif temp_tile.color == placement.tile.shape: #if color matches we are not checking for shape
                         check_shape = False
-                    elif check_color != check_shape: #if one is true then we have valid line
+
+                    if check_color != check_shape: #if one is true then we have valid line
                         y_line.append(temp_placement)
                         y_count += 1
                     else:  # If the line contains an invalid match
@@ -136,7 +138,8 @@ class Gamerules:
                     check_color = False
                 elif temp_tile.color == placement.tile.shape: #if color matches we are not checking for shape
                     check_shape = False
-                elif check_color != check_shape: #if one is true then we have valid line
+
+                if check_color != check_shape: #if one is true then we have valid line
                     y_line.append(temp_placement)
                     y_count += 1
                 else:  # if there is an invalid match in the line
@@ -163,7 +166,8 @@ class Gamerules:
                     check_color = False
                 elif temp_tile.color == placement.tile.shape: #if color matches we are not checking for shape
                     check_shape = False
-                elif check_color != check_shape: #if one is true then we have valid line
+                    
+                if check_color != check_shape: #if one is true then we have valid line
                     y_line.append(temp_placement)
                     y_count += 1
                 else:
