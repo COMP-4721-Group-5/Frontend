@@ -72,10 +72,13 @@ class Gamerules:
                     temp_tile.shape == placement.tile.shape #if shape matches we are not checking for color
                 ):
                     check_color = False
-                elif temp_tile.color == placement.tile.color: #if color matches we are not checking for shape
+                if temp_tile.color == placement.tile.color: #if color matches we are not checking for shape
                     check_shape = False
 
-                if check_color != check_shape: #if one is true then we have valid line
+                if(temp_tile.shape != placement.tile.shape and temp_tile.color != placement.tile.color):
+                    x_line = None   
+
+                if (check_color or check_shape) and (check_shape != check_color): #if one is true then we have valid line
                     y_line.append(temp_placement)
                     y_count += 1
                 else:  # If the line contains an invalid match
@@ -104,10 +107,13 @@ class Gamerules:
                     temp_tile.shape == placement.tile.shape #if shape matches we are not checking for color
                     ):
                         check_color = False
-                    elif temp_tile.color == placement.tile.color: #if color matches we are not checking for shape
+                    if temp_tile.color == placement.tile.color: #if color matches we are not checking for shape
                         check_shape = False
 
-                    if check_color != check_shape: #if one is true then we have valid line
+                    if(temp_tile.shape != placement.tile.shape and temp_tile.color != placement.tile.color):
+                        x_line = None    
+
+                    if (check_color or check_shape) and (check_shape != check_color): #if one is true then we have valid line
                         y_line.append(temp_placement)
                         y_count += 1
                     else:  # If the line contains an invalid match
@@ -136,10 +142,13 @@ class Gamerules:
                     temp_tile.shape == placement.tile.shape #if shape matches we are not checking for color
                 ):
                     check_color = False
-                elif temp_tile.color == placement.tile.color: #if color matches we are not checking for shape
+                if temp_tile.color == placement.tile.color: #if color matches we are not checking for shape
                     check_shape = False
 
-                if check_color != check_shape: #if one is true then we have valid line
+                if(temp_tile.shape != placement.tile.shape and temp_tile.color != placement.tile.color):
+                    x_line = None
+
+                if (check_color or check_shape) and (check_shape != check_color): #if one is true then we have valid line
                     y_line.append(temp_placement)
                     y_count += 1
                 else:  # if there is an invalid match in the line
@@ -164,10 +173,13 @@ class Gamerules:
                     temp_tile.shape == placement.tile.shape #if shape matches we are not checking for color
                 ):
                     check_color = False
-                elif temp_tile.color == placement.tile.color: #if color matches we are not checking for shape
+                if temp_tile.color == placement.tile.color: #if color matches we are not checking for shape
                     check_shape = False
-                    
-                if check_color != check_shape: #if one is true then we have valid line
+
+                if(temp_tile.shape != placement.tile.shape and temp_tile.color != placement.tile.color):
+                    x_line = None 
+
+                if (check_color or check_shape) and (check_shape != check_color): #if one is true then we have valid line
                     y_line.append(temp_placement)
                     y_count += 1
                 else:
