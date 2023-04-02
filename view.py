@@ -298,7 +298,7 @@ class View:
 
         score = self.__logic.player.score
         score_surface = font.render("Score: " + str(score), True, black_color)
-        pygame.draw.rect(screen, (255, 255, 255),pygame.Rect(0, 0, 995, 35))
+        pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(0, 0, 995, 35))
 
         screen.blit(score_surface, (90, 17))
         screen.blit(con_surface, (715, 14))
