@@ -1,5 +1,8 @@
 # 🔶 Qwirkle 🔷
 
+[![CI](https://github.com/COMP-4721-Group-5/Frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/COMP-4721-Group-5/Frontend/actions/workflows/ci.yml)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 This is a multiplayer implementation of the tile-based board game Qwirkle. Written entirely in Python, this game uses client-server architecture, and therefore requires connecting to a Qwirkle [server](https://github.com/COMP-4721-Group-5/Backend). Note that the default port for these servers is 1234.
 
 For more information about setting up and connecting to the server, see the linked backend repository.
