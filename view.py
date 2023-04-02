@@ -243,7 +243,7 @@ class View:
         ):
             confirm_image = pygame.transform.scale(
                 pygame.image.load("assets/buttons/confirm-image.png"),
-                (tile_width - 10, tile_height - 10),
+                (tile_width - 9, tile_height - 9),
             )
             screen.blit(confirm_image, (789, 770 - tile_height + 10))
 
@@ -261,10 +261,6 @@ class View:
 
         score = self.__logic.player.score
         score_surface = font.render("Score: " + str(score), True, black_color)
-
-
-        # NEED TO WHITEOUT
-        # COORDS: x 0-995, y 0-35
         pygame.draw.rect(screen, (255, 255, 255),pygame.Rect(0, 0, 995, 35))
 
         screen.blit(score_surface, (90, 17))
@@ -385,7 +381,6 @@ class View:
                                         self.__logic.player[
                                             i
                                         ] = self.__selected_board_tile
-                                        # self.__logic.undo_play(self.__selected_board_tile)
                                         self.__logic.undo_play(
                                             Placement(
                                                 self.__selected_board_tile,
