@@ -140,6 +140,7 @@ class View:
             self.__screen, self.__window_size, self.__top_left_x, self.__top_left_y
         )
         self.render_hand(self.__screen, self.__window_size)
+        self.render_details()
         pygame.display.flip()
 
     def render_grid(self, screen, window_size, top_left_x, top_left_y):
@@ -279,7 +280,7 @@ class View:
         ):
             confirm_image = pygame.transform.scale(
                 pygame.image.load("assets/buttons/confirm-image.png"),
-                (tile_width - 10, tile_height - 10),
+                (tile_width - 9, tile_height - 9),
             )
             screen.blit(confirm_image, (789, 770 - tile_height + 10))
 
@@ -297,6 +298,7 @@ class View:
 
         score = self.__logic.player.score
         score_surface = font.render("Score: " + str(score), True, black_color)
+        pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(0, 0, 995, 35))
 
         screen.blit(score_surface, (90, 17))
         screen.blit(con_surface, (715, 14))
@@ -378,6 +380,7 @@ class View:
                 if ev.type == pygame.MOUSEBUTTONDOWN and self.__logic.is_curr_turn:
                     x = pygame.mouse.get_pos()[0]
                     y = pygame.mouse.get_pos()[1]
+
                     tile_width = 90
                     gap_width = 8
                     total_width = 585
@@ -415,7 +418,6 @@ class View:
                                         self.__logic.player[
                                             i
                                         ] = self.__selected_board_tile
-                                        # self.__logic.undo_play(self.__selected_board_tile)
                                         self.__logic.undo_play(
                                             Placement(
                                                 self.__selected_board_tile,
@@ -461,19 +463,27 @@ class View:
                                             self.__top_left_x + i,
                                             self.__top_left_y + j,
                                         )
-                                        self.__selected_board_tile = (
-                                            self.__board.get_tile(
-                                                self.__top_left_x
-                                                + i,  # Need to verify tile is temporary
-                                                self.__top_left_y + j,
-                                            )
-                                        )
                                         self.__selected_board_x_y[0] = (
                                             self.__top_left_x + i
                                         )
                                         self.__selected_board_x_y[1] = (
                                             self.__top_left_y + j
                                         )
+                                        if (
+                                            self.__board.get_tile(
+                                                self.__selected_board_x_y[0],
+                                                self.__selected_board_x_y[1],
+                                            )
+                                            != 0
+                                        ) and self.__board.get_tile(
+                                            self.__selected_board_x_y[0],
+                                            self.__selected_board_x_y[1],
+                                        ).is_temporary():
+                                            self.__selected_board_tile = self.__board.get_tile(
+                                                self.__top_left_x
+                                                + i,  # Need to verify tile is temporary
+                                                self.__top_left_y + j,
+                                            )
                                         if (
                                             (
                                                 self.__logic.player[
