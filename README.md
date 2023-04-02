@@ -4,6 +4,8 @@ This is a multiplayer implementation of the tile-based board game Qwirkle. Writt
 
 For more information about setting up and connecting to the server, see the linked backend repository.
 
+To run the game, simply navigate to the cloned repository, and run ```python view.py```
+
 ## Demonstration
 
 ### Playing a turn
