@@ -29,9 +29,12 @@ class Gamerules:
             A boolean list corresponding to the validity of the move, true if the move is
                 determined to be legal, false if it is not.
         """
+                
+                    
+
         for placement in move:
             if self.verify_placement(placement, board) is False:
-                return False
+                return False  
 
         return True
 
