@@ -2,6 +2,7 @@ from typing import List
 import sys
 import tkinter as tk
 import tkinter.simpledialog
+from PIL import ImageTk, Image
 import numpy as np
 import numpy.typing as npt
 import pygame
@@ -84,6 +85,7 @@ class View:
         self.__screen.fill(background_color)
         self.update_view()
         self.render_details()
+        self.render_instructions()  # Fix window geometry before uncommenting
         try:
             self.init_event_loop()
         except Exception as ex:
@@ -92,6 +94,41 @@ class View:
         except KeyboardInterrupt as ki:
             self.__socket.close()
             raise ki
+
+    def render_instructions(self):
+        """Renders the instructions when the game is launched
+
+        Returns:
+            Nothing
+        """
+        ins_window_size = (500, 500)
+        root = tk.Tk()
+        root.withdraw()
+        gamerules_png = Image.open("GameRule.png")
+        gamerules_png = gamerules_png.resize(ins_window_size)
+        gamerules_png = ImageTk.PhotoImage(gamerules_png)
+        instructions_png = Image.open("PlayInstruct.png")
+        instructions_png = instructions_png.resize(ins_window_size)
+        instructions_png = ImageTk.PhotoImage(instructions_png)
+        scoreguide_png = Image.open("ScoreGuide.png")
+        scoreguide_png = scoreguide_png.resize(ins_window_size)
+        scoreguide_png = ImageTk.PhotoImage(scoreguide_png)
+        win1 = tk.Toplevel(root)
+        win1.title("Game Rules")
+        gr_label = tk.Label(win1, image=gamerules_png)
+        gr_label.pack()
+        win1.wait_window()
+        win2 = tk.Toplevel(root)
+        win2.title("Instructions")
+        ins_label = tk.Label(win2, image=instructions_png)
+        ins_label.pack()
+        win2.wait_window()
+        win3 = tk.Toplevel(root)
+        win3.title("Score Guide")
+        sc_label = tk.Label(win3, image=scoreguide_png)
+        sc_label.pack()
+        win3.wait_window()
+        root.destroy()
 
     def update_view(self):
         """Updates the entire view.
