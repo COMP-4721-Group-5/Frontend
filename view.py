@@ -1,6 +1,7 @@
 from typing import List
 import sys
 import tkinter as tk
+import tkinter.messagebox
 import tkinter.simpledialog
 from PIL import ImageTk, Image
 import numpy as np
@@ -349,8 +350,9 @@ class View:
         while running:
             for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:
-                    self.__socket.close()
-                    sys.exit()
+                    if tkinter.messagebox.askokcancel(title="Quit Qwirkle?", message="Confirm quit?"):
+                        self.__socket.close()
+                        sys.exit()
                 if ev.type == DataReceivedEvent.EVENTTYPE:
                     # TODO: Use data from event to update internal data
                     self.__logic.is_curr_turn = (
