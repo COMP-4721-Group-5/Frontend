@@ -9,10 +9,13 @@ To run the game, you should first navigate to the cloned repository and run the 
 ## Demonstration
 
 ### Playing a turn
+
 ![gif-turn](https://user-images.githubusercontent.com/95383688/229372382-dff3da0c-ac82-4e15-9c33-c1d9366e616c.gif)
 
 ### Discarding tiles
+
 ![gif-removal](https://user-images.githubusercontent.com/95383688/229372380-7a325b93-ade5-46eb-8959-c703415f66f0.gif)
 
 ### Controls
-![instructions](https://user-images.githubusercontent.com/95383688/229372383-4a872434-1b79-4e1e-a2a1-c29475db393c.png)
+
+![instructions](assets/instructions/PlayInstruct.png)
