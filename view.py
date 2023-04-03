@@ -352,7 +352,9 @@ class View:
         while True:
             for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:
-                    if tkinter.messagebox.askokcancel(title="Quit Qwirkle?", message="Confirm quit?"):
+                    if tkinter.messagebox.askokcancel(
+                        title="Quit Qwirkle?", message="Confirm quit?"
+                    ):
                         self.__socket.close()
                         sys.exit()
                 if ev.type == DataReceivedEvent.EVENTTYPE:
@@ -367,16 +369,28 @@ class View:
                     for i in range(len(ev.dict["curr_hand"])):
                         self.__logic.player[i] = ev.dict["curr_hand"][i]
                     self.__logic.player.score = ev.dict["scores"][ev.dict["user_id"]]
-                    running = ServerResponse.ResponseFlag.GAME_OVER not in ev.dict["flag"]
-                    self.__is_winner = ServerResponse.ResponseFlag.WINNER in ev.dict["flag"]
+                    running = (
+                        ServerResponse.ResponseFlag.GAME_OVER not in ev.dict["flag"]
+                    )
+                    self.__is_winner = (
+                        ServerResponse.ResponseFlag.WINNER in ev.dict["flag"]
+                    )
                     self.update_view()
                 if ev.type == GameEndEvent.EVENTTYPE:
                     if running:
-                        tkinter.messagebox.showerror("Connection Lost", "Connection lost with server. Exiting.")
+                        tkinter.messagebox.showerror(
+                            "Connection Lost", "Connection lost with server. Exiting."
+                        )
                     elif self.__is_winner:
-                        tkinter.messagebox.showinfo("Winner!", f"You won with {self.__logic.player.score} points!")
+                        tkinter.messagebox.showinfo(
+                            "Winner!",
+                            f"You won with {self.__logic.player.score} points!",
+                        )
                     else:
-                        tkinter.messagebox.showinfo("Good game", f"You lost with {self.__logic.player.score} points.")
+                        tkinter.messagebox.showinfo(
+                            "Good game",
+                            f"You lost with {self.__logic.player.score} points.",
+                        )
                     sys.exit()
                 if ev.type == pygame.KEYDOWN:  # Handle navigation
                     if not self.__logic.is_first_turn:

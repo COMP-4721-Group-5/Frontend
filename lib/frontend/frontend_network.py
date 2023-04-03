@@ -32,12 +32,14 @@ class DataReceivedEvent:
         amended_data["flag"] = ServerResponse.ResponseFlag(amended_data["flag"])
         return pygame.event.Event(DataReceivedEvent.EVENTTYPE, amended_data)
 
+
 @final
 class GameEndEvent:
     """Utility class for creating custom Pygame events when game needs to be terminated.
 
     Do not instantiate object of this type.
     """
+
     EVENTTYPE: Final[int] = USEREVENT + 2
 
     def __init__(self) -> NoReturn:
@@ -46,6 +48,7 @@ class GameEndEvent:
     @staticmethod
     def create_connection_lost_event():
         pygame.event.post(pygame.event.Event(GameEndEvent.EVENTTYPE))
+
 
 class ClientSocket:
     """Python Implementation of Client socket.
