@@ -11,7 +11,7 @@ import pygame
 from lib.shared.player import Player
 from lib.frontend.logic import Logic
 from lib.frontend.frontend_network import ClientSocket
-from lib.frontend.frontend_network import DataReceivedEvent
+from lib.frontend.frontend_network import DataReceivedEvent, GameEndEvent
 from lib.shared.internal_structures import Board, Placement, Tile
 from lib.shared.network_exchange_format import ServerResponse
 
@@ -366,6 +366,10 @@ class View:
                         self.__logic.player[i] = ev.dict["curr_hand"][i]
                     self.__logic.player.score = ev.dict["scores"][ev.dict["user_id"]]
                     self.update_view()
+                if ev.type == GameEndEvent.EVENTTYPE:
+                    if running:
+                        tkinter.messagebox.showerror("Connection Lost", "Connection lost with server. Exiting.")
+                    sys.exit()
                 if ev.type == pygame.KEYDOWN:  # Handle navigation
                     if not self.__logic.is_first_turn:
                         if ev.key == pygame.K_UP:
