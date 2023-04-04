@@ -33,6 +33,23 @@ class DataReceivedEvent:
         return pygame.event.Event(DataReceivedEvent.EVENTTYPE, amended_data)
 
 
+@final
+class GameEndEvent:
+    """Utility class for creating custom Pygame events when game needs to be terminated.
+
+    Do not instantiate object of this type.
+    """
+
+    EVENTTYPE: Final[int] = USEREVENT + 2
+
+    def __init__(self) -> NoReturn:
+        raise NotImplementedError
+
+    @staticmethod
+    def create_connection_lost_event():
+        pygame.event.post(pygame.event.Event(GameEndEvent.EVENTTYPE))
+
+
 class ClientSocket:
     """Python Implementation of Client socket.
 
@@ -80,6 +97,7 @@ class ClientSocket:
         if self._closed.is_set():
             return
         self._closed.set()
+        GameEndEvent.create_connection_lost_event()
 
     @property
     def closed(self) -> bool:
@@ -115,7 +133,6 @@ class ClientSocket:
                 else:
                     self.__connection.close()
                     recv_data = None
-
             self.__connection._sock.shutdown(socket.SHUT_WR)
             self.__connection._sock.close()
 

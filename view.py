@@ -1,6 +1,7 @@
 from typing import List
 import sys
 import tkinter as tk
+import tkinter.messagebox
 import tkinter.simpledialog
 from PIL import ImageTk, Image
 import numpy as np
@@ -10,7 +11,7 @@ import pygame
 from lib.shared.player import Player
 from lib.frontend.logic import Logic
 from lib.frontend.frontend_network import ClientSocket
-from lib.frontend.frontend_network import DataReceivedEvent
+from lib.frontend.frontend_network import DataReceivedEvent, GameEndEvent
 from lib.shared.internal_structures import Board, Placement, Tile
 from lib.shared.network_exchange_format import ServerResponse
 
@@ -67,6 +68,7 @@ class View:
     __discarding_tiles: List[int]
     __selected_board_tile: Tile
     __selected_board_x_y: npt.NDArray[np.int_]
+    __is_winner: bool
 
     def __init__(self, size, g_logic):
         """Inits the view"""
@@ -76,6 +78,7 @@ class View:
         self.__screen = pygame.display.set_mode(size)
         self.__board = self.__logic.board
         self.__discarding_tiles = list()
+        self.__is_winner = False
         self.__selected_board_tile = None
         self.__selected_board_x_y = np.full(2, -1, np.int_)
         favicon = pygame.image.load("assets/favicon.png")
@@ -348,11 +351,14 @@ class View:
         """Event loop for handling UI interaction"""
 
         running = True
-        while running:
+        while True:
             for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:
-                    self.__socket.close()
-                    sys.exit()
+                    if tkinter.messagebox.askokcancel(
+                        title="Quit Qwirkle?", message="Confirm quit?"
+                    ):
+                        self.__socket.close()
+                        sys.exit()
                 if ev.type == DataReceivedEvent.EVENTTYPE:
                     # TODO: Use data from event to update internal data
                     self.__logic.is_curr_turn = (
@@ -365,7 +371,29 @@ class View:
                     for i in range(len(ev.dict["curr_hand"])):
                         self.__logic.player[i] = ev.dict["curr_hand"][i]
                     self.__logic.player.score = ev.dict["scores"][ev.dict["user_id"]]
+                    running = (
+                        ServerResponse.ResponseFlag.GAME_OVER not in ev.dict["flag"]
+                    )
+                    self.__is_winner = (
+                        ServerResponse.ResponseFlag.WINNER in ev.dict["flag"]
+                    )
                     self.update_view()
+                if ev.type == GameEndEvent.EVENTTYPE:
+                    if running:
+                        tkinter.messagebox.showerror(
+                            "Connection Lost", "Connection lost with server. Exiting."
+                        )
+                    elif self.__is_winner:
+                        tkinter.messagebox.showinfo(
+                            "Winner!",
+                            f"You won with {self.__logic.player.score} points!",
+                        )
+                    else:
+                        tkinter.messagebox.showinfo(
+                            "Good game",
+                            f"You lost with {self.__logic.player.score} points.",
+                        )
+                    sys.exit()
                 if ev.type == pygame.KEYDOWN:  # Handle navigation
                     if not self.__logic.is_first_turn:
                         if ev.key == pygame.K_UP:
